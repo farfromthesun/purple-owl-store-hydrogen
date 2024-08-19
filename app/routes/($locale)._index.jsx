@@ -7,7 +7,7 @@ import {Image, Money} from '@shopify/hydrogen';
  * @type {MetaFunction}
  */
 export const meta = () => {
-  return [{title: 'Hydrogen | Home'}];
+  return [{title: 'Home | Purple Owl Store'}];
 };
 
 /**
@@ -64,7 +64,6 @@ export default function Homepage() {
   const data = useLoaderData();
   return (
     <div className="home">
-      <span>Purple Owl Store</span>
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
