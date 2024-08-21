@@ -2,6 +2,13 @@ import {Suspense} from 'react';
 import {Await, NavLink} from '@remix-run/react';
 import {useAnalytics} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
+import {
+  Bars3Icon,
+  MagnifyingGlassIcon,
+  UserIcon,
+  UserCircleIcon,
+  ShoppingBagIcon,
+} from '@heroicons/react/24/outline';
 
 /**
  * @param {HeaderProps}
@@ -9,18 +16,46 @@ import {useAside} from '~/components/Aside';
 export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
   const {shop, menu} = header;
   return (
-    <header className="header">
-      <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
-      </NavLink>
-      <HeaderMenu
-        menu={menu}
-        viewport="desktop"
-        primaryDomainUrl={header.shop.primaryDomain.url}
-        publicStoreDomain={publicStoreDomain}
-      />
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
-    </header>
+    <>
+      {/* <header className="header">
+        <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
+          <strong>{shop.name}</strong>
+        </NavLink>
+        <HeaderMenu
+          menu={menu}
+          viewport="desktop"
+          primaryDomainUrl={header.shop.primaryDomain.url}
+          publicStoreDomain={publicStoreDomain}
+        />
+        <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+      </header> */}
+      <header className="bg-white">
+        <div className="flex items-center justify-between p-6 lg:px-8">
+          <div className="flex lg:flex-1 order-3 lg:order-1">
+            <NavLink prefetch="intent" to="/" className="-m-1.5 p-1.5" end>
+              <strong className="text-main-purple font-logo text-xl">
+                {shop.name}
+              </strong>
+            </NavLink>
+          </div>
+          <div className="flex gap-4 order-1">
+            <div className="flex lg:hidden">
+              <HeaderMenuMobileToggle />
+            </div>
+            <div className="lg:hidden">
+              <SearchToggle />
+            </div>
+          </div>
+          <HeaderMenu
+            menu={menu}
+            viewport="desktop"
+            primaryDomainUrl={header.shop.primaryDomain.url}
+            publicStoreDomain={publicStoreDomain}
+          />
+          <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+        </div>
+      </header>
+    </>
   );
 }
 
@@ -38,7 +73,7 @@ export function HeaderMenu({
   viewport,
   publicStoreDomain,
 }) {
-  const className = `header-menu-${viewport}`;
+  // const className = `header-menu-${viewport}`;
 
   function closeAside(event) {
     if (viewport === 'mobile') {
@@ -48,19 +83,14 @@ export function HeaderMenu({
   }
 
   return (
-    <nav className={className} role="navigation">
+    // <nav className={className} role="navigation">
+    <nav className="hidden lg:flex lg:gap-x-12 order-2" role="navigation">
       {viewport === 'mobile' && (
-        <NavLink
-          end
-          onClick={closeAside}
-          prefetch="intent"
-          style={activeLinkStyle}
-          to="/"
-        >
+        <NavLink end onClick={closeAside} prefetch="intent" to="/">
           Home
         </NavLink>
       )}
-      {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
+      {menu.items.map((item) => {
         if (!item.url) return null;
 
         // if the url is internal, we strip the domain
@@ -72,12 +102,11 @@ export function HeaderMenu({
             : item.url;
         return (
           <NavLink
-            className="header-menu-item"
+            className="text-sm lg:text-base font-semibold leading-6 text-gray-900 aria-[current]:text-indigo-600"
             end
             key={item.id}
             onClick={closeAside}
             prefetch="intent"
-            style={activeLinkStyle}
             to={url}
           >
             {item.title}
@@ -93,16 +122,36 @@ export function HeaderMenu({
  */
 function HeaderCtas({isLoggedIn, cart}) {
   return (
-    <nav className="header-ctas" role="navigation">
-      <HeaderMenuMobileToggle />
-      <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
+    <nav
+      className="flex lg:flex-1 lg:justify-end gap-4 lg:gap-6 order-4 items-center"
+      role="navigation"
+    >
+      {/* <HeaderMenuMobileToggle /> */}
+      <NavLink
+        prefetch="intent"
+        to="/account"
+        className="text-sm lg:text-base font-semibold leading-6 text-gray-900"
+      >
         <Suspense fallback="Sign in">
           <Await resolve={isLoggedIn} errorElement="Sign in">
-            {(isLoggedIn) => (isLoggedIn ? 'Account' : 'Sign in')}
+            {(isLoggedIn) => (
+              <div>
+                <span className="sr-only">
+                  {isLoggedIn ? 'Account' : 'Sign in'}
+                </span>
+                {isLoggedIn ? (
+                  <UserCircleIcon aria-hidden="true" className="h-6 w-6" />
+                ) : (
+                  <UserIcon aria-hidden="true" className="h-6 w-6" />
+                )}
+              </div>
+            )}
           </Await>
         </Suspense>
       </NavLink>
-      <SearchToggle />
+      <div className="hidden lg:block">
+        <SearchToggle />
+      </div>
       <CartToggle cart={cart} />
     </nav>
   );
@@ -112,10 +161,11 @@ function HeaderMenuMobileToggle() {
   const {open} = useAside();
   return (
     <button
-      className="header-menu-mobile-toggle reset"
+      className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
       onClick={() => open('mobile')}
     >
-      <h3>☰</h3>
+      <span className="sr-only">Open main menu</span>
+      <Bars3Icon aria-hidden="true" className="h-6 w-6" />
     </button>
   );
 }
@@ -123,8 +173,12 @@ function HeaderMenuMobileToggle() {
 function SearchToggle() {
   const {open} = useAside();
   return (
-    <button className="reset" onClick={() => open('search')}>
-      Search
+    <button
+      className="text-sm lg:text-base font-semibold leading-6 text-gray-900 cursor-pointer flex items-center"
+      onClick={() => open('search')}
+    >
+      <span className="sr-only">Search</span>
+      <MagnifyingGlassIcon aria-hidden="true" className="h-6 w-6" />
     </button>
   );
 }
@@ -149,8 +203,13 @@ function CartBadge({count}) {
           url: window.location.href || '',
         });
       }}
+      className="text-sm lg:text-base font-semibold leading-6 text-gray-900 relative"
     >
-      Cart {count === null ? <span>&nbsp;</span> : count}
+      <span className="sr-only">Open cart</span>
+      <ShoppingBagIcon aria-hidden="true" className="h-6 w-6" />
+      <div className="absolute rounded-full bg-main-purple text-white -bottom-1 -right-1 w-4 h-4 text-[10px] flex items-center justify-center">
+        {count === null ? <span>&nbsp;</span> : count}
+      </div>
     </a>
   );
 }
@@ -169,61 +228,6 @@ function CartToggle({cart}) {
       </Await>
     </Suspense>
   );
-}
-
-const FALLBACK_HEADER_MENU = {
-  id: 'gid://shopify/Menu/199655587896',
-  items: [
-    {
-      id: 'gid://shopify/MenuItem/461609500728',
-      resourceId: null,
-      tags: [],
-      title: 'Collections',
-      type: 'HTTP',
-      url: '/collections',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609533496',
-      resourceId: null,
-      tags: [],
-      title: 'Blog',
-      type: 'HTTP',
-      url: '/blogs/journal',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609566264',
-      resourceId: null,
-      tags: [],
-      title: 'Policies',
-      type: 'HTTP',
-      url: '/policies',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609599032',
-      resourceId: 'gid://shopify/Page/92591030328',
-      tags: [],
-      title: 'About',
-      type: 'PAGE',
-      url: '/pages/about',
-      items: [],
-    },
-  ],
-};
-
-/**
- * @param {{
- *   isActive: boolean;
- *   isPending: boolean;
- * }}
- */
-function activeLinkStyle({isActive, isPending}) {
-  return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'black',
-  };
 }
 
 /** @typedef {'desktop' | 'mobile'} Viewport */

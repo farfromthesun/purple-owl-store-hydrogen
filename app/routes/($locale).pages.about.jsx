@@ -135,7 +135,7 @@ const PAGE_QUERY = `#graphql
 `;
 
 const PRODUCT_QUERY = `#graphql
-  query Product($handle: String!) {
+  query ProductX($handle: String!) {
     product(handle: $handle) {
       title,
       handle

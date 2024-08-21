@@ -29,14 +29,7 @@ export async function loader(args) {
  * @param {LoaderFunctionArgs}
  */
 async function loadCriticalData({context}) {
-  const [{collections}] = await Promise.all([
-    context.storefront.query(FEATURED_COLLECTION_QUERY),
-    // Add other queries here, so that they are loaded in parallel
-  ]);
-
-  return {
-    featuredCollection: collections.nodes[0],
-  };
+  return {};
 }
 
 /**
@@ -46,8 +39,12 @@ async function loadCriticalData({context}) {
  * @param {LoaderFunctionArgs}
  */
 function loadDeferredData({context}) {
-  const recommendedProducts = context.storefront
-    .query(RECOMMENDED_PRODUCTS_QUERY)
+  const featuredProducts = context.storefront
+    .query(FEATURED_PRODUCTS_QUERY, {
+      variables: {
+        query: 'tag:homepageFeatured',
+      },
+    })
     .catch((error) => {
       // Log query errors, but don't throw them so the page can still render
       console.error(error);
@@ -55,7 +52,7 @@ function loadDeferredData({context}) {
     });
 
   return {
-    recommendedProducts,
+    featuredProducts,
   };
 }
 
@@ -64,40 +61,11 @@ export default function Homepage() {
   const data = useLoaderData();
   return (
     <div className="home">
-      <FeaturedCollection collection={data.featuredCollection} />
-      <RecommendedProducts products={data.recommendedProducts} />
+      <RecommendedProducts products={data.featuredProducts} />
     </div>
   );
 }
 
-/**
- * @param {{
- *   collection: FeaturedCollectionFragment;
- * }}
- */
-function FeaturedCollection({collection}) {
-  if (!collection) return null;
-  const image = collection?.image;
-  return (
-    <Link
-      className="featured-collection"
-      to={`/collections/${collection.handle}`}
-    >
-      {image && (
-        <div className="featured-collection-image">
-          <Image data={image} sizes="100vw" />
-        </div>
-      )}
-      <h1>{collection.title}</h1>
-    </Link>
-  );
-}
-
-/**
- * @param {{
- *   products: Promise<RecommendedProductsQuery | null>;
- * }}
- */
 function RecommendedProducts({products}) {
   return (
     <div className="recommended-products">
@@ -134,31 +102,8 @@ function RecommendedProducts({products}) {
   );
 }
 
-const FEATURED_COLLECTION_QUERY = `#graphql
-  fragment FeaturedCollection on Collection {
-    id
-    title
-    image {
-      id
-      url
-      altText
-      width
-      height
-    }
-    handle
-  }
-  query FeaturedCollection($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    collections(first: 1, sortKey: UPDATED_AT, reverse: true) {
-      nodes {
-        ...FeaturedCollection
-      }
-    }
-  }
-`;
-
-const RECOMMENDED_PRODUCTS_QUERY = `#graphql
-  fragment RecommendedProduct on Product {
+const FEATURED_PRODUCTS_FRAGMENT = `#graphql
+  fragment FeaturedProductItem on Product {
     id
     title
     handle
@@ -178,11 +123,15 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
       }
     }
   }
-  query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
+`;
+
+const FEATURED_PRODUCTS_QUERY = `#graphql
+  ${FEATURED_PRODUCTS_FRAGMENT}
+  query HomepageFeaturedProducts($country: CountryCode, $language: LanguageCode, $query: String!)
     @inContext(country: $country, language: $language) {
-    products(first: 4, sortKey: UPDATED_AT, reverse: true) {
+    products(first: 8, query: $query) {
       nodes {
-        ...RecommendedProduct
+        ...FeaturedProductItem
       }
     }
   }
