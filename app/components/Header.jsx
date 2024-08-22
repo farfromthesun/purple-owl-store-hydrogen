@@ -33,7 +33,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
         <div className="flex items-center justify-between p-6 lg:px-8">
           <div className="flex lg:flex-1 order-3 lg:order-1">
             <NavLink prefetch="intent" to="/" className="-m-1.5 p-1.5" end>
-              <strong className="text-main-purple font-logo text-3xl font-extrabold">
+              <strong className="text-main-purple font-logo text-lg lg:text-3xl font-extrabold">
                 {shop.name}
               </strong>
             </NavLink>
@@ -84,12 +84,17 @@ export function HeaderMenu({
 
   return (
     // <nav className={className} role="navigation">
-    <nav className="hidden lg:flex lg:gap-x-12 order-2" role="navigation">
-      {viewport === 'mobile' && (
+    <nav
+      className={`lg:flex lg:gap-x-12 lg:order-2 ${
+        viewport === 'desktop' ? 'hidden ' : 'space-y-2 pb-5'
+      }`}
+      role="navigation"
+    >
+      {/* {viewport === 'mobile' && (
         <NavLink end onClick={closeAside} prefetch="intent" to="/">
           Home
         </NavLink>
-      )}
+      )} */}
       {menu.items.map((item) => {
         if (!item.url) return null;
 
@@ -102,14 +107,20 @@ export function HeaderMenu({
             : item.url;
         return (
           <NavLink
-            className="text-sm lg:text-base font-semibold leading-6 text-gray-900 aria-[current]:text-indigo-600"
+            className="md:text-sm lg:px-0 lg:py-0 lg:-mx-0 lg:text-base font-semibold lg:leading-6 aria-[current]:!text-main-purple transition group overflow-hidden relative -mx-3 block px-3 py-2 text-base leading-7 text-gray-900"
+            // -mx-3 block px-3 py-2 text-base leading-7 text-gray-900
             end
             key={item.id}
             onClick={closeAside}
             prefetch="intent"
             to={url}
           >
-            {item.title}
+            <span className="block lg:group-hover:-translate-y-full lg:group-hover:opacity-0 transition duration-400">
+              {item.title}
+            </span>
+            <span className="block absolute bottom-0 translate-y-full opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 transition duration-400">
+              {item.title}
+            </span>
           </NavLink>
         );
       })}
@@ -130,7 +141,7 @@ function HeaderCtas({isLoggedIn, cart}) {
       <NavLink
         prefetch="intent"
         to="/account"
-        className="text-sm lg:text-base font-semibold leading-6 text-gray-900"
+        className="text-sm lg:text-base font-semibold leading-6 text-gray-900 lg:hover:!text-main-purple transition duration-300"
       >
         <Suspense fallback="Sign in">
           <Await resolve={isLoggedIn} errorElement="Sign in">
@@ -174,7 +185,7 @@ function SearchToggle() {
   const {open} = useAside();
   return (
     <button
-      className="text-sm lg:text-base font-semibold leading-6 text-gray-900 cursor-pointer flex items-center"
+      className="text-sm lg:text-base font-semibold leading-6 text-gray-900 cursor-pointer flex items-center lg:hover:text-main-purple transition duration-300"
       onClick={() => open('search')}
     >
       <span className="sr-only">Search</span>
@@ -203,7 +214,7 @@ function CartBadge({count}) {
           url: window.location.href || '',
         });
       }}
-      className="text-sm lg:text-base font-semibold leading-6 text-gray-900 relative"
+      className="text-sm lg:text-base font-semibold leading-6 text-gray-900 relative lg:hover:!text-main-purple transition duration-300"
     >
       <span className="sr-only">Open cart</span>
       <ShoppingBagIcon aria-hidden="true" className="h-6 w-6" />

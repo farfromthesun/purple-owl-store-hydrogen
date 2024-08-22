@@ -656,36 +656,6 @@ export type PageQuery = {
   >;
 };
 
-export type ProductXQueryVariables = StorefrontAPI.Exact<{
-  handle: StorefrontAPI.Scalars['String']['input'];
-}>;
-
-export type ProductXQuery = {
-  product?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Product, 'title' | 'handle'>
-  >;
-};
-
-export type HomepageFeaturedCollectionQueryVariables = StorefrontAPI.Exact<{
-  handle: StorefrontAPI.Scalars['String']['input'];
-}>;
-
-export type HomepageFeaturedCollectionQuery = {
-  collection?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Collection, 'title'> & {
-      products: {nodes: Array<Pick<StorefrontAPI.Product, 'title' | 'id'>>};
-    }
-  >;
-};
-
-export type HomepageFeaturedTagQueryVariables = StorefrontAPI.Exact<{
-  query: StorefrontAPI.Scalars['String']['input'];
-}>;
-
-export type HomepageFeaturedTagQuery = {
-  products: {nodes: Array<Pick<StorefrontAPI.Product, 'title' | 'id'>>};
-};
-
 export type PolicyFragment = Pick<
   StorefrontAPI.ShopPolicy,
   'body' | 'handle' | 'id' | 'title' | 'url'
@@ -1196,6 +1166,36 @@ export type StoreRobotsQueryVariables = StorefrontAPI.Exact<{
 
 export type StoreRobotsQuery = {shop: Pick<StorefrontAPI.Shop, 'id'>};
 
+export type ProductXQueryVariables = StorefrontAPI.Exact<{
+  handle: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type ProductXQuery = {
+  product?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Product, 'title' | 'handle'>
+  >;
+};
+
+export type HomepageFeaturedCollectionQueryVariables = StorefrontAPI.Exact<{
+  handle: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type HomepageFeaturedCollectionQuery = {
+  collection?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Collection, 'title'> & {
+      products: {nodes: Array<Pick<StorefrontAPI.Product, 'title' | 'id'>>};
+    }
+  >;
+};
+
+export type HomepageFeaturedTagQueryVariables = StorefrontAPI.Exact<{
+  query: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type HomepageFeaturedTagQuery = {
+  products: {nodes: Array<Pick<StorefrontAPI.Product, 'title' | 'id'>>};
+};
+
 interface GeneratedQueryTypes {
   '#graphql\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n  }\n  query Header(\n    $country: CountryCode\n    $headerMenuHandle: String!\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    shop {\n      ...Shop\n    }\n    menu(handle: $headerMenuHandle) {\n      ...Menu\n    }\n  }\n  #graphql\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n': {
     return: HeaderQuery;
@@ -1241,18 +1241,6 @@ interface GeneratedQueryTypes {
     return: PageQuery;
     variables: PageQueryVariables;
   };
-  '#graphql\n  query ProductX($handle: String!) {\n    product(handle: $handle) {\n      title,\n      handle\n    }\n  }\n': {
-    return: ProductXQuery;
-    variables: ProductXQueryVariables;
-  };
-  '#graphql\n  query HomepageFeaturedCollection($handle: String!) {\n    collection(handle: $handle) {\n      title\n      products(first: 8) {\n        nodes {\n          title\n          id\n        }\n      }\n    }\n  }\n': {
-    return: HomepageFeaturedCollectionQuery;
-    variables: HomepageFeaturedCollectionQueryVariables;
-  };
-  '#graphql\n  query HomepageFeaturedTag($query: String!) {\n    products(first: 10, query: $query) {\n      nodes {\n        title,\n        id\n      }\n    }\n  }\n': {
-    return: HomepageFeaturedTagQuery;
-    variables: HomepageFeaturedTagQueryVariables;
-  };
   '#graphql\n  fragment Policy on ShopPolicy {\n    body\n    handle\n    id\n    title\n    url\n  }\n  query Policy(\n    $country: CountryCode\n    $language: LanguageCode\n    $privacyPolicy: Boolean!\n    $refundPolicy: Boolean!\n    $shippingPolicy: Boolean!\n    $termsOfService: Boolean!\n  ) @inContext(language: $language, country: $country) {\n    shop {\n      privacyPolicy @include(if: $privacyPolicy) {\n        ...Policy\n      }\n      shippingPolicy @include(if: $shippingPolicy) {\n        ...Policy\n      }\n      termsOfService @include(if: $termsOfService) {\n        ...Policy\n      }\n      refundPolicy @include(if: $refundPolicy) {\n        ...Policy\n      }\n    }\n  }\n': {
     return: PolicyQuery;
     variables: PolicyQueryVariables;
@@ -1280,6 +1268,18 @@ interface GeneratedQueryTypes {
   '#graphql\n  query StoreRobots($country: CountryCode, $language: LanguageCode)\n   @inContext(country: $country, language: $language) {\n    shop {\n      id\n    }\n  }\n': {
     return: StoreRobotsQuery;
     variables: StoreRobotsQueryVariables;
+  };
+  '#graphql\n  query ProductX($handle: String!) {\n    product(handle: $handle) {\n      title,\n      handle\n    }\n  }\n': {
+    return: ProductXQuery;
+    variables: ProductXQueryVariables;
+  };
+  '#graphql\n  query HomepageFeaturedCollection($handle: String!) {\n    collection(handle: $handle) {\n      title\n      products(first: 8) {\n        nodes {\n          title\n          id\n        }\n      }\n    }\n  }\n': {
+    return: HomepageFeaturedCollectionQuery;
+    variables: HomepageFeaturedCollectionQueryVariables;
+  };
+  '#graphql\n  query HomepageFeaturedTag($query: String!) {\n    products(first: 10, query: $query) {\n      nodes {\n        title,\n        id\n      }\n    }\n  }\n': {
+    return: HomepageFeaturedTagQuery;
+    variables: HomepageFeaturedTagQueryVariables;
   };
 }
 

@@ -33,7 +33,7 @@ export function Aside({children, heading, type}) {
             &times;
           </button>
         </header>
-        <main>{children}</main>
+        <main className="px-6 py-6">{children}</main>
       </aside>
     </div>
   );
