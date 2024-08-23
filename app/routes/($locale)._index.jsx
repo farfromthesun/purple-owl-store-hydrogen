@@ -68,7 +68,7 @@ export default function Homepage() {
 
 function RecommendedProducts({products}) {
   return (
-    <div className="recommended-products">
+    <div className="recommended-products p-6 lg:px-8">
       <h2>Recommended Products</h2>
       <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={products}>

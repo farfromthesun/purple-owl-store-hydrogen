@@ -1,8 +1,8 @@
 :root {
-  --aside-width: 400px;
+  --aside-width: 320px;
   --cart-aside-summary-height-with-discount: 300px;
   --cart-aside-summary-height: 250px;
-  --grid-item-width: 355px;
+  --grid-item-width: 300px;
   --header-height: 64px;
   --color-dark: #000;
   --color-light: #fff;
@@ -205,7 +205,7 @@ button.reset:hover:not(:has(> *)) {
   align-items: center;
   display: flex;
   grid-gap: 1rem;
-  padding: 1rem;
+  padding-block: 1rem;
 }
 
 .footer-menu a {

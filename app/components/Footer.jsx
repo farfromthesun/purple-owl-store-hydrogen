@@ -9,7 +9,7 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}) {
     <Suspense>
       <Await resolve={footerPromise}>
         {(footer) => (
-          <footer className="footer">
+          <footer className="footer p-6 lg:px-8">
             {footer?.menu && header.shop.primaryDomain?.url && (
               <FooterMenu
                 menu={footer.menu}

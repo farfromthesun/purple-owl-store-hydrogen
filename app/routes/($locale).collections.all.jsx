@@ -59,7 +59,7 @@ export default function Collection() {
   const {products} = useLoaderData();
 
   return (
-    <div className="collection">
+    <div className="collection p-6 lg:px-8">
       <h1>Products</h1>
       <PaginatedResourceSection
         connection={products}

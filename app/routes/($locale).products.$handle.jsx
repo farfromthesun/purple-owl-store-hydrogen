@@ -52,7 +52,7 @@ async function loadCriticalData({context, params, request}) {
   ]);
 
   if (!product?.id) {
-    throw new Response(null, {status: 404});
+    throw new Response(`Product "${handle}" not found`, {status: 404});
   }
 
   const firstVariant = product.variants.nodes[0];

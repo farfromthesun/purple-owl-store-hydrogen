@@ -6,6 +6,30 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-main-purple: #cb13a9;
+  /* --color-main-purple: #cb13a9; */
+  /* --color-main-purple: #7d26cd; */
+  --color-main-purple: #a737a5;
+  --color-main-purple-light: #d05fcc;
+  --color-main-purple-dark: #800080;
   --font-family-logo: 'Bitter', serif;
+}
+
+@layer components {
+  .button {
+    @apply rounded-md;
+    @apply bg-main-purple;
+    @apply px-3.5;
+    @apply py-2.5;
+    @apply text-sm;
+    @apply font-semibold;
+    @apply text-white;
+    @apply shadow-sm;
+    @apply hover:bg-main-purple-dark;
+    @apply transition;
+    @apply duration-200;
+    @apply focus-visible:outline;
+    @apply focus-visible:outline-2;
+    @apply focus-visible:outline-offset-2;
+    @apply focus-visible:outline-main-purple;
+  }
 }

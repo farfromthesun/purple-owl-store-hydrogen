@@ -9,6 +9,7 @@ import {
   useRouteLoaderData,
   ScrollRestoration,
   isRouteErrorResponse,
+  Link,
 } from '@remix-run/react';
 import favicon from '~/assets/favicon.svg';
 import resetStyles from '~/styles/reset.css?url';
@@ -17,6 +18,7 @@ import tailwindCss from './styles/tailwind.css?url';
 import customFonts from './styles/custom-fonts.css?url';
 import {PageLayout} from '~/components/PageLayout';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
+import {Button} from './components/Button';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -41,7 +43,7 @@ export function links() {
   return [
     {rel: 'stylesheet', href: customFonts},
     {rel: 'stylesheet', href: tailwindCss},
-    {rel: 'stylesheet', href: resetStyles},
+    // {rel: 'stylesheet', href: resetStyles},
     {rel: 'stylesheet', href: appStyles},
     {
       rel: 'preconnect',
@@ -150,7 +152,7 @@ export function Layout({children}) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="min-h-svh flex flex-col">
         {data ? (
           <Analytics.Provider
             cart={data.cart}
@@ -175,25 +177,46 @@ export default function App() {
 
 export function ErrorBoundary() {
   const error = useRouteError();
+  const isRouteError = isRouteErrorResponse(error);
   let errorMessage = 'Unknown error';
   let errorStatus = 500;
+  let pageType = 'page';
 
-  if (isRouteErrorResponse(error)) {
-    errorMessage = error?.data?.message ?? error.data;
+  console.log('error', error);
+
+  if (isRouteError) {
+    if (error.data) {
+      errorMessage = error?.data?.message ?? error.data;
+    } else {
+      errorMessage = 'Not Found';
+    }
     errorStatus = error.status;
   } else if (error instanceof Error) {
     errorMessage = error.message;
   }
 
   return (
-    <div className="route-error">
-      <h1>Oops</h1>
-      <h2>{errorStatus}</h2>
-      {errorMessage && (
-        <fieldset>
-          <pre>{errorMessage}</pre>
-        </fieldset>
-      )}
+    <div className="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
+      <div className="text-center">
+        <p className="text-base font-semibold text-main-purple">
+          {errorStatus}
+        </p>
+
+        <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+          {errorMessage}
+        </h1>
+        {isRouteError && (
+          <p className="mt-6 text-base leading-7 text-gray-600">
+            Sorry, we couldn’t find what you’re looking for.
+          </p>
+        )}
+
+        <div className="mt-10 flex items-center justify-center gap-x-6">
+          <Link to="/" className="button">
+            Go back home
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

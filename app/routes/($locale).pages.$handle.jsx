@@ -41,7 +41,7 @@ async function loadCriticalData({context, params}) {
   ]);
 
   if (!page) {
-    throw new Response('Not Found', {status: 404});
+    throw new Response(`Page "${params.handle}" not found`, {status: 404});
   }
 
   return {
@@ -64,7 +64,7 @@ export default function Page() {
   const {page} = useLoaderData();
 
   return (
-    <div className="page">
+    <div className="page p-6 lg:px-8">
       <header>
         <h1>{page.title}</h1>
       </header>

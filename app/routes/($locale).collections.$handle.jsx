@@ -53,7 +53,7 @@ async function loadCriticalData({context, params, request}) {
   ]);
 
   if (!collection) {
-    throw new Response(`Collection ${handle} not found`, {
+    throw new Response(`Collection "${handle}" not found`, {
       status: 404,
     });
   }

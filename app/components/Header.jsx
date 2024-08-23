@@ -108,7 +108,6 @@ export function HeaderMenu({
         return (
           <NavLink
             className="md:text-sm lg:px-0 lg:py-0 lg:-mx-0 lg:text-base font-semibold lg:leading-6 aria-[current]:!text-main-purple transition group overflow-hidden relative -mx-3 block px-3 py-2 text-base leading-7 text-gray-900"
-            // -mx-3 block px-3 py-2 text-base leading-7 text-gray-900
             end
             key={item.id}
             onClick={closeAside}
@@ -118,7 +117,7 @@ export function HeaderMenu({
             <span className="block lg:group-hover:-translate-y-full lg:group-hover:opacity-0 transition duration-400">
               {item.title}
             </span>
-            <span className="block absolute bottom-0 translate-y-full opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 transition duration-400">
+            <span className="block absolute top-full translate-y-0 opacity-0 lg:group-hover:-translate-y-full lg:group-hover:opacity-100 transition duration-400">
               {item.title}
             </span>
           </NavLink>
