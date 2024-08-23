@@ -12,6 +12,7 @@
   --color-main-purple-light: #d05fcc;
   --color-main-purple-dark: #800080;
   --font-family-logo: 'Bitter', serif;
+  --max-width-1400: 1400px;
 }
 
 @layer components {

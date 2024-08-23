@@ -2,6 +2,7 @@ import {defer} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, Link} from '@remix-run/react';
 import {Suspense} from 'react';
 import {Image, Money} from '@shopify/hydrogen';
+import {HomepageHero} from '~/components/HomepageHero';
 
 /**
  * @type {MetaFunction}
@@ -39,17 +40,35 @@ async function loadCriticalData({context}) {
  * @param {LoaderFunctionArgs}
  */
 function loadDeferredData({context}) {
-  const featuredProducts = context.storefront
-    .query(FEATURED_PRODUCTS_QUERY, {
-      variables: {
-        query: 'tag:homepageFeatured',
-      },
-    })
-    .catch((error) => {
-      // Log query errors, but don't throw them so the page can still render
-      console.error(error);
-      return null;
-    });
+  // const featuredProducts = context.storefront
+  //   .query(FEATURED_PRODUCTS_QUERY, {
+  //     variables: {
+  //       query: 'tag:homepageFeatured',
+  //     },
+  //   })
+  //   .catch((error) => {
+  //     // Log query errors, but don't throw them so the page can still render
+  //     console.error(error);
+  //     return null;
+  //   });
+
+  const featuredProducts = new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(
+        context.storefront
+          .query(FEATURED_PRODUCTS_QUERY, {
+            variables: {
+              query: 'tag:homepageFeatured',
+            },
+          })
+          .catch((error) => {
+            // Log query errors, but don't throw them so the page can still render
+            console.error(error);
+            return null;
+          }),
+      );
+    }, 3000);
+  });
 
   return {
     featuredProducts,
@@ -61,6 +80,7 @@ export default function Homepage() {
   const data = useLoaderData();
   return (
     <div className="home">
+      <HomepageHero />
       <RecommendedProducts products={data.featuredProducts} />
     </div>
   );
@@ -68,37 +88,48 @@ export default function Homepage() {
 
 function RecommendedProducts({products}) {
   return (
-    <div className="recommended-products p-6 lg:px-8">
-      <h2>Recommended Products</h2>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Await resolve={products}>
-          {(response) => (
-            <div className="recommended-products-grid">
-              {response
-                ? response.products.nodes.map((product) => (
-                    <Link
-                      key={product.id}
-                      className="recommended-product"
-                      to={`/products/${product.handle}`}
-                    >
-                      <Image
-                        data={product.images.nodes[0]}
-                        aspectRatio="1/1"
-                        sizes="(min-width: 45em) 20vw, 50vw"
-                      />
-                      <h4>{product.title}</h4>
-                      <small>
-                        <Money data={product.priceRange.minVariantPrice} />
-                      </small>
-                    </Link>
-                  ))
-                : null}
-            </div>
-          )}
-        </Await>
-      </Suspense>
-      <br />
-    </div>
+    <>
+      <div className="bg-white">
+        <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-1400 lg:px-8">
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+            Recommended Products
+          </h2>
+
+          <Suspense fallback={<div>Loading...</div>}>
+            <Await resolve={products}>
+              {(response) => (
+                <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8 mt-6">
+                  {response
+                    ? response.products.nodes.map((product) => (
+                        <Link
+                          key={product.id}
+                          to={`/products/${product.handle}`}
+                          className="group"
+                        >
+                          <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                            <Image
+                              data={product.images.nodes[0]}
+                              aspectRatio="1/1"
+                              sizes="(min-width: 45em) 20vw, 50vw"
+                              className="h-full w-full object-cover object-center group-hover:opacity-75"
+                            />
+                          </div>
+                          <h3 className="mt-4 text-sm text-gray-700">
+                            {product.title}
+                          </h3>
+                          <p className="mt-1 text-lg font-medium text-gray-900">
+                            <Money data={product.priceRange.minVariantPrice} />
+                          </p>
+                        </Link>
+                      ))
+                    : null}
+                </div>
+              )}
+            </Await>
+          </Suspense>
+        </div>
+      </div>
+    </>
   );
 }
 
