@@ -90,7 +90,7 @@ function RecommendedProducts({products}) {
   return (
     <>
       <div className="bg-white">
-        <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-1400 lg:px-8">
+        <div className="mx-auto max-w-2xl lg:max-w-1400 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
             Recommended Products
           </h2>
@@ -111,7 +111,7 @@ function RecommendedProducts({products}) {
                               data={product.images.nodes[0]}
                               aspectRatio="1/1"
                               sizes="(min-width: 45em) 20vw, 50vw"
-                              className="h-full w-full object-cover object-center group-hover:opacity-75"
+                              className="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300"
                             />
                           </div>
                           <h3 className="mt-4 text-sm text-gray-700">

@@ -13,7 +13,9 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
-  return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
+  return [
+    {title: `${data?.collection.title ?? ''} Collection | Purple Owl Store`},
+  ];
 };
 
 /**
@@ -42,7 +44,8 @@ async function loadCriticalData({context, params, request}) {
   });
 
   if (!handle) {
-    throw redirect('/collections');
+    // throw redirect('/collections');
+    throw redirect('/');
   }
 
   const [{collection}] = await Promise.all([

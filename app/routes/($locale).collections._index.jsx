@@ -7,6 +7,7 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
  * @param {LoaderFunctionArgs} args
  */
 export async function loader(args) {
+  throw new Response(`Not found :(`, {status: 404});
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 

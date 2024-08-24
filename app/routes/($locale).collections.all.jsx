@@ -3,12 +3,13 @@ import {useLoaderData, Link} from '@remix-run/react';
 import {getPaginationVariables, Image, Money} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {CollectionHero} from '~/components/CollectionHero';
 
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = () => {
-  return [{title: `Hydrogen | Products`}];
+  return [{title: `Products | Purple Owl Store`}];
 };
 
 /**
@@ -59,20 +60,22 @@ export default function Collection() {
   const {products} = useLoaderData();
 
   return (
-    <div className="collection p-6 lg:px-8">
-      <h1>Products</h1>
-      <PaginatedResourceSection
-        connection={products}
-        resourcesClassName="products-grid"
-      >
-        {({node: product, index}) => (
-          <ProductItem
-            key={product.id}
-            product={product}
-            loading={index < 8 ? 'eager' : undefined}
-          />
-        )}
-      </PaginatedResourceSection>
+    <div className="collection">
+      <CollectionHero />
+      <div className="mt-20">
+        <PaginatedResourceSection
+          connection={products}
+          resourcesClassName="products-grid"
+        >
+          {({node: product, index}) => (
+            <ProductItem
+              key={product.id}
+              product={product}
+              loading={index < 8 ? 'eager' : undefined}
+            />
+          )}
+        </PaginatedResourceSection>
+      </div>
     </div>
   );
 }

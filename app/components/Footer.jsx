@@ -9,7 +9,7 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}) {
     <Suspense>
       <Await resolve={footerPromise}>
         {(footer) => (
-          <footer className="footer p-6 lg:px-8">
+          <footer className="footer text-gray-200 pt-6 lg:pt-10 bg-main-purple-super-dark mt-4">
             {footer?.menu && header.shop.primaryDomain?.url && (
               <FooterMenu
                 menu={footer.menu}
@@ -33,78 +33,95 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}) {
  */
 function FooterMenu({menu, primaryDomainUrl, publicStoreDomain}) {
   return (
-    <nav className="footer-menu" role="navigation">
-      {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
-        if (!item.url) return null;
-        // if the url is internal, we strip the domain
-        const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
-        const isExternal = !url.startsWith('/');
-        return isExternal ? (
-          <a href={url} key={item.id} rel="noopener noreferrer" target="_blank">
-            {item.title}
-          </a>
-        ) : (
-          <NavLink
-            end
-            key={item.id}
-            prefetch="intent"
-            style={activeLinkStyle}
-            to={url}
-          >
-            {item.title}
-          </NavLink>
-        );
-      })}
-    </nav>
+    <div className="max-w-2xl lg:max-w-1400 mx-auto py-8 lg:py-10 px-4 sm:px-6 lg:px-8">
+      <div>
+        <nav
+          className="footer-menu mb-20 md:mb-16 flex flex-col gap-8 items-center lg:flex-row lg:items-start lg:gap-14"
+          role="navigation"
+        >
+          {menu.items.map((item) => {
+            if (!item.url) return null;
+            // if the url is internal, we strip the domain
+            const url =
+              item.url.includes('myshopify.com') ||
+              item.url.includes(publicStoreDomain) ||
+              item.url.includes(primaryDomainUrl)
+                ? new URL(item.url).pathname
+                : item.url;
+            const isExternal = !url.startsWith('/');
+            return isExternal ? (
+              <a
+                href={url}
+                key={item.id}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {item.title}
+              </a>
+            ) : (
+              <NavLink
+                end
+                key={item.id}
+                prefetch="intent"
+                // style={activeLinkStyle}
+                to={url}
+                className="aria-[current]:font-bold transition lg:hover:text-main-purple-light duration-300"
+              >
+                {item.title}
+              </NavLink>
+            );
+          })}
+        </nav>
+      </div>
+      <div className="pt-4 lg:pt-6 border-t-gray-200 border-t text-sm text-center lg:text-left">
+        © 2022 <span className="text-main-purple-light">Purple Owl Store</span>.
+        All rights reverved.
+      </div>
+    </div>
   );
 }
 
-const FALLBACK_FOOTER_MENU = {
-  id: 'gid://shopify/Menu/199655620664',
-  items: [
-    {
-      id: 'gid://shopify/MenuItem/461633060920',
-      resourceId: 'gid://shopify/ShopPolicy/23358046264',
-      tags: [],
-      title: 'Privacy Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/privacy-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633093688',
-      resourceId: 'gid://shopify/ShopPolicy/23358013496',
-      tags: [],
-      title: 'Refund Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/refund-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633126456',
-      resourceId: 'gid://shopify/ShopPolicy/23358111800',
-      tags: [],
-      title: 'Shipping Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/shipping-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633159224',
-      resourceId: 'gid://shopify/ShopPolicy/23358079032',
-      tags: [],
-      title: 'Terms of Service',
-      type: 'SHOP_POLICY',
-      url: '/policies/terms-of-service',
-      items: [],
-    },
-  ],
-};
+// const FALLBACK_FOOTER_MENU = {
+//   id: 'gid://shopify/Menu/199655620664',
+//   items: [
+//     {
+//       id: 'gid://shopify/MenuItem/461633060920',
+//       resourceId: 'gid://shopify/ShopPolicy/23358046264',
+//       tags: [],
+//       title: 'Privacy Policy',
+//       type: 'SHOP_POLICY',
+//       url: '/policies/privacy-policy',
+//       items: [],
+//     },
+//     {
+//       id: 'gid://shopify/MenuItem/461633093688',
+//       resourceId: 'gid://shopify/ShopPolicy/23358013496',
+//       tags: [],
+//       title: 'Refund Policy',
+//       type: 'SHOP_POLICY',
+//       url: '/policies/refund-policy',
+//       items: [],
+//     },
+//     {
+//       id: 'gid://shopify/MenuItem/461633126456',
+//       resourceId: 'gid://shopify/ShopPolicy/23358111800',
+//       tags: [],
+//       title: 'Shipping Policy',
+//       type: 'SHOP_POLICY',
+//       url: '/policies/shipping-policy',
+//       items: [],
+//     },
+//     {
+//       id: 'gid://shopify/MenuItem/461633159224',
+//       resourceId: 'gid://shopify/ShopPolicy/23358079032',
+//       tags: [],
+//       title: 'Terms of Service',
+//       type: 'SHOP_POLICY',
+//       url: '/policies/terms-of-service',
+//       items: [],
+//     },
+//   ],
+// };
 
 /**
  * @param {{

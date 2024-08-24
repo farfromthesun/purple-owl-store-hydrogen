@@ -11,6 +11,7 @@
   --color-main-purple: #a737a5;
   --color-main-purple-light: #d05fcc;
   --color-main-purple-dark: #800080;
+  --color-main-purple-super-dark: #4d0050;
   --font-family-logo: 'Bitter', serif;
   --max-width-1400: 1400px;
 }
@@ -27,7 +28,7 @@
     @apply shadow-sm;
     @apply hover:bg-main-purple-dark;
     @apply transition;
-    @apply duration-200;
+    @apply duration-300;
     @apply focus-visible:outline;
     @apply focus-visible:outline-2;
     @apply focus-visible:outline-offset-2;

@@ -34,7 +34,7 @@ export function PageLayout({
           publicStoreDomain={publicStoreDomain}
         />
       )}
-      <main>{children}</main>
+      <main className="grow">{children}</main>
       <Footer
         footer={footer}
         header={header}

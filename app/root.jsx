@@ -180,15 +180,12 @@ export function ErrorBoundary() {
   const isRouteError = isRouteErrorResponse(error);
   let errorMessage = 'Unknown error';
   let errorStatus = 500;
-  let pageType = 'page';
-
-  console.log('error', error);
 
   if (isRouteError) {
     if (error.data) {
       errorMessage = error?.data?.message ?? error.data;
     } else {
-      errorMessage = 'Not Found';
+      errorMessage = 'Not Found :(';
     }
     errorStatus = error.status;
   } else if (error instanceof Error) {
@@ -206,7 +203,7 @@ export function ErrorBoundary() {
           {errorMessage}
         </h1>
         {isRouteError && (
-          <p className="mt-6 text-base leading-7 text-gray-600">
+          <p className="mt-6 text-sm lg:text-base leading-7 text-gray-600">
             Sorry, we couldn’t find what you’re looking for.
           </p>
         )}
