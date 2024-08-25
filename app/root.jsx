@@ -42,6 +42,7 @@ export const shouldRevalidate = ({
 export function links() {
   return [
     {rel: 'stylesheet', href: customFonts},
+    {rel: 'stylesheet', href: 'https://rsms.me/inter/inter.css'},
     {rel: 'stylesheet', href: tailwindCss},
     // {rel: 'stylesheet', href: resetStyles},
     {rel: 'stylesheet', href: appStyles},
@@ -199,20 +200,27 @@ export function ErrorBoundary() {
           {errorStatus}
         </p>
 
-        <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-          {errorMessage}
-        </h1>
-        {isRouteError && (
-          <p className="mt-6 text-sm lg:text-base leading-7 text-gray-600">
-            Sorry, we couldn’t find what you’re looking for.
-          </p>
+        {isRouteError ? (
+          <>
+            <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+              {errorMessage}
+            </h1>
+            <p className="mt-6 text-sm lg:text-base leading-7 text-gray-600">
+              Sorry, we couldn’t find what you’re looking for.
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <Link to="/" className="button">
+                Go back home
+              </Link>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="mt-6 text-lg lg:text-xl leading-7 text-gray-900 max-w-xl">
+              {errorMessage}
+            </p>
+          </>
         )}
-
-        <div className="mt-10 flex items-center justify-center gap-x-6">
-          <Link to="/" className="button">
-            Go back home
-          </Link>
-        </div>
       </div>
     </div>
   );

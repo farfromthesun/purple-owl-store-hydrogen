@@ -13,7 +13,14 @@
   --color-main-purple-dark: #800080;
   --color-main-purple-super-dark: #4d0050;
   --font-family-logo: 'Bitter', serif;
+  --font-family-base: 'Inter var', sans-serif;
   --max-width-1400: 1400px;
+}
+
+@layer base {
+  body {
+    @apply font-base;
+  }
 }
 
 @layer components {

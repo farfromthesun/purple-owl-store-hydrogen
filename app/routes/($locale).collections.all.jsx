@@ -4,6 +4,7 @@ import {getPaginationVariables, Image, Money} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {CollectionHero} from '~/components/CollectionHero';
+import {CategoryFilters} from '~/components/CollectionFilters';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -62,7 +63,7 @@ export default function Collection() {
   return (
     <div className="collection">
       <CollectionHero />
-      <div className="mt-20">
+      <CategoryFilters>
         <PaginatedResourceSection
           connection={products}
           resourcesClassName="products-grid"
@@ -75,7 +76,7 @@ export default function Collection() {
             />
           )}
         </PaginatedResourceSection>
-      </div>
+      </CategoryFilters>
     </div>
   );
 }
