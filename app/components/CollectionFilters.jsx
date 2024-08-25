@@ -27,13 +27,6 @@ const sortOptions = [
   {name: 'Price: Low to High', href: '#', current: false},
   {name: 'Price: High to Low', href: '#', current: false},
 ];
-const subCategories = [
-  {name: 'Totes', href: '#'},
-  {name: 'Backpacks', href: '#'},
-  {name: 'Travel Bags', href: '#'},
-  {name: 'Hip Bags', href: '#'},
-  {name: 'Laptop Sleeves', href: '#'},
-];
 const filters = [
   {
     id: 'color',
@@ -112,17 +105,6 @@ export function CategoryFilters({children}) {
 
               {/* Filters */}
               <form className="mt-4 border-t border-gray-200">
-                <h3 className="sr-only">Categories</h3>
-                <ul className="px-2 py-3 font-medium text-gray-900">
-                  {subCategories.map((category) => (
-                    <li key={category.name}>
-                      <a href={category.href} className="block px-2 py-3">
-                        {category.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-
                 {filters.map((section) => (
                   <Disclosure
                     key={section.id}
@@ -177,9 +159,9 @@ export function CategoryFilters({children}) {
 
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-              New Arrivals
-            </h1>
+            <span className="text-sm tracking-tight text-gray-900">
+              Active filters : 0
+            </span>
 
             <div className="flex items-center">
               <Menu as="div" className="relative inline-block text-left">
@@ -195,7 +177,7 @@ export function CategoryFilters({children}) {
 
                 <MenuItems
                   transition
-                  className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                  className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-gray-200 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                 >
                   <div className="py-1">
                     {sortOptions.map((option) => (
@@ -236,15 +218,6 @@ export function CategoryFilters({children}) {
             <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
               {/* Filters */}
               <form className="hidden lg:block">
-                <h3 className="sr-only">Categories</h3>
-                <ul className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
-                  {subCategories.map((category) => (
-                    <li key={category.name}>
-                      <a href={category.href}>{category.name}</a>
-                    </li>
-                  ))}
-                </ul>
-
                 {filters.map((section) => (
                   <Disclosure
                     key={section.id}
@@ -252,11 +225,11 @@ export function CategoryFilters({children}) {
                     className="border-b border-gray-200 py-6"
                   >
                     <h3 className="-my-3 flow-root">
-                      <DisclosureButton className="group flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                        <span className="font-medium text-gray-900">
+                      <DisclosureButton className="group flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer group">
+                        <span className="font-medium text-gray-900 group-hover:text-main-purple transition duration-300">
                           {section.name}
                         </span>
-                        <span className="ml-6 flex items-center">
+                        <span className="ml-6 flex items-center group-hover:text-main-purple transition duration-300">
                           <PlusIcon
                             aria-hidden="true"
                             className="h-5 w-5 group-data-[open]:hidden"
