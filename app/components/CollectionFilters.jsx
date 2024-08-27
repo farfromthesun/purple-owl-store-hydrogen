@@ -88,7 +88,7 @@ export function CategoryFilters({children}) {
         >
           <DialogBackdrop
             transition
-            className="fixed inset-0 bg-black bg-opacity-25 transition-opacity duration-300 ease-linear data-[closed]:opacity-0"
+            className="fixed inset-0 bg-black/25 transition-opacity duration-300 ease-linear data-[closed]:opacity-0"
           />
 
           <div className="fixed inset-0 z-40 flex">
@@ -116,45 +116,69 @@ export function CategoryFilters({children}) {
                     as="div"
                     className="border-t border-gray-200 px-4 py-6"
                   >
-                    <h3 className="-mx-2 -my-3 flow-root">
-                      <DisclosureButton className="group flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                        <span className="font-medium text-gray-900">
-                          {section.name}
-                        </span>
-                        <span className="ml-6 flex items-center">
-                          <PlusIcon
-                            aria-hidden="true"
-                            className="h-5 w-5 group-data-[open]:hidden"
-                          />
-                          <MinusIcon
-                            aria-hidden="true"
-                            className="h-5 w-5 [.group:not([data-open])_&]:hidden"
-                          />
-                        </span>
-                      </DisclosureButton>
-                    </h3>
-                    <DisclosurePanel className="pt-6">
-                      <div className="space-y-6">
-                        {section.options.map((option, optionIdx) => (
-                          <div key={option.value} className="flex items-center">
-                            <input
-                              defaultValue={option.value}
-                              defaultChecked={option.checked}
-                              id={`filter-mobile-${section.id}-${optionIdx}`}
-                              name={`${section.id}[]`}
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200"
-                            />
-                            <label
-                              htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
-                              className="ml-3 min-w-0 flex-1 text-gray-500"
-                            >
-                              {option.label}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </DisclosurePanel>
+                    {({open}) => (
+                      <>
+                        <h3 className="-mx-2 -my-3 flow-root">
+                          <DisclosureButton className="group flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
+                            <span className="font-medium text-gray-900">
+                              {section.name}
+                            </span>
+                            <span className="ml-6 flex items-center relative justify-end">
+                              <PlusIcon
+                                aria-hidden="true"
+                                className="h-5 w-5 group-data-[open]:opacity-0 absolute transition duration-300"
+                              />
+                              <MinusIcon
+                                aria-hidden="true"
+                                className="h-5 w-5 [.group:not([data-open])_&]:opacity-0 absolute transition duration-300"
+                              />
+                            </span>
+                          </DisclosureButton>
+                        </h3>
+
+                        <div>
+                          <AnimatePresence initial={false}>
+                            {open && (
+                              <DisclosurePanel static as={Fragment}>
+                                <motion.div
+                                  initial={{opacity: 0, height: 0}}
+                                  animate={{opacity: 1, height: 'auto'}}
+                                  exit={{opacity: 0, height: 0}}
+                                  transition={{duration: 0.2, ease: easeOut}}
+                                  className=" origin-top overflow-hidden"
+                                >
+                                  <div className="pt-6 space-y-6">
+                                    {section.options.map(
+                                      (option, optionIdx) => (
+                                        <div
+                                          key={option.value}
+                                          className="flex items-center"
+                                        >
+                                          <input
+                                            defaultValue={option.value}
+                                            defaultChecked={option.checked}
+                                            id={`filter-mobile-${section.id}-${optionIdx}`}
+                                            name={`${section.id}[]`}
+                                            type="checkbox"
+                                            className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200"
+                                          />
+                                          <label
+                                            htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
+                                            className="ml-3 min-w-0 flex-1 text-gray-500"
+                                          >
+                                            {option.label}
+                                          </label>
+                                        </div>
+                                      ),
+                                    )}
+                                  </div>
+                                </motion.div>
+                              </DisclosurePanel>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      </>
+                    )}
                   </Disclosure>
                 ))}
               </form>
@@ -236,14 +260,14 @@ export function CategoryFilters({children}) {
                             <span className="font-medium text-gray-900 group-hover:text-main-purple transition duration-300">
                               {section.name}
                             </span>
-                            <span className="ml-6 flex items-center group-hover:text-main-purple transition duration-300">
+                            <span className="ml-6 flex items-center relative justify-end group-hover:text-main-purple transition duration-300">
                               <PlusIcon
                                 aria-hidden="true"
-                                className="h-5 w-5 group-data-[open]:hidden"
+                                className="h-5 w-5 group-data-[open]:opacity-0 absolute transition duration-300"
                               />
                               <MinusIcon
                                 aria-hidden="true"
-                                className="h-5 w-5 [.group:not([data-open])_&]:hidden"
+                                className="h-5 w-5 [.group:not([data-open])_&]:opacity-0 absolute transition duration-300"
                               />
                             </span>
                           </DisclosureButton>
@@ -257,7 +281,7 @@ export function CategoryFilters({children}) {
                                   animate={{opacity: 1, height: 'auto'}}
                                   exit={{opacity: 0, height: 0}}
                                   transition={{duration: 0.2, ease: easeOut}}
-                                  className=" origin-top"
+                                  className=" origin-top overflow-hidden"
                                 >
                                   <div className="pt-6 space-y-4">
                                     {section.options.map(
