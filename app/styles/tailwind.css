@@ -15,12 +15,87 @@
   --font-family-logo: 'Bitter', serif;
   --font-family-base: Inter var, ui-sans-serif, system-ui, sans-serif;
   --max-width-1400: 1400px;
+  --background-image-check-icon: url('~/assets/CheckIcon.svg');
 }
 
 @layer base {
   body {
     @apply font-base;
     /* font-feature-settings: 'cv11' 1; */
+  }
+
+  [type='checkbox'],
+  [type='radio'] {
+    @apply appearance-none;
+    @apply p-0;
+    @apply inline;
+    @apply align-middle;
+    @apply bg-origin-border;
+    @apply select-none;
+    @apply shrink-0;
+    @apply h-4;
+    @apply w-4;
+    @apply bg-white;
+    @apply border;
+    @apply border-gray-500;
+  }
+
+  [type='checkbox']:focus,
+  [type='radio']:focus {
+    /* @apply outline-2;
+    @apply outline-solid;
+    @apply outline-transparent;
+    @apply outline-offset-2;
+    @apply shadow-[0_0_0_2px_#fff,0_0_0_4px_#2563eb]; */
+    outline: none;
+  }
+
+  [type='checkbox']:focus-visible,
+  [type='radio']:focus-visible {
+    @apply focus-visible:outline;
+    @apply focus-visible:outline-2;
+    @apply focus-visible:outline-offset-2;
+    @apply focus-visible:outline-gray-900;
+  }
+
+  [type='checkbox']:checked,
+  [type='radio']:checked {
+    @apply border-transparent;
+    @apply bg-current;
+    @apply bg-[length:100%_100%];
+    @apply bg-center;
+    @apply bg-no-repeat;
+  }
+
+  [type='checkbox'] {
+    @apply relative;
+    @apply flex;
+    @apply justify-center;
+    @apply items-center;
+  }
+
+  [type='checkbox']::before {
+    @apply content-[''];
+    @apply absolute;
+    @apply h-full;
+    @apply w-full;
+    @apply bg-[url('../assets/CheckIcon.svg')];
+    @apply bg-no-repeat;
+    @apply opacity-0;
+    @apply transition;
+    @apply duration-200;
+  }
+
+  [type='checkbox']:checked::before {
+    @apply opacity-100;
+  }
+
+  [type='checkbox']:checked:hover,
+  [type='checkbox']:checked:focus,
+  [type='radio']:checked:hover,
+  [type='radio']:checked:focus {
+    @apply border-transparent;
+    @apply bg-current;
   }
 }
 

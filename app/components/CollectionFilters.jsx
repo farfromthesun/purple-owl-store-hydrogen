@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {Fragment, useState} from 'react';
 import {
   Dialog,
   DialogBackdrop,
@@ -10,6 +10,9 @@ import {
   MenuButton,
   MenuItem,
   MenuItems,
+  Checkbox,
+  Field,
+  Label,
 } from '@headlessui/react';
 import {XMarkIcon} from '@heroicons/react/24/outline';
 import {
@@ -17,8 +20,10 @@ import {
   FunnelIcon,
   MinusIcon,
   PlusIcon,
+  CheckIcon,
   Squares2X2Icon,
 } from '@heroicons/react/20/solid';
+import {AnimatePresence, easeOut, motion} from 'framer-motion';
 
 const sortOptions = [
   {name: 'Most Popular', href: '#', current: true},
@@ -138,7 +143,7 @@ export function CategoryFilters({children}) {
                               id={`filter-mobile-${section.id}-${optionIdx}`}
                               name={`${section.id}[]`}
                               type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                              className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200"
                             />
                             <label
                               htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
@@ -157,7 +162,7 @@ export function CategoryFilters({children}) {
           </div>
         </Dialog>
 
-        <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-1400 px-4 sm:px-6 lg:px-8">
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
             <span className="text-sm tracking-tight text-gray-900">
               Active filters : 0
@@ -166,11 +171,11 @@ export function CategoryFilters({children}) {
             <div className="flex items-center">
               <Menu as="div" className="relative inline-block text-left">
                 <div>
-                  <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                  <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 lg:hover:text-main-purple cursor-pointer transition duration-300">
                     Sort
                     <ChevronDownIcon
                       aria-hidden="true"
-                      className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                      className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-main-purple transition duration-300"
                     />
                   </MenuButton>
                 </div>
@@ -186,9 +191,9 @@ export function CategoryFilters({children}) {
                           href={option.href}
                           className={classNames(
                             option.current
-                              ? 'font-medium text-gray-900'
+                              ? 'font-medium text-main-purple'
                               : 'text-gray-500',
-                            'block px-4 py-2 text-sm data-[focus]:bg-gray-100',
+                            'block px-4 py-2 text-sm data-[focus]:bg-main-purple-light data-[focus]:text-white transition duration-100',
                           )}
                         >
                           {option.name}
@@ -224,45 +229,70 @@ export function CategoryFilters({children}) {
                     as="div"
                     className="border-b border-gray-200 py-6"
                   >
-                    <h3 className="-my-3 flow-root">
-                      <DisclosureButton className="group flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer group">
-                        <span className="font-medium text-gray-900 group-hover:text-main-purple transition duration-300">
-                          {section.name}
-                        </span>
-                        <span className="ml-6 flex items-center group-hover:text-main-purple transition duration-300">
-                          <PlusIcon
-                            aria-hidden="true"
-                            className="h-5 w-5 group-data-[open]:hidden"
-                          />
-                          <MinusIcon
-                            aria-hidden="true"
-                            className="h-5 w-5 [.group:not([data-open])_&]:hidden"
-                          />
-                        </span>
-                      </DisclosureButton>
-                    </h3>
-                    <DisclosurePanel className="pt-6">
-                      <div className="space-y-4">
-                        {section.options.map((option, optionIdx) => (
-                          <div key={option.value} className="flex items-center">
-                            <input
-                              defaultValue={option.value}
-                              defaultChecked={option.checked}
-                              id={`filter-${section.id}-${optionIdx}`}
-                              name={`${section.id}[]`}
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <label
-                              htmlFor={`filter-${section.id}-${optionIdx}`}
-                              className="ml-3 text-sm text-gray-600"
-                            >
-                              {option.label}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </DisclosurePanel>
+                    {({open}) => (
+                      <>
+                        <h3 className="-my-3 flow-root">
+                          <DisclosureButton className="group flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer group">
+                            <span className="font-medium text-gray-900 group-hover:text-main-purple transition duration-300">
+                              {section.name}
+                            </span>
+                            <span className="ml-6 flex items-center group-hover:text-main-purple transition duration-300">
+                              <PlusIcon
+                                aria-hidden="true"
+                                className="h-5 w-5 group-data-[open]:hidden"
+                              />
+                              <MinusIcon
+                                aria-hidden="true"
+                                className="h-5 w-5 [.group:not([data-open])_&]:hidden"
+                              />
+                            </span>
+                          </DisclosureButton>
+                        </h3>
+                        <div className="">
+                          <AnimatePresence initial={false}>
+                            {open && (
+                              <DisclosurePanel static as={Fragment}>
+                                <motion.div
+                                  initial={{opacity: 0, height: 0}}
+                                  animate={{opacity: 1, height: 'auto'}}
+                                  exit={{opacity: 0, height: 0}}
+                                  transition={{duration: 0.2, ease: easeOut}}
+                                  className=" origin-top"
+                                >
+                                  <div className="pt-6 space-y-4">
+                                    {section.options.map(
+                                      (option, optionIdx) => (
+                                        <div
+                                          key={option.value}
+                                          className="flex"
+                                        >
+                                          <div className="flex items-center group cursor-pointer">
+                                            <input
+                                              defaultValue={option.value}
+                                              defaultChecked={option.checked}
+                                              id={`filter-${section.id}-${optionIdx}`}
+                                              name={`${section.id}[]`}
+                                              type="checkbox"
+                                              className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 group-hover:border-main-purple cursor-pointer"
+                                            />
+                                            <label
+                                              htmlFor={`filter-${section.id}-${optionIdx}`}
+                                              className="ml-3 text-sm text-gray-600 group-hover:text-main-purple transition duration-200 cursor-pointer"
+                                            >
+                                              {option.label}
+                                            </label>
+                                          </div>
+                                        </div>
+                                      ),
+                                    )}
+                                  </div>
+                                </motion.div>
+                              </DisclosurePanel>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      </>
+                    )}
                   </Disclosure>
                 ))}
               </form>
@@ -271,8 +301,55 @@ export function CategoryFilters({children}) {
               <div className="lg:col-span-3">{children}</div>
             </div>
           </section>
-        </main>
+        </div>
       </div>
     </div>
+  );
+}
+
+function FilterCheckbox() {
+  const [enabled, setEnabled] = useState(false);
+
+  return (
+    <Field className="flex items-center gap-2">
+      <Checkbox
+        checked={enabled}
+        onChange={setEnabled}
+        name="add-checkbox-name-here"
+        className="group block size-4 rounded border bg-white data-[checked]:bg-main-purple flex justify-center items-center data-[checked]:border-main-purple"
+      >
+        <CheckIcon
+          aria-hidden="true"
+          className="h-3 w-3 stroke-white"
+          strokeWidth={2}
+        />
+        {/* <svg
+          className="stroke-white opacity-0 group-data-[checked]:opacity-100"
+          viewBox="0 0 14 14"
+          fill="none"
+        >
+          <path
+            d="M3 8L6 11L11 3.5"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg> */}
+        {/* <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="size-3 stroke-white opacity-0 group-data-[checked]:opacity-100"
+        >
+          <path
+            fillRule="evenodd"
+            strokeWidth={2}
+            d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z"
+            clipRule="evenodd"
+          />
+        </svg> */}
+      </Checkbox>
+      <Label>Enable beta features</Label>
+    </Field>
   );
 }

@@ -23,9 +23,9 @@ export function CollectionHero() {
             </defs>
           </svg>
           <div className="max-w-md text-center py-24 md:py-28 lg:py-32">
-            <h2 className="text-2xl font-bold tracking-tight text-white sm:text-4xl text-balance">
+            <h1 className="text-2xl font-bold tracking-tight text-white sm:text-4xl text-balance">
               Shop the best products available on the market.
-            </h2>
+            </h1>
             <p className="mt-6 text-lg leading-8 text-gray-300">
               Malesuada adipiscing sagittis vel nulla.
             </p>
