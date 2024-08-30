@@ -5,6 +5,7 @@ import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {CollectionHero} from '~/components/CollectionHero';
 import {CategoryFilters} from '~/components/CollectionFilters';
+import {ProductTile} from '~/components/ProductTile';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -66,13 +67,13 @@ export default function Collection() {
       <CategoryFilters>
         <PaginatedResourceSection
           connection={products}
-          resourcesClassName="products-grid"
+          resourcesClassName="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 xl:gap-x-8 mt-6"
         >
           {({node: product, index}) => (
             <ProductItem
               key={product.id}
               product={product}
-              loading={index < 8 ? 'eager' : undefined}
+              loading={index < 9 ? 'eager' : undefined}
             />
           )}
         </PaginatedResourceSection>
@@ -90,27 +91,32 @@ export default function Collection() {
 function ProductItem({product, loading}) {
   const variant = product.variants.nodes[0];
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
+
   return (
-    <Link
-      className="product-item"
-      key={product.id}
-      prefetch="intent"
+    <ProductTile
       to={variantUrl}
-    >
-      {product.featuredImage && (
-        <Image
-          alt={product.featuredImage.altText || product.title}
-          aspectRatio="1/1"
-          data={product.featuredImage}
-          loading={loading}
-          sizes="(min-width: 45em) 400px, 100vw"
-        />
-      )}
-      <h4>{product.title}</h4>
-      <small>
-        <Money data={product.priceRange.minVariantPrice} />
-      </small>
-    </Link>
+      product={product}
+      withFilters={true}
+      imgLoading={loading}
+    />
+    // <Link className="group" key={product.id} prefetch="intent" to={variantUrl}>
+    //   {product.featuredImage && (
+    //     <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+    //       <Image
+    //         alt={product.featuredImage.altText || product.title}
+    //         aspectRatio="1/1"
+    //         data={product.featuredImage}
+    //         loading={loading}
+    //         sizes="(min-width: 45em) 400px, 100vw"
+    //         className="h-full w-full object-cover object-center group-hover:opacity-75"
+    //       />
+    //     </div>
+    //   )}
+    //   <h4 className="mt-4 text-sm text-gray-700">{product.title}</h4>
+    //   <p className="mt-1 text-lg font-medium text-gray-900">
+    //     <Money data={product.priceRange.minVariantPrice} />
+    //   </p>
+    // </Link>
   );
 }
 

@@ -3,6 +3,7 @@ import {Await, useLoaderData, Link} from '@remix-run/react';
 import {Suspense} from 'react';
 import {Image, Money} from '@shopify/hydrogen';
 import {HomepageHero} from '~/components/HomepageHero';
+import {ProductTile} from '~/components/ProductTile';
 
 /**
  * @type {MetaFunction}
@@ -101,26 +102,31 @@ function RecommendedProducts({products}) {
                 <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8 mt-6">
                   {response
                     ? response.products.nodes.map((product) => (
-                        <Link
+                        <ProductTile
                           key={product.id}
-                          to={`/products/${product.handle}`}
-                          className="group"
-                        >
-                          <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                            <Image
-                              data={product.images.nodes[0]}
-                              aspectRatio="1/1"
-                              sizes="(min-width: 45em) 20vw, 50vw"
-                              className="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300"
-                            />
-                          </div>
-                          <h3 className="mt-4 text-sm text-gray-700">
-                            {product.title}
-                          </h3>
-                          <p className="mt-1 text-lg font-medium text-gray-900">
-                            <Money data={product.priceRange.minVariantPrice} />
-                          </p>
-                        </Link>
+                          product={product}
+                          withFilters={false}
+                        />
+                        // <Link
+                        //   key={product.id}
+                        //   to={`/products/${product.handle}`}
+                        //   className="group"
+                        // >
+                        //   <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                        //     <Image
+                        //       data={product.images.nodes[0]}
+                        //       aspectRatio="1/1"
+                        //       sizes="(min-width: 45em) 20vw, 50vw"
+                        //       className="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300"
+                        //     />
+                        //   </div>
+                        //   <h3 className="mt-4 text-sm text-gray-700">
+                        //     {product.title}
+                        //   </h3>
+                        //   <div className="mt-1 text-lg font-medium text-gray-900">
+                        //     <Money data={product.priceRange.minVariantPrice} />
+                        //   </div>
+                        // </Link>
                       ))
                     : null}
                 </div>
@@ -144,14 +150,12 @@ const FEATURED_PRODUCTS_FRAGMENT = `#graphql
         currencyCode
       }
     }
-    images(first: 1) {
-      nodes {
-        id
-        url
-        altText
-        width
-        height
-      }
+    featuredImage {
+      id
+      altText
+      url
+      width
+      height
     }
   }
 `;

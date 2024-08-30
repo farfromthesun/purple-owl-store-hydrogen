@@ -21,7 +21,7 @@
 @layer base {
   body {
     @apply font-base;
-    /* font-feature-settings: 'cv11' 1; */
+    font-feature-settings: 'cv11' 1;
   }
 
   [type='checkbox'],
