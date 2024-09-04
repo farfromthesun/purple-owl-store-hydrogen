@@ -107,26 +107,6 @@ function RecommendedProducts({products}) {
                           product={product}
                           withFilters={false}
                         />
-                        // <Link
-                        //   key={product.id}
-                        //   to={`/products/${product.handle}`}
-                        //   className="group"
-                        // >
-                        //   <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                        //     <Image
-                        //       data={product.images.nodes[0]}
-                        //       aspectRatio="1/1"
-                        //       sizes="(min-width: 45em) 20vw, 50vw"
-                        //       className="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300"
-                        //     />
-                        //   </div>
-                        //   <h3 className="mt-4 text-sm text-gray-700">
-                        //     {product.title}
-                        //   </h3>
-                        //   <div className="mt-1 text-lg font-medium text-gray-900">
-                        //     <Money data={product.priceRange.minVariantPrice} />
-                        //   </div>
-                        // </Link>
                       ))
                     : null}
                 </div>

@@ -1,10 +1,10 @@
-import {defer} from '@shopify/remix-oxygen';
+import {defer, redirect} from '@shopify/remix-oxygen';
 import {useLoaderData, Link} from '@remix-run/react';
 import {getPaginationVariables, Image, Money} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {CollectionHero} from '~/components/CollectionHero';
-import {CategoryFilters} from '~/components/CollectionFilters';
+import {CollectionFilters} from '~/components/CollectionFilters';
 import {ProductTile} from '~/components/ProductTile';
 
 /**
@@ -18,6 +18,7 @@ export const meta = () => {
  * @param {LoaderFunctionArgs} args
  */
 export async function loader(args) {
+  throw redirect('/');
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 
@@ -64,7 +65,7 @@ export default function Collection() {
   return (
     <div className="collection">
       <CollectionHero />
-      <CategoryFilters>
+      <CollectionFilters>
         <PaginatedResourceSection
           connection={products}
           resourcesClassName="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 xl:gap-x-8 mt-6"
@@ -77,7 +78,7 @@ export default function Collection() {
             />
           )}
         </PaginatedResourceSection>
-      </CategoryFilters>
+      </CollectionFilters>
     </div>
   );
 }
@@ -99,24 +100,6 @@ function ProductItem({product, loading}) {
       withFilters={true}
       imgLoading={loading}
     />
-    // <Link className="group" key={product.id} prefetch="intent" to={variantUrl}>
-    //   {product.featuredImage && (
-    //     <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-    //       <Image
-    //         alt={product.featuredImage.altText || product.title}
-    //         aspectRatio="1/1"
-    //         data={product.featuredImage}
-    //         loading={loading}
-    //         sizes="(min-width: 45em) 400px, 100vw"
-    //         className="h-full w-full object-cover object-center group-hover:opacity-75"
-    //       />
-    //     </div>
-    //   )}
-    //   <h4 className="mt-4 text-sm text-gray-700">{product.title}</h4>
-    //   <p className="mt-1 text-lg font-medium text-gray-900">
-    //     <Money data={product.priceRange.minVariantPrice} />
-    //   </p>
-    // </Link>
   );
 }
 

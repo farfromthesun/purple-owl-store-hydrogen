@@ -1,13 +1,11 @@
 import {defer, redirect} from '@shopify/remix-oxygen';
-import {useLoaderData, Link} from '@remix-run/react';
-import {
-  getPaginationVariables,
-  Image,
-  Money,
-  Analytics,
-} from '@shopify/hydrogen';
+import {useLoaderData} from '@remix-run/react';
+import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {CollectionHero} from '~/components/CollectionHero';
+import {CollectionFilters} from '~/components/CollectionFilters';
+import {ProductTile} from '~/components/ProductTile';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -40,11 +38,10 @@ async function loadCriticalData({context, params, request}) {
   const {handle} = params;
   const {storefront} = context;
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 8,
+    pageBy: 9,
   });
 
   if (!handle) {
-    // throw redirect('/collections');
     throw redirect('/');
   }
 
@@ -82,20 +79,28 @@ export default function Collection() {
 
   return (
     <div className="collection">
-      <h1>{collection.title}</h1>
-      <p className="collection-description">{collection.description}</p>
-      <PaginatedResourceSection
-        connection={collection.products}
-        resourcesClassName="products-grid"
-      >
-        {({node: product, index}) => (
-          <ProductItem
-            key={product.id}
-            product={product}
-            loading={index < 8 ? 'eager' : undefined}
-          />
-        )}
-      </PaginatedResourceSection>
+      <CollectionHero collection={collection} />
+      {/* {collection.products.filters.map((filter) => (
+        <>
+          <p key={filter.id}>{JSON.stringify(filter.values)}</p>
+          <br />
+          <br />
+        </>
+      ))} */}
+      <CollectionFilters filters={collection.products.filters}>
+        <PaginatedResourceSection
+          connection={collection.products}
+          resourcesClassName="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 xl:gap-x-8 mt-6"
+        >
+          {({node: product, index}) => (
+            <ProductItem
+              key={product.id}
+              product={product}
+              loading={index < 9 ? 'eager' : undefined}
+            />
+          )}
+        </PaginatedResourceSection>
+      </CollectionFilters>
       <Analytics.CollectionView
         data={{
           collection: {
@@ -118,26 +123,12 @@ function ProductItem({product, loading}) {
   const variant = product.variants.nodes[0];
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
   return (
-    <Link
-      className="product-item"
-      key={product.id}
-      prefetch="intent"
+    <ProductTile
       to={variantUrl}
-    >
-      {product.featuredImage && (
-        <Image
-          alt={product.featuredImage.altText || product.title}
-          aspectRatio="1/1"
-          data={product.featuredImage}
-          loading={loading}
-          sizes="(min-width: 45em) 400px, 100vw"
-        />
-      )}
-      <h4>{product.title}</h4>
-      <small>
-        <Money data={product.priceRange.minVariantPrice} />
-      </small>
-    </Link>
+      product={product}
+      withFilters={true}
+      imgLoading={loading}
+    />
   );
 }
 
@@ -199,6 +190,17 @@ const COLLECTION_QUERY = `#graphql
         before: $startCursor,
         after: $endCursor
       ) {
+        filters {
+          id
+          label
+          type
+          values {
+            id
+            label
+            count
+            input
+          }
+        }
         nodes {
           ...ProductItem
         }

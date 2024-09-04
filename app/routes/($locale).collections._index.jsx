@@ -1,5 +1,5 @@
 import {useLoaderData, Link} from '@remix-run/react';
-import {defer} from '@shopify/remix-oxygen';
+import {defer, redirect} from '@shopify/remix-oxygen';
 import {getPaginationVariables, Image} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 
@@ -7,7 +7,8 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
  * @param {LoaderFunctionArgs} args
  */
 export async function loader(args) {
-  throw new Response(`Not found :(`, {status: 404});
+  // throw new Response(`Not found :(`, {status: 404});
+  throw redirect('/');
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 
