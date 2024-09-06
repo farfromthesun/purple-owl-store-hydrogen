@@ -82,7 +82,7 @@ export default function Collection() {
       <CollectionHero collection={collection} />
       {/* {collection.products.filters.map((filter) => (
         <>
-          <p key={filter.id}>{JSON.stringify(filter.values)}</p>
+          <p key={filter.id}>{JSON.stringify(filter)}</p>
           <br />
           <br />
         </>

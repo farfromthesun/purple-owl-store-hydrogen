@@ -10,9 +10,6 @@ import {
   MenuButton,
   MenuItem,
   MenuItems,
-  Checkbox,
-  Field,
-  Label,
 } from '@headlessui/react';
 import {XMarkIcon} from '@heroicons/react/24/outline';
 import {
@@ -32,73 +29,9 @@ const sortOptions = [
   {name: 'Price: Low to High', href: '#', current: false},
   {name: 'Price: High to Low', href: '#', current: false},
 ];
-// const filters = [
-//   {
-//     id: 'color',
-//     name: 'Color',
-//     options: [
-//       {value: 'white', label: 'White', checked: false},
-//       {value: 'beige', label: 'Beige', checked: false},
-//       {value: 'blue', label: 'Blue', checked: true},
-//       {value: 'brown', label: 'Brown', checked: false},
-//       {value: 'green', label: 'Green', checked: false},
-//       {value: 'purple', label: 'Purple', checked: false},
-//     ],
-//   },
-//   {
-//     id: 'category',
-//     name: 'Category',
-//     options: [
-//       {value: 'new-arrivals', label: 'New Arrivals', checked: false},
-//       {value: 'sale', label: 'Sale', checked: false},
-//       {value: 'travel', label: 'Travel', checked: true},
-//       {value: 'organization', label: 'Organization', checked: false},
-//       {value: 'accessories', label: 'Accessories', checked: false},
-//     ],
-//   },
-//   {
-//     id: 'size',
-//     name: 'Size',
-//     options: [
-//       {value: '2l', label: '2L', checked: false},
-//       {value: '6l', label: '6L', checked: false},
-//       {value: '12l', label: '12L', checked: false},
-//       {value: '18l', label: '18L', checked: false},
-//       {value: '20l', label: '20L', checked: false},
-//       {value: '40l', label: '40L', checked: true},
-//     ],
-//   },
-// ];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
-}
-
-function filterMarkup(filter, option) {
-  switch (filter.type) {
-    case 'PRICE_RANGE':
-      return 'Price range';
-
-    default:
-      return (
-        <>
-          <input
-            // defaultValue={option.value}
-            // defaultChecked={option.checked}
-            id={`mobile-${option.id}`}
-            name={option.id}
-            type="checkbox"
-            className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200"
-          />
-          <label
-            htmlFor={`mobile-${option.id}`}
-            className="ml-3 min-w-0 flex-1 text-gray-500"
-          >
-            {`${option.label} (${option.count})`}
-          </label>
-        </>
-      );
-  }
 }
 
 export function CollectionFilters({filters, children}) {
@@ -133,12 +66,14 @@ export function CollectionFilters({filters, children}) {
               </button>
             </div>
             {/* Filters */}
-            <FiltersMobile filters={filters} />
+            <div className="mt-4 border-t border-gray-200">
+              <FiltersList filters={filters} viewport="mobile" />
+            </div>
           </DialogPanel>
         </div>
       </Dialog>
 
-      {/* Desktop filters */}
+      {/* Desktop filters & sort */}
       <div className="mx-auto max-w-1400 px-4 sm:px-6 lg:px-8">
         <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
           <span className="text-sm tracking-tight text-gray-900">
@@ -195,7 +130,9 @@ export function CollectionFilters({filters, children}) {
           </h2>
           <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
             {/* Filters */}
-            <FiltersDesktop filters={filters} />
+            <div className="hidden lg:block">
+              <FiltersList filters={filters} viewport="desktop" />
+            </div>
 
             {/* Product grid */}
             <div className="lg:col-span-3">{children}</div>
@@ -206,23 +143,50 @@ export function CollectionFilters({filters, children}) {
   );
 }
 
-function FiltersMobile({filters}) {
+function filterMarkup(filter, option, viewport) {
+  switch (filter.type) {
+    case 'PRICE_RANGE':
+      return 'Price range';
+
+    default:
+      return (
+        <>
+          <input
+            // defaultValue={option.value}
+            // defaultChecked={option.checked}
+            id={`${viewport}-${option.id}`}
+            name={option.id}
+            type="checkbox"
+            className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 lg:group-hover:border-main-purple lg:cursor-pointer"
+          />
+          <label
+            htmlFor={`${viewport}-${option.id}`}
+            className="ml-3 min-w-0 flex-1 text-gray-500 text-sm lg:group-hover:text-main-purple lg:transition lg:duration-200 lg:cursor-pointer"
+          >
+            {`${option.label} (${option.count})`}
+          </label>
+        </>
+      );
+  }
+}
+
+function FiltersList({filters, viewport}) {
   return (
-    <form className="mt-4 border-t border-gray-200">
+    <form>
       {filters.map((filter) => (
         <Disclosure
           key={filter.id}
           as="div"
-          className="border-t border-gray-200 px-4 py-6"
+          className="border-b border-gray-200 px-4 lg:px-0 py-6"
         >
           {({open}) => (
             <>
-              <h3 className="-mx-2 -my-3 flow-root">
-                <DisclosureButton className="group flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                  <span className="font-medium text-gray-900">
+              <h3 className="-mx-2 lg:-mx-0 -my-3 flow-root">
+                <DisclosureButton className="group flex w-full items-center justify-between bg-white px-2 lg:px-0 py-3 text-sm text-gray-400 hover:text-gray-500 lg:cursor-pointer">
+                  <span className="font-medium text-gray-900 lg:group-hover:text-main-purple lg:transition lg:duration-300">
                     {filter.label}
                   </span>
-                  <span className="ml-6 flex items-center relative justify-end">
+                  <span className="ml-6 flex items-center relative justify-end lg:group-hover:text-main-purple lg:transition lg:duration-300">
                     <PlusIcon
                       aria-hidden="true"
                       className="h-5 w-5 group-data-[open]:opacity-0 absolute transition duration-300"
@@ -235,103 +199,33 @@ function FiltersMobile({filters}) {
                 </DisclosureButton>
               </h3>
 
-              <div>
-                <AnimatePresence initial={false}>
-                  {open && (
-                    <DisclosurePanel static as={Fragment}>
-                      <motion.div
-                        initial={{opacity: 0, height: 0}}
-                        animate={{opacity: 1, height: 'auto'}}
-                        exit={{opacity: 0, height: 0}}
-                        transition={{duration: 0.2, ease: easeOut}}
-                        className=" origin-top overflow-hidden"
+              <AnimatePresence initial={false}>
+                {open && (
+                  <DisclosurePanel static as={Fragment}>
+                    <motion.div
+                      initial={{opacity: 0, height: 0}}
+                      animate={{opacity: 1, height: 'auto'}}
+                      exit={{opacity: 0, height: 0}}
+                      transition={{duration: 0.2, ease: easeOut}}
+                      className=" origin-top overflow-hidden"
+                    >
+                      <div
+                        key={filter.id}
+                        className="mt-6 space-y-4 max-h-[30svh] overflow-auto"
                       >
-                        <div key={filter.id} className="pt-6 space-y-6">
-                          {filter.values?.map((option, optionIdx) => (
-                            <div key={option.id} className="flex items-center">
-                              {filterMarkup(filter, option)}
-                            </div>
-                          ))}
-                        </div>
-                      </motion.div>
-                    </DisclosurePanel>
-                  )}
-                </AnimatePresence>
-              </div>
-            </>
-          )}
-        </Disclosure>
-      ))}
-    </form>
-  );
-}
-
-function FiltersDesktop({filters}) {
-  return (
-    <form className="hidden lg:block">
-      {filters.map((section) => (
-        <Disclosure
-          key={section.id}
-          as="div"
-          className="border-b border-gray-200 py-6"
-        >
-          {({open}) => (
-            <>
-              <h3 className="-my-3 flow-root">
-                <DisclosureButton className="group flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500 cursor-pointer group">
-                  <span className="font-medium text-gray-900 group-hover:text-main-purple transition duration-300">
-                    {section.name}
-                  </span>
-                  <span className="ml-6 flex items-center relative justify-end group-hover:text-main-purple transition duration-300">
-                    <PlusIcon
-                      aria-hidden="true"
-                      className="h-5 w-5 group-data-[open]:opacity-0 absolute transition duration-300"
-                    />
-                    <MinusIcon
-                      aria-hidden="true"
-                      className="h-5 w-5 [.group:not([data-open])_&]:opacity-0 absolute transition duration-300"
-                    />
-                  </span>
-                </DisclosureButton>
-              </h3>
-              <div className="">
-                <AnimatePresence initial={false}>
-                  {open && (
-                    <DisclosurePanel static as={Fragment}>
-                      <motion.div
-                        initial={{opacity: 0, height: 0}}
-                        animate={{opacity: 1, height: 'auto'}}
-                        exit={{opacity: 0, height: 0}}
-                        transition={{duration: 0.2, ease: easeOut}}
-                        className=" origin-top overflow-hidden"
-                      >
-                        <div className="pt-6 space-y-4">
-                          {section.options.map((option, optionIdx) => (
-                            <div key={option.value} className="flex">
-                              <div className="flex items-center group cursor-pointer">
-                                <input
-                                  defaultValue={option.value}
-                                  defaultChecked={option.checked}
-                                  id={`filter-${section.id}-${optionIdx}`}
-                                  name={`${section.id}[]`}
-                                  type="checkbox"
-                                  className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 group-hover:border-main-purple cursor-pointer"
-                                />
-                                <label
-                                  htmlFor={`filter-${section.id}-${optionIdx}`}
-                                  className="ml-3 text-sm text-gray-600 group-hover:text-main-purple transition duration-200 cursor-pointer"
-                                >
-                                  {option.label}
-                                </label>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </motion.div>
-                    </DisclosurePanel>
-                  )}
-                </AnimatePresence>
-              </div>
+                        {filter.values?.map((option, optionIdx) => (
+                          <div
+                            key={option.id}
+                            className="flex items-center group lg:cursor-pointer"
+                          >
+                            {filterMarkup(filter, option, viewport)}
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  </DisclosurePanel>
+                )}
+              </AnimatePresence>
             </>
           )}
         </Disclosure>
