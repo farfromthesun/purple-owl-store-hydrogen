@@ -17,11 +17,10 @@ import {
   FunnelIcon,
   MinusIcon,
   PlusIcon,
-  CheckIcon,
-  Squares2X2Icon,
 } from '@heroicons/react/20/solid';
 import {AnimatePresence, easeOut, motion} from 'framer-motion';
-import {useLocation, useSearchParams} from '@remix-run/react';
+import {Form, useSearchParams} from '@remix-run/react';
+import {useDebounceSubmit} from 'remix-utils/use-debounce-submit';
 
 const sortOptions = [
   {name: 'Most Popular', href: '#', current: true},
@@ -149,8 +148,7 @@ export function CollectionSortFilters({filters, children}) {
 
 function FiltersList({filters, viewport}) {
   const [params] = useSearchParams();
-
-  // console.log('params', JSON.parse(params.get(`${FILTER_URL_PREFIX}price`)));
+  const submit = useDebounceSubmit();
 
   function filterMarkup(filter, option, viewport) {
     switch (filter.type) {
@@ -171,12 +169,6 @@ function FiltersList({filters, viewport}) {
 
       default:
         const optionInput = JSON.parse(option.input);
-        // const filterKeyValue =
-        //   Object.keys(optionInput)[0] === 'variantOption'
-        //     ? optionInput.variantOption.name +
-        //       '=' +
-        //       optionInput.variantOption.value
-        //     : Object.keys(optionInput)[0] + '=' + optionInput.available;
         const filterName =
           Object.keys(optionInput)[0] === 'variantOption'
             ? 'filter.' + optionInput.variantOption.name
@@ -184,35 +176,49 @@ function FiltersList({filters, viewport}) {
         const filterValue =
           Object.keys(optionInput)[0] === 'variantOption'
             ? optionInput.variantOption.value
-            : optionInput.available;
+            : optionInput.available === true
+            ? '1'
+            : '0';
+        // console.log(
+        //   'optionInput',
+        //   'filter.' +
+        //     Object.keys(optionInput)[0] +
+        //     '=' +
+        //     JSON.stringify(Object.values(optionInput)[0]),
+        // );
+        // const filterName = 'filter.' + Object.keys(optionInput)[0];
+        // const filterValue = JSON.stringify(Object.values(optionInput)[0]);
+
         return (
-          <>
-            {/* {JSON.stringify(option)} */}
-            {/* {Object.values(JSON.parse(option.input))} */}
-            {/* {console.log('option.input', optionInput)} */}
+          <div className="flex items-center group lg:cursor-pointer">
             <input
-              // defaultValue={option.value}
               // defaultChecked={option.checked}
-              data-test={option.input}
               id={`${viewport}-${option.id}`}
               name={filterName}
               value={filterValue}
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 lg:group-hover:border-main-purple lg:cursor-pointer"
+              onChange={(event) => {
+                const form = event.target.form;
+                submit(form, {
+                  debounceTimeout: 1000,
+                  preventScrollReset: true,
+                });
+              }}
             />
             <label
               htmlFor={`${viewport}-${option.id}`}
-              className="ml-3 min-w-0 flex-1 text-gray-500 text-sm lg:group-hover:text-main-purple lg:transition lg:duration-200 lg:cursor-pointer"
+              className="ml-3 min-w-0 text-gray-500 text-sm lg:group-hover:text-main-purple lg:transition lg:duration-200 lg:cursor-pointer"
             >
               {`${option.label} (${option.count})`}
             </label>
-          </>
+          </div>
         );
     }
   }
 
   return (
-    <form>
+    <Form preventScrollReset>
       {filters.map((filter) => (
         <Disclosure
           key={filter.id}
@@ -257,9 +263,7 @@ function FiltersList({filters, viewport}) {
                           <div
                             key={option.id}
                             className={`${
-                              filter.type === 'PRICE_RANGE'
-                                ? ''
-                                : 'flex items-center group lg:cursor-pointer'
+                              filter.type === 'PRICE_RANGE' ? '' : 'flex'
                             }`}
                           >
                             {filterMarkup(filter, option, viewport)}
@@ -274,11 +278,14 @@ function FiltersList({filters, viewport}) {
           )}
         </Disclosure>
       ))}
-    </form>
+    </Form>
   );
 }
 
 function PriceRangeFilter({min, max, option, viewport}) {
+  const submit = useDebounceSubmit();
+  const optionInput = JSON.parse(option.input);
+
   return (
     <>
       <div className="flex justify-between items-center mb-4">
@@ -290,12 +297,22 @@ function PriceRangeFilter({min, max, option, viewport}) {
         </label>
         <input
           id={`${viewport}-${option.id}-min`}
-          name={option.id}
-          className="max-w-44 py-2 px-3 rounded text-sm border-gray-300 text-gray-500 focus:border-main-purple transition duration-200 outline-none"
+          name={`filter.${Object.keys(optionInput)[0]}.${
+            Object.keys(optionInput.price)[0]
+          }`}
+          className="w-full max-w-44 py-2 px-3 rounded text-sm border-gray-300 text-gray-500 focus:border-main-purple transition duration-200 outline-none"
           type="number"
+          min={optionInput.price.min}
+          max={optionInput.price.max}
           // value={minPrice ?? ''}
-          placeholder={'$'}
-          // onChange={onChangeMin}
+          placeholder={'$' + optionInput.price.min}
+          onChange={(event) => {
+            const form = event.target.form;
+            submit(form, {
+              debounceTimeout: 500,
+              preventScrollReset: true,
+            });
+          }}
         />
       </div>
       <div className="flex justify-between items-center">
@@ -307,12 +324,22 @@ function PriceRangeFilter({min, max, option, viewport}) {
         </label>
         <input
           id={`${viewport}-${option.id}-max`}
-          name={option.id}
-          className="max-w-44 py-2 px-3 rounded text-sm border-gray-300 text-gray-500 focus:border-main-purple transition duration-200 outline-none"
+          name={`filter.${Object.keys(optionInput)[0]}.${
+            Object.keys(optionInput.price)[1]
+          }`}
+          className="w-full max-w-44 py-2 px-3 rounded text-sm border-gray-300 text-gray-500 focus:border-main-purple transition duration-200 outline-none"
           type="number"
+          min={optionInput.price.min}
+          max={optionInput.price.max}
           // value={maxPrice ?? ''}
-          placeholder={'$'}
-          // onChange={onChangeMax}
+          placeholder={'$' + optionInput.price.max}
+          onChange={(event) => {
+            const form = event.target.form;
+            submit(form, {
+              debounceTimeout: 500,
+              preventScrollReset: true,
+            });
+          }}
         />
       </div>
     </>

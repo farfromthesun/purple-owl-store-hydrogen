@@ -89,7 +89,7 @@ export function HomepageHero() {
                 </div>
               </div>
 
-              <Link to="/collections/all" className="button">
+              <Link to="/collections/all-products" className="button">
                 Shop Collection
               </Link>
             </div>

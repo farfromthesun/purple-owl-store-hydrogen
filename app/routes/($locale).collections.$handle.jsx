@@ -4,7 +4,10 @@ import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {CollectionHero} from '~/components/CollectionHero';
-import {CollectionSortFilters} from '~/components/CollectionSortFilters';
+import {
+  CollectionSortFilters,
+  FILTER_URL_PREFIX,
+} from '~/components/CollectionSortFilters';
 import {ProductTile} from '~/components/ProductTile';
 
 /**
@@ -44,6 +47,23 @@ async function loadCriticalData({context, params, request}) {
   if (!handle) {
     throw redirect('/');
   }
+
+  const searchParams = new URL(request.url).searchParams;
+
+  // const filters = [...searchParams.entries()].reduce(
+  //   (filters, [key, value]) => {
+  //     if (key.startsWith(FILTER_URL_PREFIX)) {
+  //       const filterKey = key.substring(FILTER_URL_PREFIX.length);
+  //       filters.push({
+  //         [filterKey]: JSON.parse(value),
+  //       });
+  //     }
+  //     return filters;
+  //   },
+  //   [],
+  // );
+
+  // console.log('filters', JSON.stringify(filters));
 
   const [{collection}] = await Promise.all([
     storefront.query(COLLECTION_QUERY, {
@@ -174,6 +194,7 @@ const COLLECTION_QUERY = `#graphql
     $handle: String!
     $country: CountryCode
     $language: LanguageCode
+    $filters: [ProductFilter!]
     $first: Int
     $last: Int
     $startCursor: String
@@ -184,11 +205,16 @@ const COLLECTION_QUERY = `#graphql
       handle
       title
       description
+      seo {
+        description
+        title
+      }
       products(
         first: $first,
         last: $last,
         before: $startCursor,
-        after: $endCursor
+        after: $endCursor,
+        filters: $filters,
       ) {
         filters {
           id

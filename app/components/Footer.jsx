@@ -74,7 +74,7 @@ function FooterMenu({menu, primaryDomainUrl, publicStoreDomain}) {
         </nav>
       </div>
       <div className="pt-4 lg:pt-6 border-t-gray-200 border-t text-sm text-center lg:text-left">
-        © 2022 <span className="text-main-purple-light">Purple Owl Store</span>.
+        © 2024 <span className="text-main-purple-light">Purple Owl Store</span>.
         All rights reverved.
       </div>
     </div>
