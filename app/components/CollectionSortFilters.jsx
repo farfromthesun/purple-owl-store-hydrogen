@@ -21,6 +21,7 @@ import {
   Squares2X2Icon,
 } from '@heroicons/react/20/solid';
 import {AnimatePresence, easeOut, motion} from 'framer-motion';
+import {useLocation, useSearchParams} from '@remix-run/react';
 
 const sortOptions = [
   {name: 'Most Popular', href: '#', current: true},
@@ -34,7 +35,10 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-export function CollectionFilters({filters, children}) {
+export const FILTER_URL_PREFIX = 'filter.';
+const PRICE_RANGE_FILTER_DEBOUNCE = 500;
+
+export function CollectionSortFilters({filters, children}) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   return (
@@ -143,34 +147,51 @@ export function CollectionFilters({filters, children}) {
   );
 }
 
-function filterMarkup(filter, option, viewport) {
-  switch (filter.type) {
-    case 'PRICE_RANGE':
-      return 'Price range';
-
-    default:
-      return (
-        <>
-          <input
-            // defaultValue={option.value}
-            // defaultChecked={option.checked}
-            id={`${viewport}-${option.id}`}
-            name={option.id}
-            type="checkbox"
-            className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 lg:group-hover:border-main-purple lg:cursor-pointer"
-          />
-          <label
-            htmlFor={`${viewport}-${option.id}`}
-            className="ml-3 min-w-0 flex-1 text-gray-500 text-sm lg:group-hover:text-main-purple lg:transition lg:duration-200 lg:cursor-pointer"
-          >
-            {`${option.label} (${option.count})`}
-          </label>
-        </>
-      );
-  }
-}
-
 function FiltersList({filters, viewport}) {
+  const [params] = useSearchParams();
+  const location = useLocation();
+
+  // console.log('params', JSON.parse(params.get(`${FILTER_URL_PREFIX}price`)));
+
+  function filterMarkup(filter, option, viewport) {
+    switch (filter.type) {
+      case 'PRICE_RANGE':
+        const priceFilter = params.get(`${FILTER_URL_PREFIX}price`);
+        const price = priceFilter ? JSON.parse(priceFilter) : undefined;
+        const min = isNaN(Number(price?.min)) ? undefined : Number(price?.min);
+        const max = isNaN(Number(price?.max)) ? undefined : Number(price?.max);
+
+        return (
+          <PriceRangeFilter
+            min={min}
+            max={max}
+            option={option}
+            viewport={viewport}
+          />
+        );
+
+      default:
+        return (
+          <>
+            <input
+              // defaultValue={option.value}
+              // defaultChecked={option.checked}
+              id={`${viewport}-${option.id}`}
+              name={option.id}
+              type="checkbox"
+              className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 lg:group-hover:border-main-purple lg:cursor-pointer"
+            />
+            <label
+              htmlFor={`${viewport}-${option.id}`}
+              className="ml-3 min-w-0 flex-1 text-gray-500 text-sm lg:group-hover:text-main-purple lg:transition lg:duration-200 lg:cursor-pointer"
+            >
+              {`${option.label} (${option.count})`}
+            </label>
+          </>
+        );
+    }
+  }
+
   return (
     <form>
       {filters.map((filter) => (
@@ -211,12 +232,16 @@ function FiltersList({filters, viewport}) {
                     >
                       <div
                         key={filter.id}
-                        className="mt-6 space-y-4 max-h-[30svh] overflow-auto"
+                        className="mt-6 space-y-4 max-h-[30svh] overflow-auto p-1"
                       >
                         {filter.values?.map((option, optionIdx) => (
                           <div
                             key={option.id}
-                            className="flex items-center group lg:cursor-pointer"
+                            className={`${
+                              filter.type === 'PRICE_RANGE'
+                                ? ''
+                                : 'flex items-center group lg:cursor-pointer'
+                            }`}
                           >
                             {filterMarkup(filter, option, viewport)}
                           </div>
@@ -231,5 +256,46 @@ function FiltersList({filters, viewport}) {
         </Disclosure>
       ))}
     </form>
+  );
+}
+
+function PriceRangeFilter({min, max, option, viewport}) {
+  return (
+    <>
+      <div className="flex justify-between items-center mb-4">
+        <label
+          htmlFor={`${viewport}-${option.id}-min`}
+          className="text-sm mr-3 text-gray-500"
+        >
+          From
+        </label>
+        <input
+          id={`${viewport}-${option.id}-min`}
+          name={option.id}
+          className="max-w-44 py-2 px-3 rounded text-sm border-gray-300 text-gray-500 focus:border-main-purple transition duration-200 outline-none"
+          type="number"
+          // value={minPrice ?? ''}
+          placeholder={'$'}
+          // onChange={onChangeMin}
+        />
+      </div>
+      <div className="flex justify-between items-center">
+        <label
+          htmlFor={`${viewport}-${option.id}-max`}
+          className="text-sm mr-3 text-gray-500"
+        >
+          To
+        </label>
+        <input
+          id={`${viewport}-${option.id}-max`}
+          name={option.id}
+          className="max-w-44 py-2 px-3 rounded text-sm border-gray-300 text-gray-500 focus:border-main-purple transition duration-200 outline-none"
+          type="number"
+          // value={maxPrice ?? ''}
+          placeholder={'$'}
+          // onChange={onChangeMax}
+        />
+      </div>
+    </>
   );
 }

@@ -4,7 +4,7 @@ import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {CollectionHero} from '~/components/CollectionHero';
-import {CollectionFilters} from '~/components/CollectionFilters';
+import {CollectionSortFilters} from '~/components/CollectionSortFilters';
 import {ProductTile} from '~/components/ProductTile';
 
 /**
@@ -87,7 +87,7 @@ export default function Collection() {
           <br />
         </>
       ))} */}
-      <CollectionFilters filters={collection.products.filters}>
+      <CollectionSortFilters filters={collection.products.filters}>
         <PaginatedResourceSection
           connection={collection.products}
           resourcesClassName="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 xl:gap-x-8 mt-6"
@@ -100,7 +100,7 @@ export default function Collection() {
             />
           )}
         </PaginatedResourceSection>
-      </CollectionFilters>
+      </CollectionSortFilters>
       <Analytics.CollectionView
         data={{
           collection: {
