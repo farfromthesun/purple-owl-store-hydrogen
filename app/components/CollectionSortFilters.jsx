@@ -149,7 +149,6 @@ export function CollectionSortFilters({filters, children}) {
 
 function FiltersList({filters, viewport}) {
   const [params] = useSearchParams();
-  const location = useLocation();
 
   // console.log('params', JSON.parse(params.get(`${FILTER_URL_PREFIX}price`)));
 
@@ -171,13 +170,33 @@ function FiltersList({filters, viewport}) {
         );
 
       default:
+        const optionInput = JSON.parse(option.input);
+        // const filterKeyValue =
+        //   Object.keys(optionInput)[0] === 'variantOption'
+        //     ? optionInput.variantOption.name +
+        //       '=' +
+        //       optionInput.variantOption.value
+        //     : Object.keys(optionInput)[0] + '=' + optionInput.available;
+        const filterName =
+          Object.keys(optionInput)[0] === 'variantOption'
+            ? 'filter.' + optionInput.variantOption.name
+            : 'filter.' + Object.keys(optionInput)[0];
+        const filterValue =
+          Object.keys(optionInput)[0] === 'variantOption'
+            ? optionInput.variantOption.value
+            : optionInput.available;
         return (
           <>
+            {/* {JSON.stringify(option)} */}
+            {/* {Object.values(JSON.parse(option.input))} */}
+            {/* {console.log('option.input', optionInput)} */}
             <input
               // defaultValue={option.value}
               // defaultChecked={option.checked}
+              data-test={option.input}
               id={`${viewport}-${option.id}`}
-              name={option.id}
+              name={filterName}
+              value={filterValue}
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 lg:group-hover:border-main-purple lg:cursor-pointer"
             />
