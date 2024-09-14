@@ -149,19 +149,44 @@ export function CollectionSortFilters({filters, children}) {
 function FiltersList({filters, viewport}) {
   const [params] = useSearchParams();
   const submit = useDebounceSubmit();
+  const filterDropdownVariants = {
+    open: {
+      opacity: 1,
+      visibility: 'visible',
+      height: 'auto',
+    },
+    closed: {
+      opacity: 0,
+      visibility: 'hidden',
+      height: 0,
+    },
+  };
+
+  // console.log('paramsX', [...params]);
+  // console.log('par', params.get('filter.price.min'));
 
   function filterMarkup(filter, option, viewport) {
     switch (filter.type) {
       case 'PRICE_RANGE':
-        const priceFilter = params.get(`${FILTER_URL_PREFIX}price`);
-        const price = priceFilter ? JSON.parse(priceFilter) : undefined;
-        const min = isNaN(Number(price?.min)) ? undefined : Number(price?.min);
-        const max = isNaN(Number(price?.max)) ? undefined : Number(price?.max);
+        const priceFilterMin = params.get(`${FILTER_URL_PREFIX}price.min`);
+        const priceFilterMax = params.get(`${FILTER_URL_PREFIX}price.max`);
+        const priceMin = priceFilterMin
+          ? isNaN(Number(priceFilterMin))
+            ? undefined
+            : JSON.parse(priceFilterMin)
+          : undefined;
+        const priceMax = priceFilterMax
+          ? isNaN(Number(priceFilterMax))
+            ? undefined
+            : JSON.parse(priceFilterMax)
+          : undefined;
+        const min = isNaN(Number(priceMin)) ? undefined : Number(priceMin);
+        // const max = isNaN(Number(priceMax)) ? undefined : Number(priceMax);
 
         return (
           <PriceRangeFilter
             min={min}
-            max={max}
+            max={priceMax}
             option={option}
             viewport={viewport}
           />
@@ -169,16 +194,16 @@ function FiltersList({filters, viewport}) {
 
       default:
         const optionInput = JSON.parse(option.input);
-        const filterName =
-          Object.keys(optionInput)[0] === 'variantOption'
-            ? 'filter.' + optionInput.variantOption.name
-            : 'filter.' + Object.keys(optionInput)[0];
-        const filterValue =
-          Object.keys(optionInput)[0] === 'variantOption'
-            ? optionInput.variantOption.value
-            : optionInput.available === true
-            ? '1'
-            : '0';
+        // const filterName =
+        //   Object.keys(optionInput)[0] === 'variantOption'
+        //     ? 'filter.' + optionInput.variantOption.name
+        //     : 'filter.' + Object.keys(optionInput)[0];
+        // const filterValue =
+        //   Object.keys(optionInput)[0] === 'variantOption'
+        //     ? optionInput.variantOption.value
+        //     : optionInput.available === true
+        //     ? '1'
+        //     : '0';
         // console.log(
         //   'optionInput',
         //   'filter.' +
@@ -186,13 +211,21 @@ function FiltersList({filters, viewport}) {
         //     '=' +
         //     JSON.stringify(Object.values(optionInput)[0]),
         // );
-        // const filterName = 'filter.' + Object.keys(optionInput)[0];
-        // const filterValue = JSON.stringify(Object.values(optionInput)[0]);
+        const filterName = 'filter.' + Object.keys(optionInput)[0];
+        const filterValue = JSON.stringify(Object.values(optionInput)[0]);
+
+        const shouldBeChecked = [...params].find((element) => {
+          return (
+            filterName + '=' + filterValue === element[0] + '=' + element[1]
+          );
+        });
 
         return (
           <div className="flex items-center group lg:cursor-pointer">
             <input
               // defaultChecked={option.checked}
+              // checked={shouldBeChecked}
+              defaultChecked={shouldBeChecked}
               id={`${viewport}-${option.id}`}
               name={filterName}
               value={filterValue}
@@ -246,33 +279,38 @@ function FiltersList({filters, viewport}) {
               </h3>
 
               <AnimatePresence initial={false}>
-                {open && (
-                  <DisclosurePanel static as={Fragment}>
-                    <motion.div
+                {/* {open && ( */}
+                <DisclosurePanel static as={Fragment}>
+                  {/* <motion.div
                       initial={{opacity: 0, height: 0}}
                       animate={{opacity: 1, height: 'auto'}}
                       exit={{opacity: 0, height: 0}}
                       transition={{duration: 0.2, ease: easeOut}}
                       className=" origin-top overflow-hidden"
+                    > */}
+                  <motion.div
+                    variants={filterDropdownVariants}
+                    animate={open ? 'open' : 'closed'}
+                    className=" origin-top overflow-hidden"
+                  >
+                    <div
+                      key={filter.id}
+                      className="mt-6 space-y-4 max-h-[30svh] overflow-auto p-1"
                     >
-                      <div
-                        key={filter.id}
-                        className="mt-6 space-y-4 max-h-[30svh] overflow-auto p-1"
-                      >
-                        {filter.values?.map((option, optionIdx) => (
-                          <div
-                            key={option.id}
-                            className={`${
-                              filter.type === 'PRICE_RANGE' ? '' : 'flex'
-                            }`}
-                          >
-                            {filterMarkup(filter, option, viewport)}
-                          </div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  </DisclosurePanel>
-                )}
+                      {filter.values?.map((option, optionIdx) => (
+                        <div
+                          key={option.id}
+                          className={`${
+                            filter.type === 'PRICE_RANGE' ? '' : 'flex'
+                          }`}
+                        >
+                          {filterMarkup(filter, option, viewport)}
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                </DisclosurePanel>
+                {/* )} */}
               </AnimatePresence>
             </>
           )}
@@ -302,12 +340,15 @@ function PriceRangeFilter({min, max, option, viewport}) {
           }`}
           className="w-full max-w-44 py-2 px-3 rounded text-sm border-gray-300 text-gray-500 focus:border-main-purple transition duration-200 outline-none"
           type="number"
-          min={optionInput.price.min}
-          max={optionInput.price.max}
-          // value={minPrice ?? ''}
-          placeholder={'$' + optionInput.price.min}
+          // min={optionInput.price.min}
+          // max={optionInput.price.max}
+          // value={min ?? ''}
+          defaultValue={min ?? ''}
+          // placeholder={'$' + optionInput.price.min}
+          placeholder="$"
           onChange={(event) => {
             const form = event.target.form;
+
             submit(form, {
               debounceTimeout: 500,
               preventScrollReset: true,
@@ -329,10 +370,12 @@ function PriceRangeFilter({min, max, option, viewport}) {
           }`}
           className="w-full max-w-44 py-2 px-3 rounded text-sm border-gray-300 text-gray-500 focus:border-main-purple transition duration-200 outline-none"
           type="number"
-          min={optionInput.price.min}
-          max={optionInput.price.max}
-          // value={maxPrice ?? ''}
-          placeholder={'$' + optionInput.price.max}
+          // min={optionInput.price.min}
+          // max={optionInput.price.max}
+          // value={max ?? ''}
+          defaultValue={max ?? ''}
+          // placeholder={'$' + optionInput.price.max}
+          placeholder="$"
           onChange={(event) => {
             const form = event.target.form;
             submit(form, {

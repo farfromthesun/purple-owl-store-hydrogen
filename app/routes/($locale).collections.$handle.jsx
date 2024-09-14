@@ -43,6 +43,7 @@ async function loadCriticalData({context, params, request}) {
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 9,
   });
+  const locale = context.storefront.i18n;
 
   if (!handle) {
     throw redirect('/');
@@ -50,24 +51,55 @@ async function loadCriticalData({context, params, request}) {
 
   const searchParams = new URL(request.url).searchParams;
 
-  // const filters = [...searchParams.entries()].reduce(
-  //   (filters, [key, value]) => {
-  //     if (key.startsWith(FILTER_URL_PREFIX)) {
-  //       const filterKey = key.substring(FILTER_URL_PREFIX.length);
-  //       filters.push({
-  //         [filterKey]: JSON.parse(value),
-  //       });
-  //     }
-  //     return filters;
-  //   },
-  //   [],
-  // );
+  const filters = [...searchParams.entries()].reduce(
+    (filters, [key, value]) => {
+      if (key.startsWith(FILTER_URL_PREFIX)) {
+        if (key.includes('.price')) {
+          // if (value) {
+          if (value && !isNaN(Number(value))) {
+            const filterKey = key.split('.')[2];
+            if (filters.some((filter) => 'price' in filter)) {
+              filters = filters.map((filter) => {
+                if (filter.price) {
+                  return {
+                    price: {
+                      ...filter.price,
+                      [filterKey]: JSON.parse(value),
+                    },
+                  };
+                } else {
+                  return filter;
+                }
+              });
+            } else {
+              filters.push({
+                price: {
+                  [filterKey]: JSON.parse(value),
+                },
+              });
+            }
+          }
+        } else {
+          const filterKey = key.substring(FILTER_URL_PREFIX.length);
+          filters.push({
+            [filterKey]: JSON.parse(value),
+          });
+        }
+      }
+      return filters;
+    },
+    [],
+  );
 
   // console.log('filters', JSON.stringify(filters));
+  // console.log(
+  //   '[...searchParams.entries()]',
+  //   JSON.stringify([...searchParams.entries()]),
+  // );
 
   const [{collection}] = await Promise.all([
     storefront.query(COLLECTION_QUERY, {
-      variables: {handle, ...paginationVariables},
+      variables: {handle, filters, ...paginationVariables},
       // Add other queries here, so that they are loaded in parallel
     }),
   ]);
@@ -77,6 +109,68 @@ async function loadCriticalData({context, params, request}) {
       status: 404,
     });
   }
+
+  const allFilterValues = collection.products.filters.flatMap(
+    (filter) => filter.values,
+  );
+
+  const appliedFilters = filters
+    .map((filter) => {
+      const foundValue = allFilterValues.find((value) => {
+        const valueInput = JSON.parse(value.input);
+        // special case for price, the user can enter something freeform (still a number, though)
+        // that may not make sense for the locale/currency.
+        // Basically just check if the price filter is applied at all.
+        if (valueInput.price && filter.price) {
+          return true;
+        }
+        return (
+          // This comparison should be okay as long as we're not manipulating the input we
+          // get from the API before using it as a URL param.
+          JSON.stringify(valueInput) === JSON.stringify(filter)
+        );
+      });
+      if (!foundValue) {
+        // eslint-disable-next-line no-console
+        console.error('Could not find filter value for filter', filter);
+        return null;
+      }
+
+      if (foundValue.id === 'filter.v.price') {
+        // Special case for price, we want to show the min and max values as the label.
+        const input = JSON.parse(foundValue.input);
+        const min = input.price?.min ?? 0;
+        const max = input.price?.max ? input.price.max : '';
+        const label = min && max ? `${min} - ${max}` : 'Price';
+
+        return {
+          filter,
+          label,
+        };
+      }
+      return {
+        filter,
+        label: foundValue.label,
+      };
+    })
+    .filter((filter) => filter !== null);
+
+  console.log('appliedFilters', JSON.stringify(appliedFilters));
+
+  // const fltrzz = [...searchParams.entries()].reduce((filters, [key, value]) => {
+  //   if (key.startsWith(FILTER_URL_PREFIX)) {
+  //     const filterKey = key.substring(FILTER_URL_PREFIX.length);
+  //     filters.push({
+  //       filter: {
+  //         [filterKey]: value ? JSON.parse(value) : '',
+  //       },
+  //       label: 'LABELLL',
+  //     });
+  //   }
+  //   return filters;
+  // }, []);
+
+  // console.log('fltrzz', JSON.stringify(fltrzz));
 
   return {
     collection,
