@@ -18,8 +18,8 @@ import {
   MinusIcon,
   PlusIcon,
 } from '@heroicons/react/20/solid';
-import {AnimatePresence, easeOut, motion} from 'framer-motion';
-import {Form, useSearchParams} from '@remix-run/react';
+import {AnimatePresence, motion} from 'framer-motion';
+import {Form, Link, useSearchParams} from '@remix-run/react';
 import {useDebounceSubmit} from 'remix-utils/use-debounce-submit';
 
 const sortOptions = [
@@ -35,10 +35,11 @@ function classNames(...classes) {
 }
 
 export const FILTER_URL_PREFIX = 'filter.';
-const PRICE_RANGE_FILTER_DEBOUNCE = 500;
+const FILTER_DEBOUNCE = 500;
 
-export function CollectionSortFilters({filters, children}) {
+export function CollectionSortFilters({filters, appliedFilters, children}) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [params] = useSearchParams();
 
   return (
     <div className="bg-white">
@@ -78,10 +79,55 @@ export function CollectionSortFilters({filters, children}) {
 
       {/* Desktop filters & sort */}
       <div className="mx-auto max-w-1400 px-4 sm:px-6 lg:px-8">
-        <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
-          <span className="text-sm tracking-tight text-gray-900">
-            Active filters : 0
-          </span>
+        <div
+          className={`flex items-baseline border-b border-gray-200 pb-6 pt-24 ${
+            appliedFilters.length > 0 ? 'justify-between' : 'justify-end'
+          }`}
+        >
+          {appliedFilters.length > 0 && (
+            <div className="flex items-center">
+              <span className="text-sm tracking-tight text-gray-900 mr-2">
+                Applied filters:
+              </span>
+              <div>
+                {appliedFilters.map((appliedFilter) => {
+                  const baseKey = Object.keys(appliedFilter)[0];
+                  const filterKey = Object.keys(appliedFilter[baseKey])[0];
+                  const url = [...params]
+                    .filter((param) => {
+                      if (filterKey === 'price') {
+                        return !param[0].includes('price');
+                      } else {
+                        return (
+                          param[0] + '=' + param[1] !==
+                          baseKey +
+                            '.' +
+                            filterKey +
+                            '=' +
+                            JSON.stringify(appliedFilter[baseKey][filterKey])
+                        );
+                      }
+                    })
+                    .reduce((accumulator, param) => {
+                      const before = accumulator === '' ? '' : '&';
+                      return (accumulator +=
+                        before + param[0] + '=' + param[1]);
+                    }, '');
+
+                  return (
+                    <Link
+                      key={appliedFilter.label}
+                      to={'?' + url}
+                      className="badge"
+                      preventScrollReset
+                    >
+                      {appliedFilter.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <div className="flex items-center">
             <Menu as="div" className="relative inline-block text-left">
               <div>
@@ -162,9 +208,6 @@ function FiltersList({filters, viewport}) {
     },
   };
 
-  // console.log('paramsX', [...params]);
-  // console.log('par', params.get('filter.price.min'));
-
   function filterMarkup(filter, option, viewport) {
     switch (filter.type) {
       case 'PRICE_RANGE':
@@ -180,12 +223,12 @@ function FiltersList({filters, viewport}) {
             ? undefined
             : JSON.parse(priceFilterMax)
           : undefined;
-        const min = isNaN(Number(priceMin)) ? undefined : Number(priceMin);
+        // const min = isNaN(Number(priceMin)) ? undefined : Number(priceMin);
         // const max = isNaN(Number(priceMax)) ? undefined : Number(priceMax);
 
         return (
           <PriceRangeFilter
-            min={min}
+            min={priceMin}
             max={priceMax}
             option={option}
             viewport={viewport}
@@ -194,23 +237,6 @@ function FiltersList({filters, viewport}) {
 
       default:
         const optionInput = JSON.parse(option.input);
-        // const filterName =
-        //   Object.keys(optionInput)[0] === 'variantOption'
-        //     ? 'filter.' + optionInput.variantOption.name
-        //     : 'filter.' + Object.keys(optionInput)[0];
-        // const filterValue =
-        //   Object.keys(optionInput)[0] === 'variantOption'
-        //     ? optionInput.variantOption.value
-        //     : optionInput.available === true
-        //     ? '1'
-        //     : '0';
-        // console.log(
-        //   'optionInput',
-        //   'filter.' +
-        //     Object.keys(optionInput)[0] +
-        //     '=' +
-        //     JSON.stringify(Object.values(optionInput)[0]),
-        // );
         const filterName = 'filter.' + Object.keys(optionInput)[0];
         const filterValue = JSON.stringify(Object.values(optionInput)[0]);
 
@@ -223,8 +249,8 @@ function FiltersList({filters, viewport}) {
         return (
           <div className="flex items-center group lg:cursor-pointer">
             <input
-              // defaultChecked={option.checked}
-              // checked={shouldBeChecked}
+              key={shouldBeChecked}
+              data-shouldbechecked={shouldBeChecked ? true : false}
               defaultChecked={shouldBeChecked}
               id={`${viewport}-${option.id}`}
               name={filterName}
@@ -234,7 +260,7 @@ function FiltersList({filters, viewport}) {
               onChange={(event) => {
                 const form = event.target.form;
                 submit(form, {
-                  debounceTimeout: 1000,
+                  debounceTimeout: FILTER_DEBOUNCE,
                   preventScrollReset: true,
                 });
               }}
@@ -340,17 +366,14 @@ function PriceRangeFilter({min, max, option, viewport}) {
           }`}
           className="w-full max-w-44 py-2 px-3 rounded text-sm border-gray-300 text-gray-500 focus:border-main-purple transition duration-200 outline-none"
           type="number"
-          // min={optionInput.price.min}
-          // max={optionInput.price.max}
-          // value={min ?? ''}
           defaultValue={min ?? ''}
-          // placeholder={'$' + optionInput.price.min}
+          key={min}
           placeholder="$"
           onChange={(event) => {
             const form = event.target.form;
 
             submit(form, {
-              debounceTimeout: 500,
+              debounceTimeout: FILTER_DEBOUNCE,
               preventScrollReset: true,
             });
           }}
@@ -370,16 +393,13 @@ function PriceRangeFilter({min, max, option, viewport}) {
           }`}
           className="w-full max-w-44 py-2 px-3 rounded text-sm border-gray-300 text-gray-500 focus:border-main-purple transition duration-200 outline-none"
           type="number"
-          // min={optionInput.price.min}
-          // max={optionInput.price.max}
-          // value={max ?? ''}
+          key={max}
           defaultValue={max ?? ''}
-          // placeholder={'$' + optionInput.price.max}
           placeholder="$"
           onChange={(event) => {
             const form = event.target.form;
             submit(form, {
-              debounceTimeout: 500,
+              debounceTimeout: FILTER_DEBOUNCE,
               preventScrollReset: true,
             });
           }}

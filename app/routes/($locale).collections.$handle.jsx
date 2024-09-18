@@ -9,6 +9,7 @@ import {
   FILTER_URL_PREFIX,
 } from '~/components/CollectionSortFilters';
 import {ProductTile} from '~/components/ProductTile';
+import {parseAsCurrency} from '~/lib/utils';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -91,12 +92,6 @@ async function loadCriticalData({context, params, request}) {
     [],
   );
 
-  // console.log('filters', JSON.stringify(filters));
-  // console.log(
-  //   '[...searchParams.entries()]',
-  //   JSON.stringify([...searchParams.entries()]),
-  // );
-
   const [{collection}] = await Promise.all([
     storefront.query(COLLECTION_QUERY, {
       variables: {handle, filters, ...paginationVariables},
@@ -139,8 +134,12 @@ async function loadCriticalData({context, params, request}) {
       if (foundValue.id === 'filter.v.price') {
         // Special case for price, we want to show the min and max values as the label.
         const input = JSON.parse(foundValue.input);
-        const min = input.price?.min ?? 0;
-        const max = input.price?.max ? input.price.max : '';
+        // const min = input.price?.min ?? 0;
+        // const max = input.price?.max ? input.price.max : '';
+        const min = parseAsCurrency(input.price?.min ?? 0, locale);
+        const max = input.price?.max
+          ? parseAsCurrency(input.price.max, locale)
+          : '';
         const label = min && max ? `${min} - ${max}` : 'Price';
 
         return {
@@ -155,25 +154,9 @@ async function loadCriticalData({context, params, request}) {
     })
     .filter((filter) => filter !== null);
 
-  console.log('appliedFilters', JSON.stringify(appliedFilters));
-
-  // const fltrzz = [...searchParams.entries()].reduce((filters, [key, value]) => {
-  //   if (key.startsWith(FILTER_URL_PREFIX)) {
-  //     const filterKey = key.substring(FILTER_URL_PREFIX.length);
-  //     filters.push({
-  //       filter: {
-  //         [filterKey]: value ? JSON.parse(value) : '',
-  //       },
-  //       label: 'LABELLL',
-  //     });
-  //   }
-  //   return filters;
-  // }, []);
-
-  // console.log('fltrzz', JSON.stringify(fltrzz));
-
   return {
     collection,
+    appliedFilters,
   };
 }
 
@@ -189,19 +172,15 @@ function loadDeferredData({context}) {
 
 export default function Collection() {
   /** @type {LoaderReturnData} */
-  const {collection} = useLoaderData();
+  const {collection, appliedFilters} = useLoaderData();
 
   return (
     <div className="collection">
       <CollectionHero collection={collection} />
-      {/* {collection.products.filters.map((filter) => (
-        <>
-          <p key={filter.id}>{JSON.stringify(filter)}</p>
-          <br />
-          <br />
-        </>
-      ))} */}
-      <CollectionSortFilters filters={collection.products.filters}>
+      <CollectionSortFilters
+        filters={collection.products.filters}
+        appliedFilters={appliedFilters}
+      >
         <PaginatedResourceSection
           connection={collection.products}
           resourcesClassName="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 xl:gap-x-8 mt-6"

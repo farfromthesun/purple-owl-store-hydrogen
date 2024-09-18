@@ -117,4 +117,23 @@
     @apply focus-visible:outline-offset-2;
     @apply focus-visible:outline-main-purple;
   }
+  .badge {
+    @apply inline-flex;
+    @apply items-center;
+    @apply rounded-md;
+    @apply bg-main-purple;
+    @apply px-2;
+    @apply py-1;
+    @apply text-xs;
+    @apply font-medium;
+    @apply text-white;
+    /* @apply ring-1;
+    @apply ring-inset;
+    @apply ring-gray-500/10; */
+    @apply mr-2;
+    @apply last:mr-0;
+    @apply hover:bg-main-purple-dark;
+    @apply transition;
+    @apply duration-300;
+  }
 }
