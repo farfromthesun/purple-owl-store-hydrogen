@@ -130,8 +130,6 @@
     /* @apply ring-1;
     @apply ring-inset;
     @apply ring-gray-500/10; */
-    @apply mr-2;
-    @apply last:mr-0;
     @apply hover:bg-main-purple-dark;
     @apply transition;
     @apply duration-300;

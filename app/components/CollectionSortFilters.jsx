@@ -79,17 +79,26 @@ export function CollectionSortFilters({filters, appliedFilters, children}) {
 
       {/* Desktop filters & sort */}
       <div className="mx-auto max-w-1400 px-4 sm:px-6 lg:px-8">
-        <div
+        {/* <div
           className={`flex items-baseline border-b border-gray-200 pb-6 pt-24 ${
             appliedFilters.length > 0 ? 'justify-between' : 'justify-end'
           }`}
+        > */}
+        <div
+          className={`grid grid-rows-[auto_auto] gap-y-3 lg:grid-rows-none lg:gap-y-0 items-baseline border-b border-gray-200 pb-6 pt-24 ${
+            appliedFilters.length > 0
+              ? 'grid-cols-2 lg:grid-cols-[auto_1fr_auto]'
+              : 'grid-cols-1 lg:grid-cols-1'
+          }`}
         >
           {appliedFilters.length > 0 && (
-            <div className="flex items-center">
-              <span className="text-sm tracking-tight text-gray-900 mr-2">
-                Applied filters:
-              </span>
-              <div>
+            <>
+              <div className="">
+                <span className="text-sm tracking-tight text-gray-900 block lg:mr-2">
+                  Applied filters:
+                </span>
+              </div>
+              <div className="row-start-2 col-start-1 col-span-2 flex flex-wrap gap-2 lg:row-start-1 lg:col-start-2 lg:col-span-1">
                 {appliedFilters.map((appliedFilter) => {
                   const baseKey = Object.keys(appliedFilter)[0];
                   const filterKey = Object.keys(appliedFilter[baseKey])[0];
@@ -118,20 +127,21 @@ export function CollectionSortFilters({filters, appliedFilters, children}) {
                     <Link
                       key={appliedFilter.label}
                       to={'?' + url}
-                      className="badge"
+                      className="badge gap-1"
                       preventScrollReset
                     >
                       {appliedFilter.label}
+                      <XMarkIcon aria-hidden="true" className="size-4" />
                     </Link>
                   );
                 })}
               </div>
-            </div>
+            </>
           )}
-          <div className="flex items-center">
+          <div className="flex items-center justify-end">
             <Menu as="div" className="relative inline-block text-left">
               <div>
-                <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 lg:hover:text-main-purple cursor-pointer transition duration-300">
+                <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 lg:hover:text-main-purple cursor-pointer transition duration-300 py-1">
                   Sort
                   <ChevronDownIcon
                     aria-hidden="true"

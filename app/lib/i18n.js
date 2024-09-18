@@ -23,8 +23,8 @@ export function getLocaleFromRequest(request) {
   const firstPathPart =
     '/' + url.pathname.substring(1).split('/')[0].toLowerCase();
 
-  console.log('firstPathPart', firstPathPart);
-  console.log('countries[firstPathPart]', countries[firstPathPart]);
+  // console.log('firstPathPart', firstPathPart);
+  // console.log('countries[firstPathPart]', countries[firstPathPart]);
 
   return countries[firstPathPart]
     ? {

@@ -4,11 +4,11 @@
 export async function loader({params, context}) {
   const {language, country} = context.storefront.i18n;
 
-  console.log('params.locale', params.locale);
-  console.log(
-    '`${language}-${country}`.toLowerCase()',
-    `${language}-${country}`.toLowerCase(),
-  );
+  // console.log('params.locale', params.locale);
+  // console.log(
+  //   '`${language}-${country}`.toLowerCase()',
+  //   `${language}-${country}`.toLowerCase(),
+  // );
 
   if (
     params.locale &&
