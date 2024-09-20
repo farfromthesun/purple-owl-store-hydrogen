@@ -15,7 +15,7 @@ export function ProductTile({product, to, withFilters, imgLoading}) {
       key={product.id}
       to={to || `/products/${product.handle}`}
       prefetch="intent"
-      className="group"
+      className="group animate-fade-in"
     >
       {product.featuredImage && (
         <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">

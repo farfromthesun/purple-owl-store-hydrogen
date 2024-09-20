@@ -10,6 +10,7 @@ import {
 } from '~/components/CollectionSortFilters';
 import {ProductTile} from '~/components/ProductTile';
 import {parseAsCurrency} from '~/lib/utils';
+import {PaginatedLoadMoreButton} from '~/components/PaginatedLoadMoreButton';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -51,6 +52,8 @@ async function loadCriticalData({context, params, request}) {
   }
 
   const searchParams = new URL(request.url).searchParams;
+
+  const {sortKey, reverse} = getSortValuesFromParam(searchParams.get('sort'));
 
   const filters = [...searchParams.entries()].reduce(
     (filters, [key, value]) => {
@@ -94,7 +97,7 @@ async function loadCriticalData({context, params, request}) {
 
   const [{collection}] = await Promise.all([
     storefront.query(COLLECTION_QUERY, {
-      variables: {handle, filters, ...paginationVariables},
+      variables: {handle, filters, sortKey, reverse, ...paginationVariables},
       // Add other queries here, so that they are loaded in parallel
     }),
   ]);
@@ -183,7 +186,8 @@ export default function Collection() {
       >
         <PaginatedResourceSection
           connection={collection.products}
-          resourcesClassName="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 xl:gap-x-8 mt-6"
+          resourcesClassName="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 xl:gap-x-8"
+          LoadMorebutton={PaginatedLoadMoreButton}
         >
           {({node: product, index}) => (
             <ProductItem
@@ -268,6 +272,8 @@ const COLLECTION_QUERY = `#graphql
     $country: CountryCode
     $language: LanguageCode
     $filters: [ProductFilter!]
+    $sortKey: ProductCollectionSortKeys!
+    $reverse: Boolean
     $first: Int
     $last: Int
     $startCursor: String
@@ -288,6 +294,8 @@ const COLLECTION_QUERY = `#graphql
         before: $startCursor,
         after: $endCursor,
         filters: $filters,
+        sortKey: $sortKey,
+        reverse: $reverse
       ) {
         filters {
           id
@@ -313,6 +321,41 @@ const COLLECTION_QUERY = `#graphql
     }
   }
 `;
+
+function getSortValuesFromParam(sortParam) {
+  switch (sortParam) {
+    case 'price-high-low':
+      return {
+        sortKey: 'PRICE',
+        reverse: true,
+      };
+    case 'price-low-high':
+      return {
+        sortKey: 'PRICE',
+        reverse: false,
+      };
+    case 'best-selling':
+      return {
+        sortKey: 'BEST_SELLING',
+        reverse: false,
+      };
+    case 'newest':
+      return {
+        sortKey: 'CREATED',
+        reverse: true,
+      };
+    case 'featured':
+      return {
+        sortKey: 'MANUAL',
+        reverse: false,
+      };
+    default:
+      return {
+        sortKey: 'RELEVANCE',
+        reverse: false,
+      };
+  }
+}
 
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @template T @typedef {import('@remix-run/react').MetaFunction<T>} MetaFunction */

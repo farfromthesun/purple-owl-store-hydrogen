@@ -16,6 +16,18 @@
   --font-family-base: Inter var, ui-sans-serif, system-ui, sans-serif;
   --max-width-1400: 1400px;
   --background-image-check-icon: url('~/assets/CheckIcon.svg');
+  --animate-fade-in: fadeInAnimation ease 600ms forwards;
+}
+
+@keyframes fadeInAnimation {
+  0% {
+    opacity: 0;
+    visibility: 'hidden';
+  }
+  100% {
+    opacity: 1;
+    visibility: 'visible';
+  }
 }
 
 @layer base {
@@ -135,3 +147,10 @@
     @apply duration-300;
   }
 }
+
+/* @layer utilities {
+  .fadeIn {
+    opacity: 0;
+    animation: fadeInAnimation ease 300ms forwards;
+  }
+} */

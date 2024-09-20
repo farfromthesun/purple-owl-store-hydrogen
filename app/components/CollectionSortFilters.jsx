@@ -19,16 +19,8 @@ import {
   PlusIcon,
 } from '@heroicons/react/20/solid';
 import {AnimatePresence, motion} from 'framer-motion';
-import {Form, Link, useSearchParams} from '@remix-run/react';
+import {Form, Link, useLocation, useSearchParams} from '@remix-run/react';
 import {useDebounceSubmit} from 'remix-utils/use-debounce-submit';
-
-const sortOptions = [
-  {name: 'Most Popular', href: '#', current: true},
-  {name: 'Best Rating', href: '#', current: false},
-  {name: 'Newest', href: '#', current: false},
-  {name: 'Price: Low to High', href: '#', current: false},
-  {name: 'Price: High to Low', href: '#', current: false},
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -139,39 +131,7 @@ export function CollectionSortFilters({filters, appliedFilters, children}) {
             </>
           )}
           <div className="flex items-center justify-end">
-            <Menu as="div" className="relative inline-block text-left">
-              <div>
-                <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 lg:hover:text-main-purple cursor-pointer transition duration-300 py-1">
-                  Sort
-                  <ChevronDownIcon
-                    aria-hidden="true"
-                    className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-main-purple transition duration-300"
-                  />
-                </MenuButton>
-              </div>
-              <MenuItems
-                transition
-                className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-gray-200 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-              >
-                <div className="py-1">
-                  {sortOptions.map((option) => (
-                    <MenuItem key={option.name}>
-                      <a
-                        href={option.href}
-                        className={classNames(
-                          option.current
-                            ? 'font-medium text-main-purple'
-                            : 'text-gray-500',
-                          'block px-4 py-2 text-sm data-[focus]:bg-main-purple-light data-[focus]:text-white transition duration-100',
-                        )}
-                      >
-                        {option.name}
-                      </a>
-                    </MenuItem>
-                  ))}
-                </div>
-              </MenuItems>
-            </Menu>
+            <SortMenu />
             <button
               type="button"
               onClick={() => setMobileFiltersOpen(true)}
@@ -288,11 +248,17 @@ function FiltersList({filters, viewport}) {
 
   return (
     <Form preventScrollReset>
+      <input
+        type="hidden"
+        name="sort"
+        id="sort-value-from-params"
+        defaultValue={params.get('sort')}
+      />
       {filters.map((filter) => (
         <Disclosure
           key={filter.id}
           as="div"
-          className="border-b border-gray-200 px-4 lg:px-0 py-6"
+          className="border-b border-gray-200 px-4 lg:px-0 py-6 lg:first:pt-1"
         >
           {({open}) => (
             <>
@@ -416,5 +382,76 @@ function PriceRangeFilter({min, max, option, viewport}) {
         />
       </div>
     </>
+  );
+}
+
+function getSortLink(sort, params, location) {
+  params.set('sort', sort);
+  return `${location.pathname}?${params.toString()}`;
+}
+
+function SortMenu() {
+  const items = [
+    {label: 'Featured', key: 'featured', current: true},
+    {
+      label: 'Price: Low - High',
+      key: 'price-low-high',
+      current: false,
+    },
+    {
+      label: 'Price: High - Low',
+      key: 'price-high-low',
+      current: false,
+    },
+    {
+      label: 'Best Selling',
+      key: 'best-selling',
+      current: false,
+    },
+    {
+      label: 'Newest',
+      key: 'newest',
+      current: false,
+    },
+  ];
+  const [params] = useSearchParams();
+  const location = useLocation();
+  const activeItem = items.find((item) => item.key === params.get('sort'));
+
+  return (
+    <Menu as="div" className="relative inline-block text-left">
+      <div>
+        <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 lg:hover:text-main-purple cursor-pointer transition duration-300 py-1">
+          Sort
+          <ChevronDownIcon
+            aria-hidden="true"
+            className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-main-purple transition duration-300"
+          />
+        </MenuButton>
+      </div>
+      <MenuItems
+        transition
+        className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-gray-200 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+      >
+        <div className="py-1">
+          {items.map((item) => (
+            <MenuItem key={item.label}>
+              <Link
+                to={getSortLink(item.key, params, location)}
+                preventScrollReset
+                className={classNames(
+                  item.current
+                    ? 'font-medium text-main-purple'
+                    : 'text-gray-500',
+                  'block px-4 py-2 text-sm data-[focus]:bg-main-purple data-[focus]:text-white transition duration-100',
+                )}
+              >
+                {item.label}
+              </Link>
+            </MenuItem>
+          ))}
+        </div>
+      </MenuItems>
+    </Menu>
   );
 }
