@@ -20,39 +20,49 @@ export function PaginatedResourceSection({
         );
 
         return (
-          <div>
-            <PreviousLink>
-              {LoadMorebutton ? (
-                <LoadMorebutton
-                  isLoading={isLoading}
-                  direction="prev"
-                  text="↑ Load previous"
-                />
-              ) : isLoading ? (
-                'Loading...'
-              ) : (
-                <span>↑ Load previous</span>
-              )}
-            </PreviousLink>
-            {resourcesClassName ? (
-              <div className={resourcesClassName}>{resoucesMarkup}</div>
+          <>
+            {nodes.length > 0 ? (
+              <div>
+                <PreviousLink>
+                  {LoadMorebutton ? (
+                    <LoadMorebutton
+                      isLoading={isLoading}
+                      direction="prev"
+                      text="↑ Load previous"
+                    />
+                  ) : isLoading ? (
+                    'Loading...'
+                  ) : (
+                    <span>↑ Load previous</span>
+                  )}
+                </PreviousLink>
+                {resourcesClassName ? (
+                  <div className={resourcesClassName}>{resoucesMarkup}</div>
+                ) : (
+                  resoucesMarkup
+                )}
+                <NextLink>
+                  {LoadMorebutton ? (
+                    <LoadMorebutton
+                      isLoading={isLoading}
+                      direction="next"
+                      text="Load more ↓"
+                    />
+                  ) : isLoading ? (
+                    'Loading...'
+                  ) : (
+                    <span>Load more ↓</span>
+                  )}
+                </NextLink>
+              </div>
             ) : (
-              resoucesMarkup
+              <div className="flex justify-center mt-5">
+                <span className="text-main-purple-dark font-medium">
+                  No products found.
+                </span>
+              </div>
             )}
-            <NextLink>
-              {LoadMorebutton ? (
-                <LoadMorebutton
-                  isLoading={isLoading}
-                  direction="next"
-                  text="Load more ↓"
-                />
-              ) : isLoading ? (
-                'Loading...'
-              ) : (
-                <span>Load more ↓</span>
-              )}
-            </NextLink>
-          </div>
+          </>
         );
       }}
     </Pagination>

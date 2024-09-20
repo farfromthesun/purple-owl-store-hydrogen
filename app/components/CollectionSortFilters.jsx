@@ -344,6 +344,7 @@ function PriceRangeFilter({min, max, option, viewport}) {
           type="number"
           defaultValue={min ?? ''}
           key={min}
+          min="0"
           placeholder="$"
           onChange={(event) => {
             const form = event.target.form;
@@ -370,6 +371,7 @@ function PriceRangeFilter({min, max, option, viewport}) {
           className="w-full max-w-44 py-2 px-3 rounded text-sm border-gray-300 text-gray-500 focus:border-main-purple transition duration-200 outline-none"
           type="number"
           key={max}
+          min="0"
           defaultValue={max ?? ''}
           placeholder="$"
           onChange={(event) => {
@@ -436,18 +438,22 @@ function SortMenu() {
         <div className="py-1">
           {items.map((item) => (
             <MenuItem key={item.label}>
-              <Link
-                to={getSortLink(item.key, params, location)}
-                preventScrollReset
-                className={classNames(
-                  item.current
-                    ? 'font-medium text-main-purple'
-                    : 'text-gray-500',
-                  'block px-4 py-2 text-sm data-[focus]:bg-main-purple data-[focus]:text-white transition duration-100',
-                )}
-              >
-                {item.label}
-              </Link>
+              {() => (
+                <Link
+                  to={getSortLink(item.key, params, location)}
+                  preventScrollReset
+                  data-active-item-key={activeItem?.key}
+                  data-item-key={item.key}
+                  className={classNames(
+                    activeItem?.key === item.key
+                      ? 'font-bold text-main-purple-super-dark underline'
+                      : 'text-gray-500',
+                    'block px-4 py-2 text-sm data-[focus]:bg-main-purple data-[focus]:text-white transition duration-100',
+                  )}
+                >
+                  {item.label}
+                </Link>
+              )}
             </MenuItem>
           ))}
         </div>

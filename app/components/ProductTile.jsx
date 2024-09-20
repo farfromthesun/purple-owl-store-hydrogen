@@ -35,8 +35,17 @@ export function ProductTile({product, to, withFilters, imgLoading}) {
         <h3 className="mt-4 text-sm text-gray-700">{product.title}</h3>
       )}
 
-      <div className="mt-1 text-lg font-medium text-gray-900">
+      <div className="mt-1 text-lg font-medium text-gray-900 flex">
         <Money data={product.priceRange.minVariantPrice} />
+        {/* {product.priceRange.maxVariantPrice.amount >
+        product.priceRange.minVariantPrice.amount ? (
+          <>
+            <span className="mx-2">-</span>
+            <Money data={product.priceRange.maxVariantPrice} />
+          </>
+        ) : (
+          ''
+        )} */}
       </div>
     </Link>
   );
