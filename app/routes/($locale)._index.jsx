@@ -129,6 +129,10 @@ const FEATURED_PRODUCTS_FRAGMENT = `#graphql
         amount
         currencyCode
       }
+      maxVariantPrice {
+        amount
+        currencyCode
+      }
     }
     featuredImage {
       id

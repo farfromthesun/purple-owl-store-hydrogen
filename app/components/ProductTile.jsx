@@ -37,7 +37,7 @@ export function ProductTile({product, to, withFilters, imgLoading}) {
 
       <div className="mt-1 text-lg font-medium text-gray-900 flex">
         <Money data={product.priceRange.minVariantPrice} />
-        {/* {product.priceRange.maxVariantPrice.amount >
+        {product.priceRange.maxVariantPrice.amount >
         product.priceRange.minVariantPrice.amount ? (
           <>
             <span className="mx-2">-</span>
@@ -45,7 +45,7 @@ export function ProductTile({product, to, withFilters, imgLoading}) {
           </>
         ) : (
           ''
-        )} */}
+        )}
       </div>
     </Link>
   );
