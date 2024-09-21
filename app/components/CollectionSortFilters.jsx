@@ -397,8 +397,15 @@ function getSortLink(sort, params, location) {
       return param;
     }
   });
-  const paramsForLink = new URLSearchParams(paramsMapped.map((param) => param));
-  return `${location.pathname}?${paramsForLink.toString()}`;
+  if (paramsMapped.length > 0) {
+    const paramsForLink = new URLSearchParams(
+      paramsMapped.map((param) => param),
+    );
+    return `${location.pathname}?${paramsForLink.toString()}`;
+  } else {
+    params.set('sort', sort);
+    return `${location.pathname}?${params.toString()}`;
+  }
 }
 
 function SortMenu() {
