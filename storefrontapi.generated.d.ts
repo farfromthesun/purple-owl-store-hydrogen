@@ -319,6 +319,7 @@ export type FeaturedProductItemFragment = Pick<
 > & {
   priceRange: {
     minVariantPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+    maxVariantPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
   };
   featuredImage?: StorefrontAPI.Maybe<
     Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
@@ -337,6 +338,10 @@ export type HomepageFeaturedProductsQuery = {
       Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle'> & {
         priceRange: {
           minVariantPrice: Pick<
+            StorefrontAPI.MoneyV2,
+            'amount' | 'currencyCode'
+          >;
+          maxVariantPrice: Pick<
             StorefrontAPI.MoneyV2,
             'amount' | 'currencyCode'
           >;
@@ -1191,7 +1196,7 @@ interface GeneratedQueryTypes {
     return: SitemapQuery;
     variables: SitemapQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment FeaturedProductItem on Product {\n    id\n    title\n    handle\n    priceRange {\n      minVariantPrice {\n        amount\n        currencyCode\n      }\n    }\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n  }\n\n  query HomepageFeaturedProducts($country: CountryCode, $language: LanguageCode, $query: String!)\n    @inContext(country: $country, language: $language) {\n    products(first: 8, query: $query) {\n      nodes {\n        ...FeaturedProductItem\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment FeaturedProductItem on Product {\n    id\n    title\n    handle\n    priceRange {\n      minVariantPrice {\n        amount\n        currencyCode\n      }\n      maxVariantPrice {\n        amount\n        currencyCode\n      }\n    }\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n  }\n\n  query HomepageFeaturedProducts($country: CountryCode, $language: LanguageCode, $query: String!)\n    @inContext(country: $country, language: $language) {\n    products(first: 8, query: $query) {\n      nodes {\n        ...FeaturedProductItem\n      }\n    }\n  }\n': {
     return: HomepageFeaturedProductsQuery;
     variables: HomepageFeaturedProductsQueryVariables;
   };

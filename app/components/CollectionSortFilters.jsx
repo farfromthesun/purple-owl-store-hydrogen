@@ -440,7 +440,10 @@ function SortMenu() {
     <Menu as="div" className="relative inline-block text-left">
       <div>
         <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 lg:hover:text-main-purple cursor-pointer transition duration-300 py-1">
-          Sort
+          <span>
+            <span className="px-2">Sort by:</span>
+            <span>{(activeItem || items[0]).label}</span>
+          </span>
           <ChevronDownIcon
             aria-hidden="true"
             className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-main-purple transition duration-300"
