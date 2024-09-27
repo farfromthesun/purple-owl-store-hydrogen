@@ -119,7 +119,7 @@ export function CollectionSortFilters({filters, appliedFilters, children}) {
                     <Link
                       key={appliedFilter.label}
                       to={'?' + url}
-                      className="badge gap-1"
+                      className="badge gap-1 hover:bg-main-purple-dark transition duration-300"
                       preventScrollReset
                     >
                       {appliedFilter.label}
@@ -220,13 +220,12 @@ function FiltersList({filters, viewport}) {
           <div className="flex items-center group lg:cursor-pointer">
             <input
               key={shouldBeChecked}
-              data-shouldbechecked={shouldBeChecked ? true : false}
               defaultChecked={shouldBeChecked}
               id={`${viewport}-${option.id}`}
               name={filterName}
               value={filterValue}
               type="checkbox"
-              className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 lg:group-hover:border-main-purple lg:cursor-pointer"
+              className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 lg:group-hover:border-main-purple lg:cursor-pointer outline-main-purple"
               onChange={(event) => {
                 const form = event.target.form;
                 submit(form, {
@@ -267,7 +266,7 @@ function FiltersList({filters, viewport}) {
                   <span className="font-medium text-gray-900 lg:group-hover:text-main-purple lg:transition lg:duration-300">
                     {filter.label}
                   </span>
-                  <span className="ml-6 flex items-center relative justify-end lg:group-hover:text-main-purple lg:transition lg:duration-300">
+                  <span className="ml-6 flex items-center relative justify-end lg:group-hover:text-main-purple">
                     <PlusIcon
                       aria-hidden="true"
                       className="h-5 w-5 group-data-[open]:opacity-0 absolute transition duration-300"

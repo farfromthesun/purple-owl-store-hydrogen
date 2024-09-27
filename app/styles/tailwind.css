@@ -113,14 +113,16 @@
 
 @layer components {
   .button {
+    @apply inline-block;
     @apply rounded-md;
+    @apply border;
+    @apply border-transparent;
     @apply bg-main-purple;
-    @apply px-3.5;
-    @apply py-2.5;
-    @apply text-sm;
-    @apply font-semibold;
+    @apply px-8;
+    @apply py-3;
+    @apply text-center;
+    @apply font-medium;
     @apply text-white;
-    @apply shadow-sm;
     @apply hover:bg-main-purple-dark;
     @apply transition;
     @apply duration-300;
@@ -142,15 +144,5 @@
     /* @apply ring-1;
     @apply ring-inset;
     @apply ring-gray-500/10; */
-    @apply hover:bg-main-purple-dark;
-    @apply transition;
-    @apply duration-300;
   }
 }
-
-/* @layer utilities {
-  .fadeIn {
-    opacity: 0;
-    animation: fadeInAnimation ease 300ms forwards;
-  }
-} */

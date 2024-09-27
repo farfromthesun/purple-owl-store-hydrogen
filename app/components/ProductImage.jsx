@@ -5,7 +5,7 @@ import {Image} from '@shopify/hydrogen';
  *   image: ProductVariantFragment['image'];
  * }}
  */
-export function ProductImage({image}) {
+export function ProductImage({image, aspectRatio}) {
   if (!image) {
     return <div className="product-image" />;
   }
@@ -13,10 +13,11 @@ export function ProductImage({image}) {
     <div className="product-image">
       <Image
         alt={image.altText || 'Product Image'}
-        aspectRatio="1/1"
+        aspectRatio={aspectRatio ? aspectRatio : undefined}
         data={image}
         key={image.id}
         sizes="(min-width: 45em) 50vw, 100vw"
+        className="animate-fade-in"
       />
     </div>
   );
