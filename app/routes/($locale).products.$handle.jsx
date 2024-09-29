@@ -1,4 +1,4 @@
-import {Suspense, useState} from 'react';
+import {Suspense} from 'react';
 import {defer, redirect} from '@shopify/remix-oxygen';
 import {Await, Link, useLoaderData} from '@remix-run/react';
 import {
@@ -10,8 +10,6 @@ import {getVariantUrl} from '~/lib/variants';
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
-import {StarIcon} from '@heroicons/react/20/solid';
-import {Radio, RadioGroup} from '@headlessui/react';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -129,59 +127,6 @@ function redirectToFirstVariant({product, request}) {
   );
 }
 
-const productData = {
-  name: 'Basic Tee 6-Pack',
-  price: '$192',
-  href: '#',
-  breadcrumbs: [
-    {id: 1, name: 'Men', href: '#'},
-    {id: 2, name: 'Clothing', href: '#'},
-  ],
-  images: [
-    {
-      src: 'https://tailwindui.com/img/ecommerce-images/product-page-02-secondary-product-shot.jpg',
-      alt: 'Two each of gray, white, and black shirts laying flat.',
-    },
-    {
-      src: 'https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-01.jpg',
-      alt: 'Model wearing plain black basic tee.',
-    },
-    {
-      src: 'https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-02.jpg',
-      alt: 'Model wearing plain gray basic tee.',
-    },
-    {
-      src: 'https://tailwindui.com/img/ecommerce-images/product-page-02-featured-product-shot.jpg',
-      alt: 'Model wearing plain white basic tee.',
-    },
-  ],
-  colors: [
-    {name: 'White', class: 'bg-white', selectedClass: 'ring-gray-400'},
-    {name: 'Gray', class: 'bg-gray-200', selectedClass: 'ring-gray-400'},
-    {name: 'Black', class: 'bg-gray-900', selectedClass: 'ring-gray-900'},
-  ],
-  sizes: [
-    {name: 'XXS', inStock: false},
-    {name: 'XS', inStock: true},
-    {name: 'S', inStock: true},
-    {name: 'M', inStock: true},
-    {name: 'L', inStock: true},
-    {name: 'XL', inStock: true},
-    {name: '2XL', inStock: true},
-    {name: '3XL', inStock: true},
-  ],
-  description:
-    'The Basic Tee 6-Pack allows you to fully express your vibrant personality with three grayscale options. Feeling adventurous? Put on a heather gray tee. Want to be a trendsetter? Try our exclusive colorway: "Black". Need to add an extra pop of color to your outfit? Our white tee has you covered.',
-  highlights: [
-    'Hand cut and sewn locally',
-    'Dyed with our proprietary colors',
-    'Pre-washed & pre-shrunk',
-    'Ultra-soft 100% cotton',
-  ],
-  details:
-    'The 6-Pack includes two black, two white, and two heather gray Basic Tees. Sign up for our subscription service and be the first to get new, exciting colors, like our upcoming "Charcoal Gray" limited release.',
-};
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
@@ -273,14 +218,6 @@ export default function Product() {
                   )}
                 </Await>
               </Suspense>
-              <form className="mt-10">
-                <button
-                  type="submit"
-                  className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium cursor-pointer text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                  Add to bag
-                </button>
-              </form>
               <div className="space-y-6 mt-10 lg:mt-12">
                 <div
                   className="text-base text-gray-900"
@@ -289,6 +226,7 @@ export default function Product() {
               </div>
             </div>
           </div>
+          <ProductFeatures />
         </div>
         <Analytics.ProductView
           data={{
@@ -306,49 +244,52 @@ export default function Product() {
           }}
         />
       </div>
-      {/* ### */}
-      <div className="product">
-        <ProductImage image={selectedVariant?.image} />
-        <div className="product-main">
-          <h1>{title}</h1>
-          <ProductPrice
-            price={selectedVariant?.price}
-            compareAtPrice={selectedVariant?.compareAtPrice}
-          />
-          <br />
-          <Suspense
-            fallback={
-              <ProductForm
-                product={product}
-                selectedVariant={selectedVariant}
-                variants={[]}
-              />
-            }
-          >
-            <Await
-              errorElement="There was a problem loading product variants"
-              resolve={variants}
-            >
-              {(data) => (
-                <ProductForm
-                  product={product}
-                  selectedVariant={selectedVariant}
-                  variants={data?.product?.variants.nodes || []}
-                />
-              )}
-            </Await>
-          </Suspense>
-          <br />
-          <br />
-          <p>
-            <strong>Description</strong>
-          </p>
-          <br />
-          <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-          <br />
-        </div>
-      </div>
     </>
+  );
+}
+
+function ProductFeatures() {
+  const features = [
+    {name: 'Origin', description: 'Designed by Good Goods, Inc.'},
+    {
+      name: 'Material',
+      description:
+        'Solid walnut base with rare earth magnets and powder coated steel card cover',
+    },
+    {name: 'Dimensions', description: '6.25" x 3.55" x 1.15"'},
+    {name: 'Finish', description: 'Hand sanded and finished with natural oil'},
+    {name: 'Includes', description: 'Wood card tray and 3 refill packs'},
+    {
+      name: 'Considerations',
+      description:
+        'Made from natural materials. Grain and color vary with each item.',
+    },
+  ];
+
+  return (
+    <div className="bg-white">
+      <div className="mx-auto max-w-2xl px-4 pt-4 pb-24 sm:px-6 sm:pt-6 sm:pb-32 lg:max-w-1400 lg:px-8">
+        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          Technical Specifications
+        </h2>
+        <p className="mt-4 text-gray-500">
+          The walnut wood card tray is precision milled to perfectly fit a stack
+          of Focus cards. The powder coated steel divider separates active cards
+          from new ones, or can be used to archive important task lists.
+        </p>
+
+        <dl className="mt-16 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 sm:gap-y-16 lg:gap-x-8 lg:grid-cols-3">
+          {features.map((feature) => (
+            <div key={feature.name} className="border-t border-gray-200 pt-4">
+              <dt className="font-medium text-gray-900">{feature.name}</dt>
+              <dd className="mt-2 text-sm text-gray-500">
+                {feature.description}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
   );
 }
 

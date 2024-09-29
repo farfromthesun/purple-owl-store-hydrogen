@@ -122,6 +122,7 @@
     @apply py-3;
     @apply text-center;
     @apply font-medium;
+    @apply cursor-pointer;
     @apply text-white;
     @apply hover:bg-main-purple-dark;
     @apply transition;

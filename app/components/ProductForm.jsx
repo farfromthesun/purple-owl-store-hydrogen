@@ -164,7 +164,7 @@ function SizeGuide() {
               velit enim veniam magna consequat.
             </p>
             <button
-              className="button px-3 py-2 mt-2 cursor-pointer"
+              className="button px-3 py-2 mt-2"
               onClick={() => setIsOpen(false)}
             >
               Close

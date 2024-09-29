@@ -3,7 +3,8 @@
 ## What's included
 
 - Hydrogen (JavaScript)
-- (Tailwind UI)
-- (Radix UI)
-- (Framer Motion)
-- (Shopify Functions)
+- Tailwind UI
+- Headless UI
+- Tailwind CSS
+- Framer Motion
+- (Shopify Functions - ?)
