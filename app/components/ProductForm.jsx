@@ -6,9 +6,9 @@ import {
   DialogTitle,
 } from '@headlessui/react';
 import {PlusIcon, MinusIcon} from '@heroicons/react/16/solid';
-import {Link} from '@remix-run/react';
+import {Await, Link, useRouteLoaderData} from '@remix-run/react';
 import {VariantSelector} from '@shopify/hydrogen';
-import {useCallback, useState} from 'react';
+import {Suspense, useCallback, useEffect, useState} from 'react';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 
@@ -60,6 +60,7 @@ export function ProductForm({product, selectedVariant, variants}) {
         handleDecrement={variantQuantityDecrement}
         handleIncrement={variantQuantityIncrement}
         // handleChange={variantQuantityChange}
+        selectedVariant={selectedVariant}
       />
       {selectedVariant.availableForSale &&
         selectedVariant.quantityAvailable > 0 && (
@@ -215,12 +216,37 @@ function SizeGuide() {
   );
 }
 
-function QuantitySelector({quantity, handleDecrement, handleIncrement}) {
+function QuantitySelector({
+  quantity,
+  handleDecrement,
+  handleIncrement,
+  selectedVariant,
+}) {
+  const rootData = useRouteLoaderData('root');
+
   return (
     <div className="mb-8">
       <h3 className="text-sm font-medium text-gray-900">
         <span className="">Quantity</span>
-        <span className="">(X in cart)</span>
+        <Suspense fallback={<p>Loading...</p>}>
+          <Await
+            resolve={rootData.cart}
+            errorElement={<div>An error occurred</div>}
+          >
+            {(cart) => {
+              const itemIncart = cart.lines.nodes.find(
+                (lineItem) => lineItem.merchandise.id === selectedVariant.id,
+              );
+              if (itemIncart) {
+                return (
+                  <span className="">({itemIncart.quantity} in cart)</span>
+                );
+              } else {
+                return null;
+              }
+            }}
+          </Await>
+        </Suspense>
       </h3>
       <div className="mt-4 gap-3 flex flex-wrap">
         <button
