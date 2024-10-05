@@ -29,7 +29,9 @@ export function AddToCartButton({
             type="submit"
             onClick={onClick}
             disabled={disabled ?? fetcher.state !== 'idle'}
-            className="button w-full mt-5"
+            className={`button w-full mt-5 ${
+              disabled ? 'bg-gray-400 cursor-not-allowed' : ''
+            }`}
           >
             {children}
           </button>

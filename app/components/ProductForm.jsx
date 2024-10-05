@@ -5,9 +5,10 @@ import {
   DialogPanel,
   DialogTitle,
 } from '@headlessui/react';
+import {PlusIcon, MinusIcon} from '@heroicons/react/16/solid';
 import {Link} from '@remix-run/react';
 import {VariantSelector} from '@shopify/hydrogen';
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 
@@ -24,6 +25,27 @@ function classNames(...classes) {
  */
 export function ProductForm({product, selectedVariant, variants}) {
   const {open} = useAside();
+  const [variantQuantity, setVariantQuantity] = useState(1);
+
+  // const variantQuantityDecrement = useCallback(() => {
+  //   if (variantQuantity === 1) return;
+  //   setVariantQuantity(variantQuantity - 1);
+  // }, [variantQuantity]);
+  // const variantQuantityIncrement = useCallback(() => {
+  //   setVariantQuantity(variantQuantity + 1);
+  // }, [variantQuantity]);
+  // const variantQuantityChange = (value) => {
+  //   setVariantQuantity(value);
+  // };
+
+  const variantQuantityDecrement = () => {
+    if (variantQuantity === 1) return;
+    setVariantQuantity(variantQuantity - 1);
+  };
+  const variantQuantityIncrement = () => {
+    setVariantQuantity(variantQuantity + 1);
+  };
+
   return (
     <div className="product-form mt-10">
       <VariantSelector
@@ -33,6 +55,20 @@ export function ProductForm({product, selectedVariant, variants}) {
       >
         {({option}) => <ProductOptions key={option.name} option={option} />}
       </VariantSelector>
+      <QuantitySelector
+        quantity={variantQuantity}
+        handleDecrement={variantQuantityDecrement}
+        handleIncrement={variantQuantityIncrement}
+        // handleChange={variantQuantityChange}
+      />
+      {selectedVariant.availableForSale &&
+        selectedVariant.quantityAvailable > 0 && (
+          <p className="text-main-purple text-sm font-medium mt-3 mb-2 animate-fade-in flex items-center gap-1">
+            Only{' '}
+            <span className="badge">{selectedVariant.quantityAvailable}</span>{' '}
+            left in stock!
+          </p>
+        )}
       <AddToCartButton
         disabled={!selectedVariant || !selectedVariant.availableForSale}
         onClick={() => {
@@ -43,7 +79,7 @@ export function ProductForm({product, selectedVariant, variants}) {
             ? [
                 {
                   merchandiseId: selectedVariant.id,
-                  quantity: 1,
+                  quantity: variantQuantity,
                   selectedVariant,
                 },
               ]
@@ -61,8 +97,12 @@ export function ProductForm({product, selectedVariant, variants}) {
  */
 function ProductOptions({option}) {
   return (
-    <div className="product-options mb-2" key={option.name}>
-      <div className="flex items-center justify-between">
+    <div className="product-options mb-8" key={option.name}>
+      <div
+        className={
+          option.name === 'Size' ? 'flex items-center justify-between' : ''
+        }
+      >
         <h3 className="text-sm font-medium text-gray-900">{option.name}</h3>
         {option.name === 'Size' && <SizeGuide />}
       </div>
@@ -127,7 +167,6 @@ function ProductOptions({option}) {
           );
         })}
       </div>
-      <br />
     </div>
   );
 }
@@ -173,6 +212,48 @@ function SizeGuide() {
         </div>
       </Dialog>
     </>
+  );
+}
+
+function QuantitySelector({quantity, handleDecrement, handleIncrement}) {
+  return (
+    <div className="mb-8">
+      <h3 className="text-sm font-medium text-gray-900">
+        <span className="">Quantity</span>
+        <span className="">(X in cart)</span>
+      </h3>
+      <div className="mt-4 gap-3 flex flex-wrap">
+        <button
+          className="button px-2 py-1"
+          disabled={quantity <= 1}
+          onClick={handleDecrement}
+          type="button"
+        >
+          <MinusIcon aria-hidden="true" className="h-5 w-5" />
+        </button>
+        {/* <input
+          className="w-full max-w-16 text-center py-2 px-3 rounded text-sm border-gray-300 text-gray-500 focus:border-main-purple transition duration-200 outline-none"
+          type="number"
+          name="quantity"
+          min="1"
+          id="productQuantityValue"
+          // defaultValue="1"
+          value={quantity}
+          onChange={(e) => handleChange(Number(e.target.value))}
+        /> */}
+        <div className="w-full max-w-16 text-center py-2 px-3 rounded text-sm border border-gray-300 text-gray-500 outline-none">
+          {quantity}
+        </div>
+        <button
+          className="button px-2 py-1"
+          // disabled={quantity <= 1}
+          onClick={handleIncrement}
+          type="button"
+        >
+          <PlusIcon aria-hidden="true" className="h-5 w-5" />
+        </button>
+      </div>
+    </div>
   );
 }
 
