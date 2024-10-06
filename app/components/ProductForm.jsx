@@ -8,7 +8,7 @@ import {
 import {PlusIcon, MinusIcon} from '@heroicons/react/16/solid';
 import {Await, Link, useRouteLoaderData} from '@remix-run/react';
 import {VariantSelector} from '@shopify/hydrogen';
-import {Suspense, useCallback, useEffect, useState} from 'react';
+import {Suspense, useState} from 'react';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 
@@ -37,7 +37,6 @@ export function ProductForm({product, selectedVariant, variants}) {
 
   return (
     <div className="product-form mt-10">
-      <p>{JSON.stringify(selectedVariant.order_limit_metafield)}</p>
       <VariantSelector
         handle={product.handle}
         options={product.options.filter((option) => option.values.length > 1)}
@@ -52,21 +51,23 @@ export function ProductForm({product, selectedVariant, variants}) {
         selectedVariant={selectedVariant}
       />
       {selectedVariant.availableForSale &&
-        (selectedVariant.order_limit_metafield ||
-          selectedVariant.quantityAvailable > 0) && (
-          <p className="text-main-purple text-sm font-medium mt-3 mb-3 animate-fade-in flex items-center gap-1">
+        selectedVariant.quantityAvailable > 0 && (
+          <p className="text-main-purple text-sm font-medium mb-3 animate-fade-in flex items-center gap-1">
             Only{' '}
-            <span className="badge">
-              {selectedVariant.order_limit_metafield
-                ? selectedVariant.order_limit_metafield.value
-                : selectedVariant.quantityAvailable
-                ? selectedVariant.quantityAvailable
-                : ''}
-            </span>{' '}
+            <span className="badge">{selectedVariant.quantityAvailable}</span>{' '}
             left in stock!
           </p>
         )}
-      {/* {selectedVariant.availableForSale && (selectedVariant.order_limit_metafield || selectedVariant.quantityAvailable > 0 )} */}
+      {selectedVariant.availableForSale &&
+        selectedVariant.order_limit_metafield && (
+          <p className="text-main-purple text-sm font-medium mb-3 animate-fade-in flex items-center gap-1">
+            Product limited to only{' '}
+            <span className="badge">
+              {selectedVariant.order_limit_metafield.value}
+            </span>{' '}
+            units per order.
+          </p>
+        )}
       <AddToCartButton
         disabled={!selectedVariant || !selectedVariant.availableForSale}
         onClick={() => {

@@ -60,6 +60,33 @@ export async function action({request, context}) {
       throw new Error(`${action} cart action is not defined`);
   }
 
+  const newCart = await cart.get();
+  const gwpVariantID = 48342561653045;
+  const isEligibleForGwp = newCart.cost.totalAmount.amount > 50;
+  const gwpInCart = newCart.lines.nodes.find((node) =>
+    node.merchandise.id.includes(gwpVariantID),
+  );
+  const gwpLineToAdd = [
+    {
+      merchandiseId: 'gid://shopify/ProductVariant/' + gwpVariantID,
+      quantity: 1,
+    },
+  ];
+  const gwpLineToARemove = [gwpInCart?.id];
+
+  // if (action === 'LinesAdd' || action === 'LinesUpdate' || (action === 'LinesRemove' && )) {
+  if (action === 'LinesAdd' || action === 'LinesUpdate') {
+    if (isEligibleForGwp) {
+      if (!gwpInCart) {
+        result = await cart.addLines(gwpLineToAdd);
+      }
+    } else {
+      if (gwpInCart) {
+        result = await cart.removeLines(gwpLineToARemove);
+      }
+    }
+  }
+
   const cartId = result?.cart?.id;
   const headers = cartId ? cart.setCartId(result.cart.id) : new Headers();
   const {cart: cartResult, errors} = result;

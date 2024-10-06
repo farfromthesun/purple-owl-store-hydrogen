@@ -138,11 +138,11 @@ export default function Product() {
     product.selectedVariant,
     variants,
   );
-
   const {title, descriptionHtml} = product;
   const breadcrumbs = [
     {id: 1, name: 'Shop', href: '/collections/all-products'},
   ];
+  const isProductGWP = product.id.includes('9201094689077');
 
   return (
     <>
@@ -196,28 +196,31 @@ export default function Product() {
                 />
               </p>
 
-              <Suspense
-                fallback={
-                  <ProductForm
-                    product={product}
-                    selectedVariant={selectedVariant}
-                    variants={[]}
-                  />
-                }
-              >
-                <Await
-                  errorElement="There was a problem loading product variants"
-                  resolve={variants}
-                >
-                  {(data) => (
+              {!isProductGWP && (
+                <Suspense
+                  fallback={
                     <ProductForm
                       product={product}
                       selectedVariant={selectedVariant}
-                      variants={data?.product?.variants.nodes || []}
+                      variants={[]}
                     />
-                  )}
-                </Await>
-              </Suspense>
+                  }
+                >
+                  <Await
+                    errorElement="There was a problem loading product variants"
+                    resolve={variants}
+                  >
+                    {(data) => (
+                      <ProductForm
+                        product={product}
+                        selectedVariant={selectedVariant}
+                        variants={data?.product?.variants.nodes || []}
+                      />
+                    )}
+                  </Await>
+                </Suspense>
+              )}
+
               <div className="space-y-6 mt-10 lg:mt-12">
                 <div
                   className="text-base text-gray-900"
