@@ -328,6 +328,9 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
       amount
       currencyCode
     }
+    order_limit_metafield: metafield(key: "order_limit", namespace: "custom") {
+      value
+    }
   }
 `;
 
