@@ -21,6 +21,13 @@ export async function action({request, context}) {
 
   const {action, inputs} = CartForm.getFormInput(formData);
 
+  const initialCart = await cart.get();
+  const gwpVariantID = 48342561653045;
+  const gwpInCart = initialCart.lines.nodes.find((node) =>
+    node.merchandise.id.includes(gwpVariantID),
+  );
+  const isRemoveOnGwp = inputs?.lineIds?.includes(gwpInCart?.id);
+
   if (!action) {
     throw new Error('No action provided');
   }
@@ -61,11 +68,7 @@ export async function action({request, context}) {
   }
 
   const newCart = await cart.get();
-  const gwpVariantID = 48342561653045;
   const isEligibleForGwp = newCart.cost.totalAmount.amount > 50;
-  const gwpInCart = newCart.lines.nodes.find((node) =>
-    node.merchandise.id.includes(gwpVariantID),
-  );
   const gwpLineToAdd = [
     {
       merchandiseId: 'gid://shopify/ProductVariant/' + gwpVariantID,
@@ -74,8 +77,11 @@ export async function action({request, context}) {
   ];
   const gwpLineToARemove = [gwpInCart?.id];
 
-  // if (action === 'LinesAdd' || action === 'LinesUpdate' || (action === 'LinesRemove' && )) {
-  if (action === 'LinesAdd' || action === 'LinesUpdate') {
+  if (
+    action === 'LinesAdd' ||
+    (action === 'LinesUpdate' && inputs?.updateType === 'increase') ||
+    (action === 'LinesRemove' && !isRemoveOnGwp)
+  ) {
     if (isEligibleForGwp) {
       if (!gwpInCart) {
         result = await cart.addLines(gwpLineToAdd);
