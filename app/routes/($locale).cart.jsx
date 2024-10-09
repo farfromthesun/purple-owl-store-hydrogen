@@ -23,7 +23,7 @@ export async function action({request, context}) {
 
   const initialCart = await cart.get();
   const gwpVariantID = 48342561653045;
-  const gwpInCart = initialCart.lines.nodes.find((node) =>
+  const gwpInCart = initialCart?.lines?.nodes.find((node) =>
     node.merchandise.id.includes(gwpVariantID),
   );
   const isRemoveOnGwp = inputs?.lineIds?.includes(gwpInCart?.id);
@@ -77,20 +77,44 @@ export async function action({request, context}) {
   ];
   const gwpLineToARemove = [gwpInCart?.id];
 
-  if (
-    action === 'LinesAdd' ||
-    (action === 'LinesUpdate' && inputs?.updateType === 'increase') ||
-    (action === 'LinesRemove' && !isRemoveOnGwp)
-  ) {
-    if (isEligibleForGwp) {
-      if (!gwpInCart) {
+  // if (
+  //   action === 'LinesAdd' ||
+  //   action === 'LinesUpdate' ||
+  //   (action === 'LinesRemove' && !isRemoveOnGwp)
+  // ) {
+  //   if (isEligibleForGwp) {
+  //     if (!gwpInCart && inputs?.updateType === 'increase') {
+  //       result = await cart.addLines(gwpLineToAdd);
+  //     }
+  //   } else {
+  //     if (gwpInCart) {
+  //       result = await cart.removeLines(gwpLineToARemove);
+  //     }
+  //   }
+  // }
+
+  switch (action) {
+    case 'LinesAdd':
+      if (isEligibleForGwp && !gwpInCart) {
         result = await cart.addLines(gwpLineToAdd);
       }
-    } else {
-      if (gwpInCart) {
+      break;
+    case 'LinesUpdate':
+      if (isEligibleForGwp) {
+        if (!gwpInCart && inputs?.updateType === 'increase') {
+          result = await cart.addLines(gwpLineToAdd);
+        }
+      } else {
+        if (gwpInCart) {
+          result = await cart.removeLines(gwpLineToARemove);
+        }
+      }
+      break;
+    case 'LinesRemove':
+      if (!isEligibleForGwp && gwpInCart && !isRemoveOnGwp) {
         result = await cart.removeLines(gwpLineToARemove);
       }
-    }
+      break;
   }
 
   const cartId = result?.cart?.id;
