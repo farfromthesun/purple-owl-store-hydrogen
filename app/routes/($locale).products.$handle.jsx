@@ -186,6 +186,10 @@ export default function Product() {
 
             {/* Product info */}
             <div className="mt-6 lg:mt-0 sticky top-[84px] self-start">
+              <small>
+                STYLE THE DISABLE QUANTITY BUTTON AND CHECK WHY CART IS LOADING
+                SO SLOW ON THE PRODUCT PAGE
+              </small>
               <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl mb-3">
                 {title}
               </h1>
@@ -351,6 +355,34 @@ const PRODUCT_FRAGMENT = `#graphql
     }
     selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
       ...ProductVariant
+    }
+    add_ons_metafield: metafield(key: "add_ons", namespace: "custom") {
+      references(first: 50) {
+        nodes {
+          ... on Product {
+            title
+            id
+            images(first: 1) {
+              nodes {
+                url(transform: {crop: CENTER, maxHeight: 200, maxWidth: 200})
+              }
+            }
+            variants(first: 1) {
+              nodes {
+                id
+                price {
+                  amount
+                  currencyCode
+                }
+                compareAtPrice {
+                  amount
+                  currencyCode
+                }
+              }
+            }
+          }
+        }
+      }
     }
     variants(first: 1) {
       nodes {

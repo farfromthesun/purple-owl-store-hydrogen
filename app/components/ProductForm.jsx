@@ -7,10 +7,11 @@ import {
 } from '@headlessui/react';
 import {PlusIcon, MinusIcon} from '@heroicons/react/16/solid';
 import {Await, Link, useRouteLoaderData} from '@remix-run/react';
-import {VariantSelector} from '@shopify/hydrogen';
+import {Image, VariantSelector} from '@shopify/hydrogen';
 import {Suspense, useState} from 'react';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
+import {ProductPrice} from './ProductPrice';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -50,24 +51,8 @@ export function ProductForm({product, selectedVariant, variants}) {
         handleIncrement={variantQuantityIncrement}
         selectedVariant={selectedVariant}
       />
-      {selectedVariant.availableForSale &&
-        selectedVariant.quantityAvailable > 0 && (
-          <p className="text-main-purple text-sm font-medium mb-3 animate-fade-in flex items-center gap-1">
-            Only{' '}
-            <span className="badge">{selectedVariant.quantityAvailable}</span>{' '}
-            left in stock!
-          </p>
-        )}
-      {selectedVariant.availableForSale &&
-        selectedVariant.order_limit_metafield && (
-          <p className="text-main-purple text-sm font-medium mb-3 animate-fade-in flex items-center gap-1">
-            Product limited to only{' '}
-            <span className="badge">
-              {selectedVariant.order_limit_metafield.value}
-            </span>{' '}
-            units per order.
-          </p>
-        )}
+      {product.add_ons_metafield && <AddOns product={product} />}
+      {/* {JSON.stringify(product.add_ons_metafield.references.nodes)} */}
       <AddToCartButton
         disabled={!selectedVariant || !selectedVariant.availableForSale}
         onClick={() => {
@@ -218,12 +203,9 @@ function QuantitySelector({
   const rootData = useRouteLoaderData('root');
 
   return (
-    <div className="mb-10">
+    <div className="mb-8">
       <h3 className="text-sm font-medium text-gray-900">
-        <span className="">
-          Quantity - STYLE THE DISABLE QUANTITY BUTTON AND CHECK WHY CART IS
-          LOADING SO SLOW ON THE PRODUCT PAGE
-        </span>
+        <span>Quantity</span>
         <Suspense
           fallback={
             <span className="text-sm text-gray-500 animate-pulse">
@@ -237,6 +219,7 @@ function QuantitySelector({
             errorElement={<div>An error occurred</div>}
           >
             {(cart) => {
+              if (!cart) return null;
               const itemIncart = cart.lines.nodes.find(
                 (lineItem) => lineItem.merchandise.id === selectedVariant.id,
               );
@@ -270,6 +253,77 @@ function QuantitySelector({
         >
           <PlusIcon aria-hidden="true" className="h-5 w-5" />
         </button>
+      </div>
+      {selectedVariant.availableForSale &&
+        selectedVariant.quantityAvailable > 0 && (
+          <p className="text-main-purple text-sm font-medium mt-4 animate-fade-in flex items-center gap-1">
+            Only{' '}
+            <span className="badge">{selectedVariant.quantityAvailable}</span>{' '}
+            left in stock!
+          </p>
+        )}
+      {selectedVariant.availableForSale &&
+        selectedVariant.order_limit_metafield && (
+          <p className="text-main-purple text-sm font-medium mt-4 animate-fade-in flex items-center gap-1">
+            Product limited to only{' '}
+            <span className="badge">
+              {selectedVariant.order_limit_metafield.value}
+            </span>{' '}
+            units per order.
+          </p>
+        )}
+    </div>
+  );
+}
+
+function AddOns({product}) {
+  return (
+    <div className="mb-8">
+      <h3 className="text-sm font-medium text-gray-900">Add-ons</h3>
+      <div className="mt-4">
+        {product.add_ons_metafield.references.nodes.map((addOn) => (
+          <div
+            key={addOn.id.split('Product/')[1]}
+            className="flex items-center mb-4 group"
+          >
+            <input
+              id={`add-on-${addOn.id.split('Product/')[1]}`}
+              name={`add-on-${addOn.id.split('Product/')[1]}`}
+              value={addOn.variants.nodes[0].id}
+              type="checkbox"
+              className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 lg:group-hover:border-main-purple lg:cursor-pointer outline-main-purple"
+              // onChange={(event) => {
+              //   const form = event.target.form;
+              //   submit(form, {
+              //     debounceTimeout: FILTER_DEBOUNCE,
+              //     preventScrollReset: true,
+              //   });
+              // }}
+            />
+            <label
+              htmlFor={`add-on-${addOn.id.split('Product/')[1]}`}
+              className="flex items-center gap-3 ml-3 min-w-0 text-sm lg:group-hover:text-main-purple lg:transition lg:duration-200 lg:cursor-pointer"
+            >
+              <Image
+                alt={addOn.title}
+                aspectRatio="1/1"
+                data={addOn.images.nodes[0]}
+                height={50}
+                loading="lazy"
+                width={50}
+                className="rounded-md"
+              />
+              <div className="flex items-center">
+                {addOn.title}
+                <span className="mx-2">-</span>
+                <ProductPrice
+                  price={addOn.variants.nodes[0].price}
+                  compareAtPrice={addOn.variants.nodes[0].compareAtPrice}
+                />
+              </div>
+            </label>
+          </div>
+        ))}
       </div>
     </div>
   );
