@@ -187,8 +187,15 @@ export default function Product() {
             {/* Product info */}
             <div className="mt-6 lg:mt-0 sticky top-[84px] self-start">
               <small>
-                STYLE THE DISABLE QUANTITY BUTTON AND CHECK WHY CART IS LOADING
-                SO SLOW ON THE PRODUCT PAGE
+                <p>
+                  STYLE THE DISABLE QUANTITY BUTTON AND CHECK WHY CART IS
+                  LOADING SO SLOW ON THE PRODUCT PAGE
+                </p>
+                <p>
+                  ALSO CHECK THE CONSOLE LOG ERROR ABOUT SELECTED VARIANT NOT
+                  BEING PASSED TO THE CART AFTER ADDING A PRODUCT WITH ANY
+                  ADD-ON
+                </p>
               </small>
               <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl mb-3">
                 {title}
@@ -367,19 +374,14 @@ const PRODUCT_FRAGMENT = `#graphql
                 url(transform: {crop: CENTER, maxHeight: 200, maxWidth: 200})
               }
             }
-            variants(first: 1) {
-              nodes {
-                id
-                price {
-                  amount
-                  currencyCode
-                }
-                compareAtPrice {
-                  amount
-                  currencyCode
-                }
-              }
+            selectedVariant: variantBySelectedOptions(selectedOptions: {name: "Title", value: "Default Title"}, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
+              ...ProductVariant
             }
+            # variants(first: 1) {
+            #   nodes {
+            #     ...ProductVariant
+            #   }
+            # }
           }
         }
       }

@@ -27,6 +27,7 @@ function classNames(...classes) {
 export function ProductForm({product, selectedVariant, variants}) {
   const {open} = useAside();
   const [variantQuantity, setVariantQuantity] = useState(1);
+  const [addOns, setAddOns] = useState([]);
 
   const variantQuantityDecrement = () => {
     if (variantQuantity === 1) return;
@@ -35,6 +36,9 @@ export function ProductForm({product, selectedVariant, variants}) {
   const variantQuantityIncrement = () => {
     setVariantQuantity(variantQuantity + 1);
   };
+
+  // console.log('addOns', addOns);
+  // console.log('selectedVariant', selectedVariant);
 
   return (
     <div className="product-form mt-10">
@@ -51,8 +55,9 @@ export function ProductForm({product, selectedVariant, variants}) {
         handleIncrement={variantQuantityIncrement}
         selectedVariant={selectedVariant}
       />
-      {product.add_ons_metafield && <AddOns product={product} />}
-      {/* {JSON.stringify(product.add_ons_metafield.references.nodes)} */}
+      {product.add_ons_metafield && (
+        <AddOns product={product} setAddOns={setAddOns} />
+      )}
       <AddToCartButton
         disabled={!selectedVariant || !selectedVariant.availableForSale}
         onClick={() => {
@@ -66,6 +71,7 @@ export function ProductForm({product, selectedVariant, variants}) {
                   quantity: variantQuantity,
                   selectedVariant,
                 },
+                ...addOns,
               ]
             : []
         }
@@ -98,7 +104,7 @@ function ProductOptions({option}) {
                 isAvailable
                   ? 'cursor-pointer bg-white text-gray-900 shadow-sm'
                   : 'cursor-not-allowed bg-gray-50 text-gray-200',
-                'group relative flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-300',
+                'group relative flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
               )}
               key={option.name + value}
               prefetch="intent"
@@ -276,7 +282,7 @@ function QuantitySelector({
   );
 }
 
-function AddOns({product}) {
+function AddOns({product, setAddOns}) {
   return (
     <div className="mb-8">
       <h3 className="text-sm font-medium text-gray-900">Add-ons</h3>
@@ -289,16 +295,33 @@ function AddOns({product}) {
             <input
               id={`add-on-${addOn.id.split('Product/')[1]}`}
               name={`add-on-${addOn.id.split('Product/')[1]}`}
-              value={addOn.variants.nodes[0].id}
+              value={JSON.stringify(addOn.selectedVariant)}
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 lg:group-hover:border-main-purple lg:cursor-pointer outline-main-purple"
-              // onChange={(event) => {
-              //   const form = event.target.form;
-              //   submit(form, {
-              //     debounceTimeout: FILTER_DEBOUNCE,
-              //     preventScrollReset: true,
-              //   });
-              // }}
+              onChange={(event) => {
+                const addOnVariant = JSON.parse(event.target.value);
+                const isChecked = event.target.checked;
+                setAddOns((prevAddOns) => {
+                  const isAddOnAlreadyInState = prevAddOns.find(
+                    (prevAddOn) => prevAddOn.merchandiseId === addOnVariant.id,
+                  );
+                  if (isChecked && !isAddOnAlreadyInState) {
+                    return [
+                      ...prevAddOns,
+                      {
+                        merchandiseId: addOnVariant.id,
+                        quantity: 1,
+                        selectedVariant: addOnVariant,
+                      },
+                    ];
+                  } else if (!isChecked && isAddOnAlreadyInState) {
+                    return prevAddOns.filter(
+                      (prevAddOn) =>
+                        prevAddOn.merchandiseId !== addOnVariant.id,
+                    );
+                  }
+                });
+              }}
             />
             <label
               htmlFor={`add-on-${addOn.id.split('Product/')[1]}`}
@@ -311,14 +334,14 @@ function AddOns({product}) {
                 height={50}
                 loading="lazy"
                 width={50}
-                className="rounded-md"
+                className="rounded-md lg:group-hover:opacity-75 lg:transition lg:duration-200"
               />
               <div className="flex items-center">
                 {addOn.title}
                 <span className="mx-2">-</span>
                 <ProductPrice
-                  price={addOn.variants.nodes[0].price}
-                  compareAtPrice={addOn.variants.nodes[0].compareAtPrice}
+                  price={addOn.selectedVariant.price}
+                  compareAtPrice={addOn.selectedVariant.compareAtPrice}
                 />
               </div>
             </label>
