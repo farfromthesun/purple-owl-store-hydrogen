@@ -250,22 +250,64 @@ function QuantitySelector({
       </h3>
       <div className="mt-4 gap-3 flex flex-wrap">
         <button
-          className="button px-2 py-1 border-main-purple border-2 bg-gray-50 text-main-purple hover:bg-gray-100"
+          className={classNames(
+            quantity > 1
+              ? 'cursor-pointer bg-white text-gray-900 shadow-sm'
+              : 'cursor-not-allowed bg-gray-50 text-gray-200',
+            'group relative flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
+          )}
           disabled={quantity <= 1}
           onClick={handleDecrement}
           type="button"
         >
-          <MinusIcon aria-hidden="true" className="h-5 w-5" />
+          <span>
+            <MinusIcon aria-hidden="true" className="h-5 w-5" />
+          </span>
+          <span
+            aria-hidden="true"
+            className={classNames(
+              quantity > 1 ? 'opacity-100' : 'opacity-0',
+              'pointer-events-none absolute -inset-px rounded-md border-2 border-transparent transition duration-200 lg:group-hover:border-main-purple',
+            )}
+          />
+          <span
+            aria-hidden="true"
+            className={classNames(
+              quantity <= 1 ? 'opacity-100' : 'opacity-0',
+              'pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200 transition duration-200',
+            )}
+          >
+            <svg
+              stroke="currentColor"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              className="absolute inset-0 h-full w-full stroke-3 text-gray-200 transition duration-200"
+            >
+              <line
+                x1={0}
+                x2={100}
+                y1={100}
+                y2={0}
+                vectorEffect="non-scaling-stroke"
+              />
+            </svg>
+          </span>
         </button>
         <div className="w-full max-w-16 text-center py-2 px-3 rounded-md text-sm border border-gray-300 text-gray-500 outline-none">
           {quantity}
         </div>
         <button
-          className="button px-2 py-1"
+          className="group relative flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200 cursor-pointer bg-white text-gray-900 shadow-sm"
           onClick={handleIncrement}
           type="button"
         >
-          <PlusIcon aria-hidden="true" className="h-5 w-5" />
+          <span>
+            <PlusIcon aria-hidden="true" className="h-5 w-5" />
+          </span>
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent transition duration-200 lg:group-hover:border-main-purple"
+          />
         </button>
       </div>
       {selectedVariant.availableForSale &&
