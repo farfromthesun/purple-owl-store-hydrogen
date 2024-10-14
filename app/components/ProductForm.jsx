@@ -28,6 +28,7 @@ export function ProductForm({product, selectedVariant, variants}) {
   const {open} = useAside();
   const [variantQuantity, setVariantQuantity] = useState(1);
   const [addOns, setAddOns] = useState([]);
+  const [extraOptions, setExtraOptions] = useState([]);
 
   const variantQuantityDecrement = () => {
     if (variantQuantity === 1) return;
@@ -39,6 +40,7 @@ export function ProductForm({product, selectedVariant, variants}) {
 
   // console.log('addOns', addOns);
   // console.log('selectedVariant', selectedVariant);
+  // console.log('extraOptions', extraOptions);
 
   return (
     <div className="product-form mt-10">
@@ -58,6 +60,11 @@ export function ProductForm({product, selectedVariant, variants}) {
       {product.add_ons_metafield && (
         <AddOns product={product} setAddOns={setAddOns} />
       )}
+      <ExtraOptons
+        product={product}
+        extraOptions={extraOptions}
+        setExtraOptions={setExtraOptions}
+      />
       <AddToCartButton
         disabled={!selectedVariant || !selectedVariant.availableForSale}
         onClick={() => {
@@ -70,6 +77,7 @@ export function ProductForm({product, selectedVariant, variants}) {
                   merchandiseId: selectedVariant.id,
                   quantity: variantQuantity,
                   selectedVariant,
+                  attributes: extraOptions ? extraOptions : [],
                 },
                 ...addOns,
               ]
@@ -290,12 +298,12 @@ function AddOns({product, setAddOns}) {
         {product.add_ons_metafield.references.nodes.map((addOn) => (
           <div
             key={addOn.id.split('Product/')[1]}
-            className="flex items-center mb-4 group"
+            className="inline-flex items-center mb-4 last:mb-0 group"
           >
             <input
               id={`add-on-${addOn.id.split('Product/')[1]}`}
               name={`add-on-${addOn.id.split('Product/')[1]}`}
-              value={JSON.stringify(addOn.selectedVariant)}
+              value={JSON.stringify(addOn.defaultVariant)}
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 lg:group-hover:border-main-purple lg:cursor-pointer outline-main-purple"
               onChange={(event) => {
@@ -340,10 +348,76 @@ function AddOns({product, setAddOns}) {
                 {addOn.title}
                 <span className="mx-2">-</span>
                 <ProductPrice
-                  price={addOn.selectedVariant.price}
-                  compareAtPrice={addOn.selectedVariant.compareAtPrice}
+                  price={addOn.defaultVariant.price}
+                  compareAtPrice={addOn.defaultVariant.compareAtPrice}
                 />
               </div>
+            </label>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ExtraOptons({product, extraOptions, setExtraOptions}) {
+  const extraOptionsArray = [
+    {
+      key: 'Aadditional protective wrapping',
+      value: 'yes',
+      slogan: 'Add extra layer of protective wrapping?',
+    },
+    {
+      key: 'Gift wrapping with label',
+      value: 'yes',
+      slogan: 'Wrap as a gift with additional colorful label?',
+    },
+  ];
+  return (
+    <div className="mb-8">
+      <h3 className="text-sm font-medium text-gray-900">Extra options</h3>
+      <div className="mt-4">
+        {extraOptionsArray.map((extraOption) => (
+          <div
+            className="inline-flex items-center mb-4 last:mb-0 group"
+            key={extraOption.key}
+          >
+            <input
+              id={`extra-option-${extraOption.key}`}
+              name={`extra-option-${extraOption.key}`}
+              value={extraOption.value}
+              type="checkbox"
+              className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 lg:group-hover:border-main-purple lg:cursor-pointer outline-main-purple"
+              onChange={(event) => {
+                // const addOnVariant = JSON.parse(event.target.value);
+                const isChecked = event.target.checked;
+                setExtraOptions((prevExtraOptions) => {
+                  const isOptionAlreadyInState = prevExtraOptions.find(
+                    (prevExtraOption) =>
+                      prevExtraOption.key === extraOption.key,
+                  );
+                  if (isChecked && !isOptionAlreadyInState) {
+                    return [
+                      ...prevExtraOptions,
+                      {
+                        key: extraOption.key,
+                        value: extraOption.value,
+                      },
+                    ];
+                  } else if (!isChecked && isOptionAlreadyInState) {
+                    return prevExtraOptions.filter(
+                      (prevExtraOption) =>
+                        prevExtraOption.key !== extraOption.key,
+                    );
+                  }
+                });
+              }}
+            />
+            <label
+              htmlFor={`extra-option-${extraOption.key}`}
+              className="flex items-center gap-3 ml-3 min-w-0 text-sm lg:group-hover:text-main-purple lg:transition lg:duration-200 lg:cursor-pointer"
+            >
+              <div className="flex items-center">{extraOption.slogan}</div>
             </label>
           </div>
         ))}
