@@ -1,9 +1,9 @@
 import {defer, redirect} from '@shopify/remix-oxygen';
-import {useLoaderData} from '@remix-run/react';
+import {Await, useLoaderData, useNavigation} from '@remix-run/react';
 import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
-import {CollectionHero} from '~/components/CollectionHero';
+import {PageHero} from '~/components/PageHero';
 import {
   CollectionSortFilters,
   FILTER_URL_PREFIX,
@@ -11,13 +11,19 @@ import {
 import {ProductTile} from '~/components/ProductTile';
 import {parseAsCurrency} from '~/lib/utils';
 import {PaginatedLoadMoreButton} from '~/components/PaginatedLoadMoreButton';
+import {Suspense} from 'react';
+import {ProductTileSkeleton} from '~/components/ProductTileSkeleton';
 
 /**
  * @type {MetaFunction<typeof loader>}
  */
 export const meta = ({data}) => {
   return [
-    {title: `${data?.collection.title ?? ''} Collection | Purple Owl Store`},
+    {
+      title: `${
+        data?.collectionBasicInfo?.title ?? ''
+      } Collection | Purple Owl Store`,
+    },
   ];
 };
 
@@ -59,7 +65,6 @@ async function loadCriticalData({context, params, request}) {
     (filters, [key, value]) => {
       if (key.startsWith(FILTER_URL_PREFIX)) {
         if (key.includes('.price')) {
-          // if (value) {
           if (value && !isNaN(Number(value))) {
             const filterKey = key.split('.')[2];
             if (filters.some((filter) => 'price' in filter)) {
@@ -95,20 +100,25 @@ async function loadCriticalData({context, params, request}) {
     [],
   );
 
-  const [{collection}] = await Promise.all([
+  const [{collectionBasicInfo}] = await Promise.all([
     storefront.query(COLLECTION_QUERY, {
       variables: {handle, filters, sortKey, reverse, ...paginationVariables},
       // Add other queries here, so that they are loaded in parallel
     }),
   ]);
 
-  if (!collection) {
+  // const collectionBasicInfo = await storefront.query(COLLECTION_QUERY, {
+  //   variables: {handle, filters, sortKey, reverse, ...paginationVariables},
+  //   // Add other queries here, so that they are loaded in parallel
+  // });
+
+  if (!collectionBasicInfo) {
     throw new Response(`Collection "${handle}" not found`, {
       status: 404,
     });
   }
 
-  const allFilterValues = collection.products.filters.flatMap(
+  const allFilterValues = collectionBasicInfo.products.filters.flatMap(
     (filter) => filter.values,
   );
 
@@ -158,7 +168,7 @@ async function loadCriticalData({context, params, request}) {
     .filter((filter) => filter !== null);
 
   return {
-    collection,
+    collectionBasicInfo,
     appliedFilters,
   };
 }
@@ -169,40 +179,136 @@ async function loadCriticalData({context, params, request}) {
  * Make sure to not throw any errors here, as it will cause the page to 500.
  * @param {LoaderFunctionArgs}
  */
-function loadDeferredData({context}) {
-  return {};
+function loadDeferredData({context, params, request}) {
+  const {handle} = params;
+  const {storefront} = context;
+  const paginationVariables = getPaginationVariables(request, {
+    pageBy: 9,
+  });
+
+  if (!handle) {
+    throw redirect('/');
+  }
+
+  const searchParams = new URL(request.url).searchParams;
+
+  const {sortKey, reverse} = getSortValuesFromParam(searchParams.get('sort'));
+
+  const filters = [...searchParams.entries()].reduce(
+    (filters, [key, value]) => {
+      if (key.startsWith(FILTER_URL_PREFIX)) {
+        if (key.includes('.price')) {
+          if (value && !isNaN(Number(value))) {
+            const filterKey = key.split('.')[2];
+            if (filters.some((filter) => 'price' in filter)) {
+              filters = filters.map((filter) => {
+                if (filter.price) {
+                  return {
+                    price: {
+                      ...filter.price,
+                      [filterKey]: JSON.parse(value),
+                    },
+                  };
+                } else {
+                  return filter;
+                }
+              });
+            } else {
+              filters.push({
+                price: {
+                  [filterKey]: JSON.parse(value),
+                },
+              });
+            }
+          }
+        } else {
+          const filterKey = key.substring(FILTER_URL_PREFIX.length);
+          filters.push({
+            [filterKey]: JSON.parse(value),
+          });
+        }
+      }
+      return filters;
+    },
+    [],
+  );
+
+  const collectionProducts = Promise.all([
+    storefront
+      .query(COLLECTION_PRODUCTS_QUERY, {
+        variables: {
+          handle,
+          filters,
+          sortKey,
+          reverse,
+          ...paginationVariables,
+        },
+      })
+      .catch((error) => {
+        // Log query errors, but don't throw them so the page can still render
+        console.error(error);
+        return null;
+      }),
+    new Promise((resolve) => setTimeout(resolve, 3000)),
+  ]).then(([{collectionProducts}]) => {
+    return collectionProducts;
+  });
+
+  return {
+    collectionProducts,
+  };
 }
 
 export default function Collection() {
   /** @type {LoaderReturnData} */
-  const {collection, appliedFilters} = useLoaderData();
+  const {collectionBasicInfo, collectionProducts, appliedFilters} =
+    useLoaderData();
+  const navigation = useNavigation();
+  const areProductsLoading =
+    navigation.state === 'loading' &&
+    navigation?.location?.pathname?.includes(collectionBasicInfo.handle) &&
+    navigation?.location?.state === null;
 
   return (
     <div className="collection">
-      <CollectionHero collection={collection} />
+      <PageHero
+        title={collectionBasicInfo.title}
+        subtitle="Shop the best products available on the market."
+        pageType="collection"
+      />
       <CollectionSortFilters
-        filters={collection.products.filters}
+        filters={collectionBasicInfo.products.filters}
         appliedFilters={appliedFilters}
       >
-        <PaginatedResourceSection
-          connection={collection.products}
-          resourcesClassName="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 xl:gap-x-8"
-          LoadMorebutton={PaginatedLoadMoreButton}
-        >
-          {({node: product, index}) => (
-            <ProductItem
-              key={product.id}
-              product={product}
-              loading={index < 9 ? 'eager' : undefined}
-            />
-          )}
-        </PaginatedResourceSection>
+        {areProductsLoading ? (
+          <ProductTileSkeletonGrid />
+        ) : (
+          <Suspense fallback={<ProductTileSkeletonGrid />}>
+            <Await resolve={collectionProducts}>
+              {(collectionProducts) => (
+                <PaginatedResourceSection
+                  connection={collectionProducts.products}
+                  resourcesClassName="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 xl:gap-x-8"
+                  LoadMorebutton={PaginatedLoadMoreButton}
+                >
+                  {({node: product, index}) => (
+                    <ProductItem
+                      key={product.id}
+                      product={product}
+                      loading={index < 9 ? 'eager' : undefined}
+                    />
+                  )}
+                </PaginatedResourceSection>
+              )}
+            </Await>
+          </Suspense>
+        )}
       </CollectionSortFilters>
       <Analytics.CollectionView
         data={{
           collection: {
-            id: collection.id,
-            handle: collection.handle,
+            id: collectionBasicInfo.id,
+            handle: collectionBasicInfo.handle,
           },
         }}
       />
@@ -226,6 +332,16 @@ function ProductItem({product, loading}) {
       withFilters={true}
       imgLoading={loading}
     />
+  );
+}
+
+function ProductTileSkeletonGrid() {
+  return (
+    <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 xl:gap-x-8">
+      {Array.from({length: 6}, (_, index) => index + 1).map((id) => (
+        <ProductTileSkeleton key={id} />
+      ))}
+    </div>
   );
 }
 
@@ -266,7 +382,6 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
 
 // NOTE: https://shopify.dev/docs/api/storefront/2022-04/objects/collection
 const COLLECTION_QUERY = `#graphql
-  ${PRODUCT_ITEM_FRAGMENT}
   query Collection(
     $handle: String!
     $country: CountryCode
@@ -279,7 +394,7 @@ const COLLECTION_QUERY = `#graphql
     $startCursor: String
     $endCursor: String
   ) @inContext(country: $country, language: $language) {
-    collection(handle: $handle) {
+    collectionBasicInfo: collection(handle: $handle) {
       id
       handle
       title
@@ -288,6 +403,46 @@ const COLLECTION_QUERY = `#graphql
         description
         title
       }
+      products(
+        first: $first,
+        last: $last,
+        before: $startCursor,
+        after: $endCursor,
+        filters: $filters,
+        sortKey: $sortKey,
+        reverse: $reverse
+      ) {
+        filters {
+          id
+          label
+          type
+          values {
+            id
+            label
+            count
+            input
+          }
+        }
+      }
+    }
+  }
+`;
+
+const COLLECTION_PRODUCTS_QUERY = `#graphql
+  ${PRODUCT_ITEM_FRAGMENT}
+  query CollectionProducts(
+    $handle: String!
+    $country: CountryCode
+    $language: LanguageCode
+    $filters: [ProductFilter!]
+    $sortKey: ProductCollectionSortKeys!
+    $reverse: Boolean
+    $first: Int
+    $last: Int
+    $startCursor: String
+    $endCursor: String
+  ) @inContext(country: $country, language: $language) {
+    collectionProducts: collection(handle: $handle) {
       products(
         first: $first,
         last: $last,

@@ -1,9 +1,9 @@
 import {defer} from '@shopify/remix-oxygen';
-import {Await, useLoaderData, Link} from '@remix-run/react';
+import {Await, useLoaderData} from '@remix-run/react';
 import {Suspense} from 'react';
-import {Image, Money} from '@shopify/hydrogen';
 import {HomepageHero} from '~/components/HomepageHero';
 import {ProductTile} from '~/components/ProductTile';
+import {ProductTileSkeleton} from '~/components/ProductTileSkeleton';
 
 /**
  * @type {MetaFunction}
@@ -79,6 +79,7 @@ function loadDeferredData({context}) {
 export default function Homepage() {
   /** @type {LoaderReturnData} */
   const data = useLoaderData();
+
   return (
     <div className="home">
       <HomepageHero />
@@ -96,7 +97,15 @@ function RecommendedProducts({products}) {
             Recommended Products
           </h2>
 
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense
+            fallback={
+              <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+                {Array.from({length: 8}, (_, index) => index + 1).map((id) => (
+                  <ProductTileSkeleton key={id} />
+                ))}
+              </div>
+            }
+          >
             <Await resolve={products}>
               {(response) => (
                 <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">

@@ -38,10 +38,6 @@ export function ProductForm({product, selectedVariant, variants}) {
     setVariantQuantity(variantQuantity + 1);
   };
 
-  // console.log('addOns', addOns);
-  // console.log('selectedVariant', selectedVariant);
-  // console.log('extraOptions', extraOptions);
-
   return (
     <div className="product-form mt-10">
       <VariantSelector
@@ -121,41 +117,40 @@ function ProductOptions({option}) {
               to={to}
             >
               <span>{value}</span>
-              {isAvailable ? (
-                <span
-                  aria-hidden="true"
+              <span
+                aria-hidden="true"
+                className={classNames(
+                  isAvailable ? 'opacity-100' : 'opacity-0',
+                  isActive ? 'border-main-purple' : 'border-transparent',
+                  'pointer-events-none absolute -inset-px rounded-md border-2 transition duration-200',
+                )}
+              />
+              <span
+                aria-hidden="true"
+                className={classNames(
+                  isAvailable ? 'opacity-0' : 'opacity-100',
+                  isActive ? 'border-main-purple/30' : 'border-gray-200',
+                  'pointer-events-none absolute -inset-px rounded-md border-2 transition duration-200',
+                )}
+              >
+                <svg
+                  stroke="currentColor"
+                  viewBox="0 0 100 100"
+                  preserveAspectRatio="none"
                   className={classNames(
-                    isActive ? 'border-main-purple' : 'border-transparent',
-                    'pointer-events-none absolute -inset-px rounded-md border-2 transition duration-200',
-                  )}
-                />
-              ) : (
-                <span
-                  aria-hidden="true"
-                  className={classNames(
-                    isActive ? 'border-main-purple/30' : 'border-gray-200',
-                    'pointer-events-none absolute -inset-px rounded-md border-2 transition duration-200',
+                    isActive ? 'text-main-purple/30' : 'text-gray-200',
+                    'absolute inset-0 h-full w-full stroke-3 text-gray-200 transition duration-200',
                   )}
                 >
-                  <svg
-                    stroke="currentColor"
-                    viewBox="0 0 100 100"
-                    preserveAspectRatio="none"
-                    className={classNames(
-                      isActive ? 'text-main-purple/30' : 'text-gray-200',
-                      'absolute inset-0 h-full w-full stroke-3 text-gray-200 transition duration-200',
-                    )}
-                  >
-                    <line
-                      x1={0}
-                      x2={100}
-                      y1={100}
-                      y2={0}
-                      vectorEffect="non-scaling-stroke"
-                    />
-                  </svg>
-                </span>
-              )}
+                  <line
+                    x1={0}
+                    x2={100}
+                    y1={100}
+                    y2={0}
+                    vectorEffect="non-scaling-stroke"
+                  />
+                </svg>
+              </span>
             </Link>
           );
         })}
@@ -431,7 +426,6 @@ function ExtraOptons({product, extraOptions, setExtraOptions}) {
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 lg:group-hover:border-main-purple lg:cursor-pointer outline-main-purple"
               onChange={(event) => {
-                // const addOnVariant = JSON.parse(event.target.value);
                 const isChecked = event.target.checked;
                 setExtraOptions((prevExtraOptions) => {
                   const isOptionAlreadyInState = prevExtraOptions.find(

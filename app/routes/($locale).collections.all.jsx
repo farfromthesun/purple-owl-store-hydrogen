@@ -3,7 +3,7 @@ import {useLoaderData, Link} from '@remix-run/react';
 import {getPaginationVariables, Image, Money} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
-import {CollectionHero} from '~/components/CollectionHero';
+import {PageHero} from '~/components/PageHero';
 import {CollectionSortFilters} from '~/components/CollectionSortFilters';
 import {ProductTile} from '~/components/ProductTile';
 
@@ -64,7 +64,7 @@ export default function Collection() {
 
   return (
     <div className="collection">
-      <CollectionHero />
+      <PageHero />
       <CollectionSortFilters>
         <PaginatedResourceSection
           connection={products}

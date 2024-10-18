@@ -1,4 +1,4 @@
-export function CollectionHero({collection}) {
+export function PageHero({title, subtitle, pageType = 'page'}) {
   return (
     <div className="relative isolate overflow-hidden bg-main-purple-super-dark px-6 sm:px-16 md:px-24 flex justify-center">
       <svg
@@ -22,18 +22,14 @@ export function CollectionHero({collection}) {
       </svg>
       <div className="max-w-md text-center py-24 md:py-28 lg:py-32">
         <h1 className="text-2xl font-bold tracking-tight text-white sm:text-4xl text-balance">
-          {collection?.title ? (
-            <>&apos;{collection.title}&apos; Collection</>
+          {title && pageType === 'collection' ? (
+            <>&apos;{title}&apos; Collection</>
           ) : (
-            <>Shop the best products available on the market.</>
+            title
           )}
         </h1>
         <p className="mt-6 text-lg leading-8 text-gray-300">
-          {collection?.title ? (
-            <>Shop the best products available on the market.</>
-          ) : (
-            <>Malesuada adipiscing sagittis vel nulla.</>
-          )}
+          {subtitle && <>{subtitle}</>}
         </p>
       </div>
     </div>

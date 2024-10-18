@@ -186,12 +186,6 @@ export default function Product() {
 
             {/* Product info */}
             <div className="mt-6 lg:mt-0 sticky top-[84px] self-start">
-              <small>
-                <p>
-                  STYLE THE DISABLE QUANTITY BUTTON AND CHECK WHY CART IS
-                  LOADING SO SLOW ON THE PRODUCT PAGE
-                </p>
-              </small>
               <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl mb-3">
                 {title}
               </h1>
