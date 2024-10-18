@@ -2,9 +2,9 @@
 
 ## What's included
 
-- Hydrogen (JavaScript)
+- Shopify Hydrogen (JavaScript)
 - Tailwind UI
 - Headless UI
 - Tailwind CSS
 - Framer Motion
-- (Shopify Functions - ?)
+- Shopify Functions
