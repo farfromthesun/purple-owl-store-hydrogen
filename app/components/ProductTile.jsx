@@ -10,6 +10,11 @@ import {Image, Money} from '@shopify/hydrogen';
  * }}
  */
 export function ProductTile({product, to, withFilters, imgLoading}) {
+  const isSoldOut = !product.availableForSale;
+  const isOnSale =
+    product.compareAtPriceRange.minVariantPrice.amount > 0 &&
+    product.compareAtPriceRange.maxVariantPrice.amount > 0;
+
   return (
     <Link
       key={product.id}
@@ -18,7 +23,7 @@ export function ProductTile({product, to, withFilters, imgLoading}) {
       className="group animate-fade-in"
     >
       {product.featuredImage && (
-        <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+        <div className="relative aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
           <Image
             alt={product.featuredImage.altText || product.title}
             data={product.featuredImage}
@@ -27,6 +32,16 @@ export function ProductTile({product, to, withFilters, imgLoading}) {
             sizes="(min-width: 45em) 400px, 50vw"
             className="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300"
           />
+          {(isSoldOut || isOnSale) && (
+            <div className="absolute bottom-2 flex left-2 gap-2">
+              {isSoldOut && (
+                <span className="badge bg-main-purple-super-dark uppercase">
+                  Sold out
+                </span>
+              )}
+              {isOnSale && <span className="badge uppercase">Sale</span>}
+            </div>
+          )}
         </div>
       )}
       {withFilters === true ? (

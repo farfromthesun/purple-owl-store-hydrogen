@@ -387,6 +387,7 @@ function AddOns({product, setAddOns}) {
                 <ProductPrice
                   price={addOn.defaultVariant.price}
                   compareAtPrice={addOn.defaultVariant.compareAtPrice}
+                  motionLayout={false}
                 />
               </div>
             </label>

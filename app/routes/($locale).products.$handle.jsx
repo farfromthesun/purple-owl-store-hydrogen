@@ -10,6 +10,7 @@ import {getVariantUrl} from '~/lib/variants';
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
+import {AnimatePresence, easeInOut, motion} from 'framer-motion';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -189,11 +190,25 @@ export default function Product() {
               <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl mb-3">
                 {title}
               </h1>
-              <div className="text-2xl text-gray-900">
-                <ProductPrice
-                  price={selectedVariant?.price}
-                  compareAtPrice={selectedVariant?.compareAtPrice}
-                />
+              <div className="text-2xl text-gray-900 flex items-center gap-2">
+                <AnimatePresence initial={false}>
+                  <ProductPrice
+                    price={selectedVariant?.price}
+                    compareAtPrice={selectedVariant?.compareAtPrice}
+                  />
+                  {!selectedVariant.availableForSale && (
+                    <motion.span
+                      layout
+                      initial={{opacity: 0}}
+                      animate={{opacity: 1}}
+                      exit={{opacity: 0}}
+                      transition={{duration: 0.1, ease: easeInOut}}
+                      className="badge bg-main-purple-super-dark uppercase"
+                    >
+                      Sold out
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </div>
 
               {!isProductGWP && (

@@ -133,7 +133,18 @@ const FEATURED_PRODUCTS_FRAGMENT = `#graphql
     id
     title
     handle
+    availableForSale
     priceRange {
+      minVariantPrice {
+        amount
+        currencyCode
+      }
+      maxVariantPrice {
+        amount
+        currencyCode
+      }
+    }
+    compareAtPriceRange {
       minVariantPrice {
         amount
         currencyCode
