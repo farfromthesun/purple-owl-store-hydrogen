@@ -21,6 +21,7 @@ import {
 import {AnimatePresence, motion} from 'framer-motion';
 import {Form, Link, useLocation, useSearchParams} from '@remix-run/react';
 import {useDebounceSubmit} from 'remix-utils/use-debounce-submit';
+import {Aside, useAside} from './Aside';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -30,13 +31,14 @@ export const FILTER_URL_PREFIX = 'filter.';
 const FILTER_DEBOUNCE = 500;
 
 export function CollectionSortFilters({filters, appliedFilters, children}) {
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  // const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [params] = useSearchParams();
+  const {open} = useAside();
 
   return (
     <div className="bg-white">
       {/* Mobile filter dialog */}
-      <Dialog
+      {/* <Dialog
         open={mobileFiltersOpen}
         onClose={setMobileFiltersOpen}
         className="relative z-40 lg:hidden"
@@ -61,13 +63,16 @@ export function CollectionSortFilters({filters, appliedFilters, children}) {
                 <XMarkIcon aria-hidden="true" className="h-6 w-6" />
               </button>
             </div>
-            {/* Filters */}
             <div className="mt-4 border-t border-gray-200">
               <FiltersList filters={filters} viewport="mobile" />
             </div>
           </DialogPanel>
         </div>
-      </Dialog>
+      </Dialog> */}
+
+      <Aside type="filters" heading="Filters">
+        <FiltersList filters={filters} viewport="mobile" />
+      </Aside>
 
       {/* Desktop filters & sort */}
       <div className="mx-auto max-w-1400 px-4 sm:px-6 lg:px-8">
@@ -79,7 +84,7 @@ export function CollectionSortFilters({filters, appliedFilters, children}) {
         <div
           className={`grid grid-rows-[auto_auto] gap-y-3 lg:grid-rows-none lg:gap-y-0 items-baseline border-b border-gray-200 pb-6 pt-24 ${
             appliedFilters.length > 0
-              ? 'grid-cols-2 lg:grid-cols-[auto_1fr_auto]'
+              ? 'grid-cols-[auto_auto] lg:grid-cols-[auto_1fr_auto]'
               : 'grid-cols-1 lg:grid-cols-1'
           }`}
         >
@@ -134,7 +139,7 @@ export function CollectionSortFilters({filters, appliedFilters, children}) {
             <SortMenu />
             <button
               type="button"
-              onClick={() => setMobileFiltersOpen(true)}
+              onClick={() => open('filters')}
               className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
             >
               <span className="sr-only">Filters</span>

@@ -195,9 +195,11 @@ export default function Product() {
                   <ProductPrice
                     price={selectedVariant?.price}
                     compareAtPrice={selectedVariant?.compareAtPrice}
+                    key="selectedVariantPrice"
                   />
                   {!selectedVariant.availableForSale && (
                     <motion.span
+                      key="selectedVariantSoldOutBadge"
                       layout
                       initial={{opacity: 0}}
                       animate={{opacity: 1}}

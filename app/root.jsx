@@ -12,13 +12,11 @@ import {
   Link,
 } from '@remix-run/react';
 import favicon from '~/assets/favicon.svg';
-import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import customFonts from './styles/custom-fonts.css?url';
 import {PageLayout} from '~/components/PageLayout';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
-import {Button} from './components/Button';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations

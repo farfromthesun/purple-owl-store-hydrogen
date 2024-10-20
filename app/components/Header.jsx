@@ -74,11 +74,13 @@ export function HeaderMenu({
   publicStoreDomain,
 }) {
   // const className = `header-menu-${viewport}`;
+  const {close} = useAside();
 
   function closeAside(event) {
+    close();
     if (viewport === 'mobile') {
-      event.preventDefault();
-      window.location.href = event.currentTarget.href;
+      // event.preventDefault();
+      // window.location.href = event.currentTarget.href;
     }
   }
 
@@ -137,7 +139,7 @@ function HeaderCtas({isLoggedIn, cart}) {
       role="navigation"
     >
       {/* <HeaderMenuMobileToggle /> */}
-      <NavLink
+      {/* <NavLink
         prefetch="intent"
         to="/account"
         className="text-sm lg:text-base font-semibold leading-6 text-gray-900 lg:hover:!text-main-purple transition duration-300"
@@ -158,7 +160,7 @@ function HeaderCtas({isLoggedIn, cart}) {
             )}
           </Await>
         </Suspense>
-      </NavLink>
+      </NavLink> */}
       <div className="hidden lg:block">
         <SearchToggle />
       </div>

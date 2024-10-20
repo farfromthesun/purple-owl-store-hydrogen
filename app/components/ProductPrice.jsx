@@ -34,6 +34,7 @@ export function ProductPrice({price, compareAtPrice, motionLayout = true}) {
           exit={{opacity: 0}}
           transition={{duration: 0.1, ease: easeInOut}}
           className="flex gap-2 items-center"
+          style={{originY: '0px'}}
         >
           <s className="opacity-50">
             <Money data={compareAtPrice} />

@@ -111,28 +111,28 @@ function OurStory() {
 function OurTeam() {
   const founders = [
     {
-      name: 'HM Jawad',
+      name: 'Leslie Alexander',
       role: 'Co-Founder / CEO',
       imageUrl:
-        'https://cdn.shopify.com/s/files/1/0724/6168/0949/files/page-about-founder-1.jpg?v=1703299149',
+        'https://cdn.shopify.com/s/files/1/0724/6168/0949/files/page-about-founder-1.jpg?v=1729392092',
     },
     {
-      name: 'Furqan Abid',
+      name: 'Michael Foster',
       role: 'Co-Founder / CTO',
       imageUrl:
-        'https://cdn.shopify.com/s/files/1/0724/6168/0949/files/page-about-founder-2.jpg?v=1703299149',
+        'https://cdn.shopify.com/s/files/1/0724/6168/0949/files/page-about-founder-2.jpg?v=1729392195',
     },
     {
-      name: 'Abdullah Ah',
+      name: 'Dries Vincent',
       role: 'Business Relations',
       imageUrl:
-        'https://cdn.shopify.com/s/files/1/0724/6168/0949/files/page-about-founder-3.jpg?v=1703299149',
+        'https://cdn.shopify.com/s/files/1/0724/6168/0949/files/page-about-founder-3.jpg?v=1729392195',
     },
     {
-      name: 'Abrar Khan',
+      name: 'Lindsay Walton',
       role: 'Director of Product',
       imageUrl:
-        'https://cdn.shopify.com/s/files/1/0724/6168/0949/files/page-about-founder-4.jpg?v=1703299149',
+        'https://cdn.shopify.com/s/files/1/0724/6168/0949/files/page-about-founder-4.jpg?v=1729392092',
     },
   ];
 

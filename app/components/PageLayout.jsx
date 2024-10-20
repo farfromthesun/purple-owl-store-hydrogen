@@ -49,7 +49,7 @@ export function PageLayout({
  */
 function CartAside({cart}) {
   return (
-    <Aside type="cart" heading="CART">
+    <Aside type="cart" heading="Your cart">
       <Suspense fallback={<p>Loading cart ...</p>}>
         <Await resolve={cart}>
           {(cart) => {
@@ -63,7 +63,7 @@ function CartAside({cart}) {
 
 function SearchAside() {
   return (
-    <Aside type="search" heading="SEARCH">
+    <Aside type="search" heading="Search">
       <div className="predictive-search">
         <br />
         <SearchFormPredictive>
@@ -151,7 +151,7 @@ function MobileMenuAside({header, publicStoreDomain}) {
   return (
     header.menu &&
     header.shop.primaryDomain?.url && (
-      <Aside type="mobile" heading="MENU">
+      <Aside type="mobile" heading="Menu">
         <HeaderMenu
           menu={header.menu}
           viewport="mobile"

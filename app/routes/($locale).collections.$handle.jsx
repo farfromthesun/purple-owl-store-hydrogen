@@ -372,12 +372,10 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
     }
     compareAtPriceRange {
       minVariantPrice {
-        amount
-        currencyCode
+        ...MoneyProductItem
       }
       maxVariantPrice {
-        amount
-        currencyCode
+        ...MoneyProductItem
       }
     }
     variants(first: 1) {
