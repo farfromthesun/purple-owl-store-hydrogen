@@ -3,6 +3,7 @@ import {Suspense} from 'react';
 import {CartForm} from '@shopify/hydrogen';
 import {json} from '@shopify/remix-oxygen';
 import {CartMain} from '~/components/CartMain';
+import {RouteTransition} from '~/components/RouteTransition';
 
 /**
  * @type {MetaFunction}
@@ -145,19 +146,21 @@ export default function Cart() {
   if (!rootData) return null;
 
   return (
-    <div className="cart p-6 lg:px-8">
-      <h1>Cart</h1>
-      <Suspense fallback={<p>Loading cart ...</p>}>
-        <Await
-          resolve={rootData.cart}
-          errorElement={<div>An error occurred</div>}
-        >
-          {(cart) => {
-            return <CartMain layout="page" cart={cart} />;
-          }}
-        </Await>
-      </Suspense>
-    </div>
+    <RouteTransition>
+      <div className="cart p-6 lg:px-8">
+        <h1>Cart</h1>
+        <Suspense fallback={<p>Loading cart ...</p>}>
+          <Await
+            resolve={rootData.cart}
+            errorElement={<div>An error occurred</div>}
+          >
+            {(cart) => {
+              return <CartMain layout="page" cart={cart} />;
+            }}
+          </Await>
+        </Suspense>
+      </div>
+    </RouteTransition>
   );
 }
 

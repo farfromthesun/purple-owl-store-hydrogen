@@ -63,15 +63,28 @@ export function CartLineItem({layout, line}) {
                 <ProductPrice price={line?.cost?.totalAmount} />
               </div>
             </div>
-            <ul>
-              {selectedOptions.map((option) => (
-                <li key={option.name}>
-                  <small className="mt-1 text-sm text-gray-500">
-                    {option.name}: {option.value}
-                  </small>
-                </li>
-              ))}
-            </ul>
+            {!line.merchandise.product.options?.find(
+              (option) => option.name === 'Title',
+            ) ? (
+              <ul>
+                {selectedOptions.map((option) => (
+                  <li key={option.name}>
+                    <small className="mt-1 text-sm text-gray-500">
+                      {option.name}: {option.value}
+                    </small>
+                  </li>
+                ))}
+                {line.attributes?.map((attribute) => (
+                  <li key={attribute.key}>
+                    <small className="mt-1 text-sm text-gray-500">
+                      {attribute.key}: {attribute.value}
+                    </small>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              ''
+            )}
           </div>
           <CartLineQuantity line={line} />
         </div>
@@ -147,78 +160,93 @@ function CartLineQuantity({line}) {
         </div> */}
       {/* </div> */}
 
-      <div className="flex flex-1 items-end justify-between text-sm items-center mt-2">
-        <div className="gap-2 flex">
-          <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
-            <input type="hidden" name="updateType" value="decrease" />
-            <button
-              className={classNames(
-                quantity > 1
-                  ? 'cursor-pointer bg-white text-gray-900 shadow-sm'
-                  : 'cursor-not-allowed bg-gray-50 text-gray-200',
-                'group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-1 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
-              )}
-              aria-label="Decrease quantity"
-              disabled={quantity <= 1 || !!isOptimistic}
-              name="decrease-quantity"
-              value={prevQuantity}
+      <div
+        className={classNames(
+          line.merchandise.product.tags?.includes('GWP')
+            ? 'justify-end'
+            : 'justify-between',
+          'flex flex-1 items-end text-sm items-center mt-2',
+        )}
+      >
+        {!line.merchandise.product.tags?.includes('GWP') ? (
+          <div className="gap-2 flex">
+            <CartLineUpdateButton
+              lines={[{id: lineId, quantity: prevQuantity}]}
             >
-              <span>
-                <MinusIcon aria-hidden="true" className="h-3 w-3" />
-              </span>
-              <span
-                aria-hidden="true"
+              <input type="hidden" name="updateType" value="decrease" />
+              <button
                 className={classNames(
-                  quantity > 1 ? 'opacity-100' : 'opacity-0',
-                  'pointer-events-none absolute -inset-px rounded-md border-2 border-transparent transition duration-200 lg:group-hover:border-main-purple',
+                  quantity > 1
+                    ? 'cursor-pointer bg-white text-gray-900 shadow-sm'
+                    : 'cursor-not-allowed bg-gray-50 text-gray-200',
+                  'group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-1 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
                 )}
-              />
-              <span
-                aria-hidden="true"
-                className={classNames(
-                  quantity <= 1 ? 'opacity-100' : 'opacity-0',
-                  'pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200 transition duration-200',
-                )}
+                aria-label="Decrease quantity"
+                disabled={quantity <= 1 || !!isOptimistic}
+                name="decrease-quantity"
+                value={prevQuantity}
               >
-                <svg
-                  stroke="currentColor"
-                  viewBox="0 0 100 100"
-                  preserveAspectRatio="none"
-                  className="absolute inset-0 h-full w-full stroke-3 text-gray-200 transition duration-200"
+                <span>
+                  <MinusIcon aria-hidden="true" className="h-3 w-3" />
+                </span>
+                <span
+                  aria-hidden="true"
+                  className={classNames(
+                    quantity > 1 ? 'opacity-100' : 'opacity-0',
+                    'pointer-events-none absolute -inset-px rounded-md border-2 border-transparent transition duration-200 lg:group-hover:border-main-purple',
+                  )}
+                />
+                <span
+                  aria-hidden="true"
+                  className={classNames(
+                    quantity <= 1 ? 'opacity-100' : 'opacity-0',
+                    'pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200 transition duration-200',
+                  )}
                 >
-                  <line
-                    x1={0}
-                    x2={100}
-                    y1={100}
-                    y2={0}
-                    vectorEffect="non-scaling-stroke"
-                  />
-                </svg>
-              </span>
-            </button>
-          </CartLineUpdateButton>
-          <div className="w-7 text-center px-2 py-1 rounded-md text-xs  text-gray-500 outline-none">
-            {quantity}
-          </div>
-          <CartLineUpdateButton lines={[{id: lineId, quantity: nextQuantity}]}>
-            <input type="hidden" name="updateType" value="increase" />
-            <button
-              className="group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-1 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200 cursor-pointer bg-white text-gray-900 shadow-sm"
-              aria-label="Increase quantity"
-              name="increase-quantity"
-              value={nextQuantity}
-              disabled={!!isOptimistic}
+                  <svg
+                    stroke="currentColor"
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                    className="absolute inset-0 h-full w-full stroke-3 text-gray-200 transition duration-200"
+                  >
+                    <line
+                      x1={0}
+                      x2={100}
+                      y1={100}
+                      y2={0}
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </CartLineUpdateButton>
+            <div className="w-7 text-center px-2 py-1 rounded-md text-xs text-gray-500 outline-none">
+              {quantity}
+            </div>
+            <CartLineUpdateButton
+              lines={[{id: lineId, quantity: nextQuantity}]}
             >
-              <span>
-                <PlusIcon aria-hidden="true" className="h-3 w-3" />
-              </span>
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent transition duration-200 lg:group-hover:border-main-purple"
-              />
-            </button>
-          </CartLineUpdateButton>
-        </div>
+              <input type="hidden" name="updateType" value="increase" />
+              <button
+                className="group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-1 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200 cursor-pointer bg-white text-gray-900 shadow-sm"
+                aria-label="Increase quantity"
+                name="increase-quantity"
+                value={nextQuantity}
+                disabled={!!isOptimistic}
+              >
+                <span>
+                  <PlusIcon aria-hidden="true" className="h-3 w-3" />
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent transition duration-200 lg:group-hover:border-main-purple"
+                />
+              </button>
+            </CartLineUpdateButton>
+          </div>
+        ) : (
+          ''
+        )}
 
         <CartLineRemoveButton lineIds={[lineId]} disabled={!!isOptimistic} />
       </div>

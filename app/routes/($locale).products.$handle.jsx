@@ -1,4 +1,4 @@
-import {Suspense} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {defer, redirect} from '@shopify/remix-oxygen';
 import {Await, Link, useLoaderData} from '@remix-run/react';
 import {
@@ -11,6 +11,7 @@ import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {AnimatePresence, easeInOut, motion} from 'framer-motion';
+import {RouteTransition} from '~/components/RouteTransition';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -144,10 +145,9 @@ export default function Product() {
     {id: 1, name: 'Shop', href: '/collections/all-products'},
   ];
   const isProductGWP = product.id.includes('9201094689077');
-  const isViewportLg = window.matchMedia('(min-width: 1024px)').matches;
 
   return (
-    <>
+    <RouteTransition>
       <div className="bg-white">
         <div className="pt-6 lg:pt-12">
           <nav aria-label="Breadcrumb">
@@ -183,10 +183,7 @@ export default function Product() {
           {/* Product main */}
           <div className="mx-auto max-w-2xl px-4 pb-16 pt-6 sm:px-6 lg:grid lg:max-w-1400 lg:grid-cols-3 lg:gap-x-8 lg:px-8 lg:pb-24">
             <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-              <ProductImage
-                image={selectedVariant?.image}
-                aspectRatio={isViewportLg ? 'auto' : '1/1'}
-              />
+              <ProductImage image={selectedVariant?.image} />
             </div>
 
             {/* Product info */}
@@ -271,7 +268,7 @@ export default function Product() {
           }}
         />
       </div>
-    </>
+    </RouteTransition>
   );
 }
 

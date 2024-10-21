@@ -2,6 +2,7 @@ import {defer} from '@shopify/remix-oxygen';
 import {useLoaderData} from '@remix-run/react';
 import {PageHero} from '~/components/PageHero';
 import {Image} from '@shopify/hydrogen';
+import {RouteTransition} from '~/components/RouteTransition';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -64,14 +65,16 @@ export default function Page() {
   const {page} = useLoaderData();
 
   return (
-    <div className="page">
-      <PageHero
-        title="About us"
-        subtitle="Step inside and discover who we are."
-      />
-      <OurStory />
-      <OurTeam />
-    </div>
+    <RouteTransition>
+      <div className="page">
+        <PageHero
+          title="About us"
+          subtitle="Step inside and discover who we are."
+        />
+        <OurStory />
+        <OurTeam />
+      </div>
+    </RouteTransition>
   );
 }
 

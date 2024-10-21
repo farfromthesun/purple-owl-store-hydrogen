@@ -9,6 +9,7 @@ import {
   SearchFormPredictive,
 } from '~/components/SearchFormPredictive';
 import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
+import {AnimatePresence} from 'framer-motion';
 
 /**
  * @param {PageLayoutProps}
@@ -34,7 +35,10 @@ export function PageLayout({
           publicStoreDomain={publicStoreDomain}
         />
       )}
-      <main className="grow">{children}</main>
+
+      <main className="grow overflow-hidden">
+        <AnimatePresence initial={false}>{children}</AnimatePresence>
+      </main>
       <Footer
         footer={footer}
         header={header}

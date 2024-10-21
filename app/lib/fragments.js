@@ -47,6 +47,10 @@ export const CART_QUERY_FRAGMENT = `#graphql
           title
           id
           vendor
+          tags
+          options(first: 10) {
+            name
+          }
         }
         selectedOptions {
           name

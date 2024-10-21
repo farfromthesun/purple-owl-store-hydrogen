@@ -4,6 +4,7 @@ import {Suspense} from 'react';
 import {HomepageHero} from '~/components/HomepageHero';
 import {ProductTile} from '~/components/ProductTile';
 import {ProductTileSkeleton} from '~/components/ProductTileSkeleton';
+import {RouteTransition} from '~/components/RouteTransition';
 
 /**
  * @type {MetaFunction}
@@ -81,10 +82,12 @@ export default function Homepage() {
   const data = useLoaderData();
 
   return (
-    <div className="home">
-      <HomepageHero />
-      <RecommendedProducts products={data.featuredProducts} />
-    </div>
+    <RouteTransition>
+      <div className="home">
+        <HomepageHero />
+        <RecommendedProducts products={data.featuredProducts} />
+      </div>
+    </RouteTransition>
   );
 }
 
