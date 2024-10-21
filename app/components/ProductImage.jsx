@@ -17,7 +17,7 @@ export function ProductImage({image, aspectRatio}) {
         data={image}
         key={image.id}
         sizes="(min-width: 45em) 50vw, 100vw"
-        className="animate-fade-in rounded-lg"
+        className="animate-fade-in rounded-lg object-cover"
       />
     </div>
   );

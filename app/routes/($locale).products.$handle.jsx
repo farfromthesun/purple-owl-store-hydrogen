@@ -144,6 +144,7 @@ export default function Product() {
     {id: 1, name: 'Shop', href: '/collections/all-products'},
   ];
   const isProductGWP = product.id.includes('9201094689077');
+  const isViewportLg = window.matchMedia('(min-width: 1024px)').matches;
 
   return (
     <>
@@ -182,7 +183,10 @@ export default function Product() {
           {/* Product main */}
           <div className="mx-auto max-w-2xl px-4 pb-16 pt-6 sm:px-6 lg:grid lg:max-w-1400 lg:grid-cols-3 lg:gap-x-8 lg:px-8 lg:pb-24">
             <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-              <ProductImage image={selectedVariant?.image} />
+              <ProductImage
+                image={selectedVariant?.image}
+                aspectRatio={isViewportLg ? 'auto' : '1/1'}
+              />
             </div>
 
             {/* Product info */}
@@ -190,7 +194,7 @@ export default function Product() {
               <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl mb-3">
                 {title}
               </h1>
-              <div className="text-2xl text-gray-900 flex items-center gap-2">
+              <div className="text-2xl text-gray-900 flex items-center lg:block xl:flex gap-2">
                 <AnimatePresence initial={false}>
                   <ProductPrice
                     price={selectedVariant?.price}

@@ -33,6 +33,7 @@
 @layer base {
   body {
     @apply font-base;
+    @apply text-gray-900;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
 

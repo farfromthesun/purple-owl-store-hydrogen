@@ -333,64 +333,64 @@ function AddOns({product, setAddOns}) {
       <h3 className="text-sm font-medium text-gray-900">Add-ons</h3>
       <div className="mt-4">
         {product.add_ons_metafield.references.nodes.map((addOn) => (
-          <div
-            key={addOn.id.split('Product/')[1]}
-            className="inline-flex items-center mb-4 last:mb-0 group"
-          >
-            <input
-              id={`add-on-${addOn.id.split('Product/')[1]}`}
-              name={`add-on-${addOn.id.split('Product/')[1]}`}
-              value={JSON.stringify(addOn.defaultVariant)}
-              type="checkbox"
-              className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 lg:group-hover:border-main-purple lg:cursor-pointer outline-main-purple"
-              onChange={(event) => {
-                const addOnVariant = JSON.parse(event.target.value);
-                const isChecked = event.target.checked;
-                setAddOns((prevAddOns) => {
-                  const isAddOnAlreadyInState = prevAddOns.find(
-                    (prevAddOn) => prevAddOn.merchandiseId === addOnVariant.id,
-                  );
-                  if (isChecked && !isAddOnAlreadyInState) {
-                    return [
-                      ...prevAddOns,
-                      {
-                        merchandiseId: addOnVariant.id,
-                        quantity: 1,
-                        selectedVariant: addOnVariant,
-                      },
-                    ];
-                  } else if (!isChecked && isAddOnAlreadyInState) {
-                    return prevAddOns.filter(
+          <div className="mb-4 last:mb-0" key={addOn.id.split('Product/')[1]}>
+            <div className="inline-flex items-center group">
+              <input
+                id={`add-on-${addOn.id.split('Product/')[1]}`}
+                name={`add-on-${addOn.id.split('Product/')[1]}`}
+                value={JSON.stringify(addOn.defaultVariant)}
+                type="checkbox"
+                className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 lg:group-hover:border-main-purple lg:cursor-pointer outline-main-purple"
+                onChange={(event) => {
+                  const addOnVariant = JSON.parse(event.target.value);
+                  const isChecked = event.target.checked;
+                  setAddOns((prevAddOns) => {
+                    const isAddOnAlreadyInState = prevAddOns.find(
                       (prevAddOn) =>
-                        prevAddOn.merchandiseId !== addOnVariant.id,
+                        prevAddOn.merchandiseId === addOnVariant.id,
                     );
-                  }
-                });
-              }}
-            />
-            <label
-              htmlFor={`add-on-${addOn.id.split('Product/')[1]}`}
-              className="flex items-center gap-3 ml-3 min-w-0 text-sm lg:group-hover:text-main-purple lg:transition lg:duration-200 lg:cursor-pointer"
-            >
-              <Image
-                alt={addOn.title}
-                aspectRatio="1/1"
-                data={addOn.images.nodes[0]}
-                height={50}
-                loading="lazy"
-                width={50}
-                className="rounded-md lg:group-hover:opacity-75 lg:transition lg:duration-200"
+                    if (isChecked && !isAddOnAlreadyInState) {
+                      return [
+                        ...prevAddOns,
+                        {
+                          merchandiseId: addOnVariant.id,
+                          quantity: 1,
+                          selectedVariant: addOnVariant,
+                        },
+                      ];
+                    } else if (!isChecked && isAddOnAlreadyInState) {
+                      return prevAddOns.filter(
+                        (prevAddOn) =>
+                          prevAddOn.merchandiseId !== addOnVariant.id,
+                      );
+                    }
+                  });
+                }}
               />
-              <div className="flex items-center">
-                {addOn.title}
-                <span className="mx-2">-</span>
-                <ProductPrice
-                  price={addOn.defaultVariant.price}
-                  compareAtPrice={addOn.defaultVariant.compareAtPrice}
-                  motionLayout={false}
+              <label
+                htmlFor={`add-on-${addOn.id.split('Product/')[1]}`}
+                className="flex items-center gap-3 ml-3 min-w-0 text-sm lg:group-hover:text-main-purple lg:transition lg:duration-200 lg:cursor-pointer"
+              >
+                <Image
+                  alt={addOn.title}
+                  aspectRatio="1/1"
+                  data={addOn.images.nodes[0]}
+                  height={50}
+                  loading="lazy"
+                  width={50}
+                  className="rounded-md lg:group-hover:opacity-75 lg:transition lg:duration-200"
                 />
-              </div>
-            </label>
+                <div className="">
+                  <div className="font-bold">{addOn.title}</div>
+                  {/* <span className="mx-2">-</span> */}
+                  <ProductPrice
+                    price={addOn.defaultVariant.price}
+                    compareAtPrice={addOn.defaultVariant.compareAtPrice}
+                    motionLayout={false}
+                  />
+                </div>
+              </label>
+            </div>
           </div>
         ))}
       </div>
