@@ -62,34 +62,32 @@ export function Aside({children, heading, type}) {
               className="pointer-events-auto w-screen max-w-md transform transition duration-300 ease-in-out data-[closed]:translate-x-full sm:duration-400"
             >
               <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
-                <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
-                  <div className="flex items-start justify-between">
-                    <DialogTitle className="text-lg font-medium text-gray-900">
-                      {heading}
-                    </DialogTitle>
-                    <div className="ml-3 flex h-7 items-center">
-                      <button
-                        type="button"
-                        onClick={close}
-                        className="relative -m-2 p-2 text-gray-400 hover:text-main-purple cursor-pointer transition duration-300"
-                      >
-                        <span className="absolute -inset-0.5" />
-                        <span className="sr-only">Close panel</span>
-                        <XMarkIcon aria-hidden="true" className="h-6 w-6" />
-                      </button>
-                    </div>
+                <div className="flex items-start justify-between px-4 py-6 sm:px-6">
+                  <DialogTitle className="text-lg font-medium text-gray-900">
+                    {heading}
+                  </DialogTitle>
+                  <div className="ml-3 flex h-7 items-center">
+                    <button
+                      type="button"
+                      onClick={close}
+                      className="relative -m-2 p-2 text-gray-400 hover:text-main-purple cursor-pointer transition duration-300"
+                    >
+                      <span className="absolute -inset-0.5" />
+                      <span className="sr-only">Close panel</span>
+                      <XMarkIcon aria-hidden="true" className="h-6 w-6" />
+                    </button>
                   </div>
+                </div>
 
-                  <div
-                    className={classNames(
-                      activeType === 'filters'
-                        ? '-mx-4 border-t border-gray-200'
-                        : '',
-                      'mt-8',
-                    )}
-                  >
-                    <div className="flow-root">{children}</div>
-                  </div>
+                <div
+                  className={classNames(
+                    activeType === 'filters'
+                      ? '-mx-4 border-t border-gray-200'
+                      : '',
+                    'mt-2 px-4 pb-6 sm:px-6 flex-1',
+                  )}
+                >
+                  <div className="flow-root">{children}</div>
                 </div>
               </div>
             </DialogPanel>

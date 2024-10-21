@@ -195,26 +195,29 @@ export default function Product() {
                 {title}
               </h1>
               <div className="text-2xl text-gray-900 flex items-center lg:block xl:flex gap-2">
-                <AnimatePresence initial={false}>
-                  <ProductPrice
-                    price={selectedVariant?.price}
-                    compareAtPrice={selectedVariant?.compareAtPrice}
-                    key="selectedVariantPrice"
-                  />
-                  {!selectedVariant.availableForSale && (
-                    <motion.span
-                      key="selectedVariantSoldOutBadge"
-                      layout
-                      initial={{opacity: 0}}
-                      animate={{opacity: 1}}
-                      exit={{opacity: 0}}
-                      transition={{duration: 0.1, ease: easeInOut}}
-                      className="badge bg-main-purple-super-dark uppercase"
-                    >
-                      Sold out
-                    </motion.span>
-                  )}
-                </AnimatePresence>
+                {/* <AnimatePresence initial={false}> */}
+                <ProductPrice
+                  price={selectedVariant?.price}
+                  compareAtPrice={selectedVariant?.compareAtPrice}
+                  key="selectedVariantPrice"
+                />
+                {!selectedVariant.availableForSale && (
+                  // <motion.span
+                  //   key="selectedVariantSoldOutBadge"
+                  //   layout
+                  //   initial={{opacity: 0}}
+                  //   animate={{opacity: 1}}
+                  //   exit={{opacity: 0}}
+                  //   transition={{duration: 0.1, ease: easeInOut}}
+                  //   className="badge bg-main-purple-super-dark uppercase"
+                  // >
+                  //   Sold out
+                  // </motion.span>
+                  <span className="badge bg-main-purple-super-dark uppercase animate-fade-in">
+                    Sold out
+                  </span>
+                )}
+                {/* </AnimatePresence> */}
               </div>
 
               {!isProductGWP && (

@@ -9,40 +9,42 @@ import {easeInOut, motion} from 'framer-motion';
  */
 export function ProductPrice({price, compareAtPrice, motionLayout = true}) {
   return (
-    // <div>
-    //   {compareAtPrice ? (
-    //     <div className="flex items-center gap-2">
-    //       {price ? <Money data={price} /> : null}
+    <div>
+      {compareAtPrice ? (
+        <div className="flex items-center gap-2">
+          {price ? <Money data={price} /> : null}
+          <s className="text-gray-400 animate-fade-in">
+            <Money data={compareAtPrice} />
+          </s>
+          <div className="badge uppercase self-center animate-fade-in">
+            Sale
+          </div>
+        </div>
+      ) : price ? (
+        <Money data={price} />
+      ) : (
+        <span>&nbsp;</span>
+      )}
+    </div>
+    // <div className="flex items-center gap-2">
+    //   {price && <Money data={price} />}
+    //   {compareAtPrice && (
+    //     <motion.div
+    //       layout={motionLayout}
+    //       initial={{opacity: 0}}
+    //       animate={{opacity: 1}}
+    //       exit={{opacity: 0}}
+    //       transition={{duration: 0.1, ease: easeInOut}}
+    //       className="flex gap-2 items-center"
+    //       style={{originY: '0px'}}
+    //     >
     //       <s className="opacity-50">
     //         <Money data={compareAtPrice} />
     //       </s>
     //       <div className="badge uppercase self-center">Sale</div>
-    //     </div>
-    //   ) : price ? (
-    //     <Money data={price} />
-    //   ) : (
-    //     <span>&nbsp;</span>
+    //     </motion.div>
     //   )}
     // </div>
-    <div className="flex items-center gap-2">
-      {price && <Money data={price} />}
-      {compareAtPrice && (
-        <motion.div
-          layout={motionLayout}
-          initial={{opacity: 0}}
-          animate={{opacity: 1}}
-          exit={{opacity: 0}}
-          transition={{duration: 0.1, ease: easeInOut}}
-          className="flex gap-2 items-center"
-          style={{originY: '0px'}}
-        >
-          <s className="opacity-50">
-            <Money data={compareAtPrice} />
-          </s>
-          <div className="badge uppercase self-center">Sale</div>
-        </motion.div>
-      )}
-    </div>
   );
 }
 

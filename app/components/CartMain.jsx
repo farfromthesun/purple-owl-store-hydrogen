@@ -22,15 +22,21 @@ export function CartMain({layout, cart: originalCart}) {
   const cartHasItems = cart?.totalQuantity > 0;
 
   return (
-    <div className={className}>
+    <div>
       <CartEmpty hidden={linesCount} layout={layout} />
-      <div className="cart-details">
-        <div aria-labelledby="cart-lines">
-          <ul>
+      <div>
+        <div>
+          <ul className="-my-6 divide-y divide-gray-200">
             {(cart?.lines?.nodes ?? []).map((line) => (
               <CartLineItem key={line.id} line={line} layout={layout} />
             ))}
           </ul>
+
+          {/* <ul>
+            {(cart?.lines?.nodes ?? []).map((line) => (
+              <CartLineItem key={line.id} line={line} layout={layout} />
+            ))}
+          </ul> */}
         </div>
         {cartHasItems && <CartSummary cart={cart} layout={layout} />}
       </div>
@@ -48,13 +54,16 @@ function CartEmpty({hidden = false}) {
   const {close} = useAside();
   return (
     <div hidden={hidden}>
-      <br />
-      <p>
+      <p className="my-6">
         Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
         started!
       </p>
-      <br />
-      <Link to="/collections" onClick={close} prefetch="viewport">
+      <Link
+        to="/collections/all-products"
+        onClick={close}
+        prefetch="viewport"
+        className="button"
+      >
         Continue shopping →
       </Link>
     </div>

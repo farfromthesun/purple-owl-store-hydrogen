@@ -139,10 +139,10 @@ function HeaderCtas({isLoggedIn, cart}) {
       role="navigation"
     >
       {/* <HeaderMenuMobileToggle /> */}
-      {/* <NavLink
+      <NavLink
         prefetch="intent"
         to="/account"
-        className="text-sm lg:text-base font-semibold leading-6 text-gray-900 lg:hover:!text-main-purple transition duration-300"
+        className="opacity-0 invisible text-sm lg:text-base font-semibold leading-6 text-gray-900 lg:hover:!text-main-purple transition duration-300"
       >
         <Suspense fallback="Sign in">
           <Await resolve={isLoggedIn} errorElement="Sign in">
@@ -160,7 +160,7 @@ function HeaderCtas({isLoggedIn, cart}) {
             )}
           </Await>
         </Suspense>
-      </NavLink> */}
+      </NavLink>
       <div className="hidden lg:block">
         <SearchToggle />
       </div>

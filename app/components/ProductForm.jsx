@@ -234,7 +234,10 @@ function QuantitySelector({
               );
               if (itemIncart) {
                 return (
-                  <span className=""> ({itemIncart.quantity} in cart)</span>
+                  <span className="animate-fade-in">
+                    {' '}
+                    ({itemIncart.quantity} in cart)
+                  </span>
                 );
               } else {
                 return null;
