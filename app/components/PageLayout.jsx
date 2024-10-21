@@ -37,7 +37,9 @@ export function PageLayout({
       )}
 
       <main className="grow overflow-hidden">
-        <AnimatePresence initial={false}>{children}</AnimatePresence>
+        <AnimatePresence mode="wait" initial={false}>
+          {children}
+        </AnimatePresence>
       </main>
       <Footer
         footer={footer}
