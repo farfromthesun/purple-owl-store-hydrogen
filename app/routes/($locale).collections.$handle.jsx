@@ -267,8 +267,8 @@ export default function Collection() {
   const navigation = useNavigation();
   const areProductsLoading =
     navigation.state === 'loading' &&
-    navigation?.location?.pathname?.includes(collectionBasicInfo.handle) &&
-    navigation?.location?.state === null;
+    navigation.location?.pathname?.includes(collectionBasicInfo.handle) &&
+    navigation.location?.state === null;
 
   return (
     <RouteTransition>

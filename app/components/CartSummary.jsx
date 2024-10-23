@@ -1,4 +1,5 @@
 import {CartForm, Money} from '@shopify/hydrogen';
+import {useAside} from './Aside';
 
 /**
  * @param {CartSummaryProps}
@@ -6,23 +7,55 @@ import {CartForm, Money} from '@shopify/hydrogen';
 export function CartSummary({cart, layout}) {
   const className =
     layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';
+  const {close} = useAside();
 
   return (
-    <div aria-labelledby="cart-summary" className={className}>
-      <h4>Totals</h4>
-      <dl className="cart-subtotal">
-        <dt>Subtotal</dt>
-        <dd>
-          {cart.cost?.subtotalAmount?.amount ? (
-            <Money data={cart.cost?.subtotalAmount} />
-          ) : (
-            '-'
-          )}
-        </dd>
-      </dl>
-      <CartDiscounts discountCodes={cart.discountCodes} />
-      <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
-    </div>
+    <>
+      <div
+        aria-labelledby="cart-summary"
+        className="border-t border-gray-200 px-4 pt-6 sm:px-6"
+      >
+        <div className="flex justify-between text-base font-medium text-gray-900">
+          <p>Subtotal</p>
+          <p>
+            {cart.cost?.subtotalAmount?.amount ? (
+              <Money data={cart.cost?.subtotalAmount} />
+            ) : (
+              '-'
+            )}
+          </p>
+        </div>
+        <p className="mt-0.5 text-sm text-gray-500">
+          Shipping and taxes calculated at checkout.
+        </p>
+        {/* <CartDiscounts discountCodes={cart.discountCodes} /> */}
+        {/* <div className="flex justify-between text-base font-medium text-gray-900">
+          <p>Total</p>
+          <p>
+            {cart.cost?.totalAmount?.amount ? (
+              <Money data={cart.cost?.totalAmount} />
+            ) : (
+              '-'
+            )}
+          </p>
+        </div> */}
+
+        <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
+        <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
+          <p>
+            or{' '}
+            <button
+              type="button"
+              onClick={close}
+              className="font-medium cursor-pointer text-main-purple lg:hover:text-main-purple-dark transition duration-300"
+            >
+              Continue Shopping
+              <span aria-hidden="true"> &rarr;</span>
+            </button>
+          </p>
+        </div>
+      </div>
+    </>
   );
 }
 /**
@@ -32,11 +65,10 @@ function CartCheckoutActions({checkoutUrl}) {
   if (!checkoutUrl) return null;
 
   return (
-    <div>
-      <a href={checkoutUrl} target="_self">
-        <p>Continue to Checkout &rarr;</p>
+    <div className="mt-6">
+      <a href={checkoutUrl} target="_self" className="button w-full">
+        Checkout
       </a>
-      <br />
     </div>
   );
 }

@@ -61,7 +61,7 @@ export function Aside({children, heading, type}) {
               transition
               className="pointer-events-auto w-screen max-w-md transform transition duration-300 ease-in-out data-[closed]:translate-x-full sm:duration-400"
             >
-              <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
+              <div className="flex h-full flex-col bg-white shadow-xl">
                 <div className="flex items-start justify-between px-4 py-6 sm:px-6">
                   <DialogTitle className="text-lg font-medium text-gray-900">
                     {heading}
@@ -81,13 +81,13 @@ export function Aside({children, heading, type}) {
 
                 <div
                   className={classNames(
-                    activeType === 'filters'
-                      ? '-mx-4 border-t border-gray-200'
-                      : '',
-                    'mt-2 px-4 pb-6 sm:px-6 flex-1',
+                    activeType === 'filters' &&
+                      '-mx-4 border-t border-gray-200',
+                    activeType === 'cart' ? 'flex' : 'px-4 sm:px-6',
+                    'mt-2 pb-6 flex-1 overflow-auto',
                   )}
                 >
-                  <div className="flow-root">{children}</div>
+                  {children}
                 </div>
               </div>
             </DialogPanel>

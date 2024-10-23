@@ -120,7 +120,7 @@ export async function action({request, context}) {
 
   const cartId = result?.cart?.id;
   const headers = cartId ? cart.setCartId(result.cart.id) : new Headers();
-  const {cart: cartResult, errors} = result;
+  const {cart: cartResult, userErrors} = result;
 
   const redirectTo = formData.get('redirectTo') ?? null;
   if (typeof redirectTo === 'string') {
@@ -131,7 +131,7 @@ export async function action({request, context}) {
   return json(
     {
       cart: cartResult,
-      errors,
+      errors: userErrors,
       analytics: {
         cartId,
       },

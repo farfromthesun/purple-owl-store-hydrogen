@@ -22,10 +22,10 @@ export function CartMain({layout, cart: originalCart}) {
   const cartHasItems = cart?.totalQuantity > 0;
 
   return (
-    <div>
+    <>
       <CartEmpty hidden={linesCount} layout={layout} />
-      <div>
-        <div>
+      <div className="flex flex-col">
+        <div className="flex-1 overflow-y-auto px-4 pb-6 sm:px-6">
           <ul className="-my-6 divide-y divide-gray-200">
             {(cart?.lines?.nodes ?? []).map((line) => (
               <CartLineItem key={line.id} line={line} layout={layout} />
@@ -40,7 +40,7 @@ export function CartMain({layout, cart: originalCart}) {
         </div>
         {cartHasItems && <CartSummary cart={cart} layout={layout} />}
       </div>
-    </div>
+    </>
   );
 }
 

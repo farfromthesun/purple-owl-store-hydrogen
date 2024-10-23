@@ -63,8 +63,9 @@ export function CartLineItem({layout, line}) {
                 <ProductPrice price={line?.cost?.totalAmount} />
               </div>
             </div>
-            {!line.merchandise.product.options?.find(
-              (option) => option.name === 'Title',
+            {!line.merchandise.selectedOptions.find(
+              (option) =>
+                option.name === 'Title' && option.value === 'Default Title',
             ) ? (
               <ul>
                 {selectedOptions.map((option) => (
