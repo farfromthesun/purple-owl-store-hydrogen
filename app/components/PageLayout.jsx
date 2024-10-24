@@ -10,6 +10,7 @@ import {
 } from '~/components/SearchFormPredictive';
 import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
 import {AnimatePresence} from 'framer-motion';
+import {CartSummary} from './CartSummary';
 
 /**
  * @param {PageLayoutProps}
@@ -59,7 +60,14 @@ function CartAside({cart}) {
       <Suspense fallback={<p>Loading cart ...</p>}>
         <Await resolve={cart}>
           {(cart) => {
-            return <CartMain cart={cart} layout="aside" />;
+            const cartHasItems = cart?.totalQuantity > 0;
+
+            return (
+              <>
+                <CartMain cart={cart} layout="aside" />
+                {cartHasItems && <CartSummary cart={cart} layout="aside" />}
+              </>
+            );
           }}
         </Await>
       </Suspense>
@@ -70,7 +78,7 @@ function CartAside({cart}) {
 function SearchAside() {
   return (
     <Aside type="search" heading="Search">
-      <div className="predictive-search">
+      <div className="mt-2 pb-6 flex-1 px-4 sm:px-6 overflow-y-auto">
         <br />
         <SearchFormPredictive>
           {({fetchResults, goToSearch, inputRef}) => (
@@ -158,12 +166,14 @@ function MobileMenuAside({header, publicStoreDomain}) {
     header.menu &&
     header.shop.primaryDomain?.url && (
       <Aside type="mobile" heading="Menu">
-        <HeaderMenu
-          menu={header.menu}
-          viewport="mobile"
-          primaryDomainUrl={header.shop.primaryDomain.url}
-          publicStoreDomain={publicStoreDomain}
-        />
+        <div className="mt-2 pb-6 flex-1 px-4 sm:px-6 overflow-y-auto">
+          <HeaderMenu
+            menu={header.menu}
+            viewport="mobile"
+            primaryDomainUrl={header.shop.primaryDomain.url}
+            publicStoreDomain={publicStoreDomain}
+          />
+        </div>
       </Aside>
     )
   );

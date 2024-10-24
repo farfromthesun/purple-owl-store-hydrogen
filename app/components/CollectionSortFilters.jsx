@@ -71,11 +71,13 @@ export function CollectionSortFilters({filters, appliedFilters, children}) {
       </Dialog> */}
 
       <Aside type="filters" heading="Filters">
-        <FiltersList filters={filters} viewport="mobile" />
+        <div className="mt-2 pb-6 border-t border-gray-200 flex-1 overflow-y-auto">
+          <FiltersList filters={filters} viewport="mobile" />
+        </div>
       </Aside>
 
       {/* Desktop filters & sort */}
-      <div className="mx-auto max-w-1400 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-2xl lg:max-w-1400 px-4 sm:px-6 lg:px-8">
         {/* <div
           className={`flex items-baseline border-b border-gray-200 pb-6 pt-24 ${
             appliedFilters.length > 0 ? 'justify-between' : 'justify-end'
@@ -301,7 +303,7 @@ function FiltersList({filters, viewport}) {
                   >
                     <div
                       key={filter.id}
-                      className="mt-6 space-y-4 max-h-[30svh] overflow-auto p-1"
+                      className="mt-6 space-y-4 max-h-[30svh] overflow-y-auto p-1"
                     >
                       {filter.values?.map((option, optionIdx) => (
                         <div

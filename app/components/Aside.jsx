@@ -79,16 +79,7 @@ export function Aside({children, heading, type}) {
                   </div>
                 </div>
 
-                <div
-                  className={classNames(
-                    activeType === 'filters' &&
-                      '-mx-4 border-t border-gray-200',
-                    activeType === 'cart' ? 'flex' : 'px-4 sm:px-6',
-                    'mt-2 pb-6 flex-1 overflow-auto',
-                  )}
-                >
-                  {children}
-                </div>
+                <>{children}</>
               </div>
             </DialogPanel>
           </div>

@@ -1,6 +1,10 @@
 import {CartForm, Money} from '@shopify/hydrogen';
 import {useAside} from './Aside';
 
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ');
+}
+
 /**
  * @param {CartSummaryProps}
  */
@@ -10,26 +14,29 @@ export function CartSummary({cart, layout}) {
   const {close} = useAside();
 
   return (
-    <>
-      <div
-        aria-labelledby="cart-summary"
-        className="border-t border-gray-200 px-4 pt-6 sm:px-6"
-      >
-        <div className="flex justify-between text-base font-medium text-gray-900">
-          <p>Subtotal</p>
-          <p>
-            {cart.cost?.subtotalAmount?.amount ? (
-              <Money data={cart.cost?.subtotalAmount} />
-            ) : (
-              '-'
-            )}
-          </p>
-        </div>
-        <p className="mt-0.5 text-sm text-gray-500">
-          Shipping and taxes calculated at checkout.
+    <div
+      aria-labelledby="cart-summary"
+      className={classNames(
+        layout === 'aside' && 'border-t border-gray-200 px-4 py-6 sm:px-6',
+        layout === 'page' && 'lg:col-start-3 lg:col-end-4',
+        '',
+      )}
+    >
+      <div className="flex justify-between text-base font-medium text-gray-900">
+        <p>Subtotal</p>
+        <p>
+          {cart.cost?.subtotalAmount?.amount ? (
+            <Money data={cart.cost?.subtotalAmount} />
+          ) : (
+            '-'
+          )}
         </p>
-        {/* <CartDiscounts discountCodes={cart.discountCodes} /> */}
-        {/* <div className="flex justify-between text-base font-medium text-gray-900">
+      </div>
+      <p className="mt-0.5 text-sm text-gray-500">
+        Shipping and taxes calculated at checkout.
+      </p>
+      {/* <CartDiscounts discountCodes={cart.discountCodes} /> */}
+      {/* <div className="flex justify-between text-base font-medium text-gray-900">
           <p>Total</p>
           <p>
             {cart.cost?.totalAmount?.amount ? (
@@ -40,8 +47,8 @@ export function CartSummary({cart, layout}) {
           </p>
         </div> */}
 
-        <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
-        <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
+      <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
+      {/* <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
           <p>
             or{' '}
             <button
@@ -53,9 +60,8 @@ export function CartSummary({cart, layout}) {
               <span aria-hidden="true"> &rarr;</span>
             </button>
           </p>
-        </div>
-      </div>
-    </>
+        </div> */}
+    </div>
   );
 }
 /**

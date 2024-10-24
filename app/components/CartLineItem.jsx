@@ -26,8 +26,16 @@ export function CartLineItem({layout, line}) {
 
   return (
     <>
-      <li key={id} className="flex py-6">
-        <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+      <li
+        key={id}
+        className={classNames(layout === 'page' && 'lg:py-10', 'flex py-6')}
+      >
+        <div
+          className={classNames(
+            layout === 'page' && 'lg:h-48 lg:w-48',
+            'h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200',
+          )}
+        >
           {image && (
             <Image
               alt={title}
@@ -41,7 +49,12 @@ export function CartLineItem({layout, line}) {
           )}
         </div>
 
-        <div className="ml-4 flex flex-1 flex-col">
+        <div
+          className={classNames(
+            layout === 'page' && 'ml-6',
+            'ml-4 flex flex-1 flex-col',
+          )}
+        >
           <div>
             <div className="flex justify-between text-base font-medium text-gray-900">
               <h3>
