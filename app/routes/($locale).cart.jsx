@@ -13,6 +13,10 @@ export const meta = () => {
   return [{title: `Cart | Purple Owl Store`}];
 };
 
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ');
+}
+
 /**
  * @param {ActionFunctionArgs}
  */
@@ -158,7 +162,7 @@ export default function Cart() {
             {(cart) => {
               const cartHasItems = cart?.totalQuantity > 0;
               return (
-                <div className="lg:grid lg:grid-cols-3 lg:gap-x-32">
+                <div className="lg:grid lg:grid-cols-3 lg:gap-x-20 xl:gap-x-32 items-start">
                   <CartMain cart={cart} layout="page" />
                   {cartHasItems && <CartSummary cart={cart} layout="page" />}
                 </div>

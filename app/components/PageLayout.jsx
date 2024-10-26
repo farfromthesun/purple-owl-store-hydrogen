@@ -37,8 +37,8 @@ export function PageLayout({
         />
       )}
 
-      <main className="grow overflow-hidden">
-        <AnimatePresence mode="wait" initial={false}>
+      <main className="grow overflow-clip">
+        <AnimatePresence mode="wait" initial={false} key="PageLayout">
           {children}
         </AnimatePresence>
       </main>

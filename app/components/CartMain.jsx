@@ -15,8 +15,9 @@ function classNames(...classes) {
 export function CartMain({layout, cart: originalCart}) {
   // The useOptimisticCart hook applies pending actions to the cart
   // so the user immediately sees feedback when they modify the cart.
-  const cart = useOptimisticCart(originalCart);
-
+  // const cart = useOptimisticCart(originalCart);
+  const cart = originalCart;
+  const {close} = useAside();
   const linesCount = Boolean(cart?.lines?.nodes?.length || 0);
   // const withDiscount =
   //   cart &&
@@ -25,11 +26,12 @@ export function CartMain({layout, cart: originalCart}) {
 
   return (
     <>
-      <CartEmpty hidden={linesCount} layout={layout} />
+      <CartEmpty hidden={linesCount} layout={layout} close={close} />
       <div
+        hidden={!linesCount}
         className={classNames(
           layout === 'aside' && 'mt-2 flex-1 overflow-y-auto px-4 pb-6 sm:px-6',
-          layout === 'page' && 'lg:col-start-1 lg:col-end-3',
+          layout === 'page' && 'lg:col-span-2',
         )}
       >
         <ul className="-my-6 divide-y divide-gray-200">
@@ -54,26 +56,35 @@ export function CartMain({layout, cart: originalCart}) {
  *   layout?: CartMainProps['layout'];
  * }}
  */
-function CartEmpty({hidden = false}) {
-  const {close} = useAside();
-
+function CartEmpty({hidden = false, layout, close}) {
   return (
     <div
       hidden={hidden}
-      className="mt-2 pb-6 flex-1 px-4 sm:px-6 overflow-y-auto"
+      className={classNames(
+        layout === 'aside' && 'mt-2 pb-6 flex-1 px-4 sm:px-6 overflow-y-auto',
+        layout === 'page' && 'pb-6 lg:col-span-2',
+      )}
     >
       <p className="my-6">
-        Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
-        started!
+        {/* Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
+        started! */}
+        Looks like you haven&rsquo;t added anything yet!
       </p>
-      <Link
-        to="/collections/all-products"
-        onClick={close}
-        prefetch="viewport"
-        className="button"
-      >
-        Continue shopping →
-      </Link>
+      {layout === 'aside' && (
+        <button className="button" onClick={close}>
+          Close
+        </button>
+      )}
+      {layout === 'page' && (
+        <Link
+          to="/collections/all-products"
+          onClick={close}
+          prefetch="viewport"
+          className="button"
+        >
+          Continue shopping →
+        </Link>
+      )}
     </div>
   );
 }

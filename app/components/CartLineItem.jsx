@@ -41,10 +41,10 @@ export function CartLineItem({layout, line}) {
               alt={title}
               aspectRatio="1/1"
               data={image}
-              height={100}
+              height={layout === 'page' ? 200 : 100}
               loading="lazy"
-              width={100}
-              className="h-full w-full object-cover object-center"
+              width={layout === 'page' ? 200 : 100}
+              className="h-full w-full object-cover object-center bg-main-purple/15"
             />
           )}
         </div>
@@ -100,7 +100,7 @@ export function CartLineItem({layout, line}) {
               ''
             )}
           </div>
-          <CartLineQuantity line={line} />
+          <CartLineQuantity line={line} layout={layout} />
         </div>
       </li>
 
@@ -153,7 +153,7 @@ export function CartLineItem({layout, line}) {
  * hasn't yet responded that it was successfully added to the cart.
  * @param {{line: CartLine}}
  */
-function CartLineQuantity({line}) {
+function CartLineQuantity({line, layout}) {
   if (!line || typeof line?.quantity === 'undefined') return null;
   const {id: lineId, quantity, isOptimistic} = line;
   const prevQuantity = Number(Math.max(0, quantity - 1).toFixed(0));
@@ -179,7 +179,7 @@ function CartLineQuantity({line}) {
           line.merchandise.product.tags?.includes('GWP')
             ? 'justify-end'
             : 'justify-between',
-          'flex flex-1 items-end text-sm items-center mt-2',
+          'flex flex-1 items-end text-sm mt-2',
         )}
       >
         {!line.merchandise.product.tags?.includes('GWP') ? (
@@ -193,7 +193,7 @@ function CartLineQuantity({line}) {
                   quantity > 1
                     ? 'cursor-pointer bg-white text-gray-900 shadow-sm'
                     : 'cursor-not-allowed bg-gray-50 text-gray-200',
-                  'group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-1 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
+                  'group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
                 )}
                 aria-label="Decrease quantity"
                 disabled={quantity <= 1 || !!isOptimistic}
@@ -201,7 +201,7 @@ function CartLineQuantity({line}) {
                 value={prevQuantity}
               >
                 <span>
-                  <MinusIcon aria-hidden="true" className="h-3 w-3" />
+                  <MinusIcon aria-hidden="true" className="h-4 w-4" />
                 </span>
                 <span
                   aria-hidden="true"
@@ -234,7 +234,7 @@ function CartLineQuantity({line}) {
                 </span>
               </button>
             </CartLineUpdateButton>
-            <div className="w-7 text-center px-2 py-1 rounded-md text-xs text-gray-500 outline-none">
+            <div className="flex items-center justify-center w-7 text-center px-2 rounded-md text-sm text-gray-500 outline-none">
               {quantity}
             </div>
             <CartLineUpdateButton
@@ -242,14 +242,14 @@ function CartLineQuantity({line}) {
             >
               <input type="hidden" name="updateType" value="increase" />
               <button
-                className="group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-1 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200 cursor-pointer bg-white text-gray-900 shadow-sm"
+                className="group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200 cursor-pointer bg-white text-gray-900 shadow-sm"
                 aria-label="Increase quantity"
                 name="increase-quantity"
                 value={nextQuantity}
                 disabled={!!isOptimistic}
               >
                 <span>
-                  <PlusIcon aria-hidden="true" className="h-3 w-3" />
+                  <PlusIcon aria-hidden="true" className="h-4 w-4" />
                 </span>
                 <span
                   aria-hidden="true"

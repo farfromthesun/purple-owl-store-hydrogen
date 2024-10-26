@@ -1,5 +1,4 @@
 import {CartForm, Money} from '@shopify/hydrogen';
-import {useAside} from './Aside';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -9,28 +8,28 @@ function classNames(...classes) {
  * @param {CartSummaryProps}
  */
 export function CartSummary({cart, layout}) {
-  const className =
-    layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';
-  const {close} = useAside();
+  // const className =
+  //   layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';
 
   return (
     <div
       aria-labelledby="cart-summary"
       className={classNames(
         layout === 'aside' && 'border-t border-gray-200 px-4 py-6 sm:px-6',
-        layout === 'page' && 'lg:col-start-3 lg:col-end-4',
+        layout === 'page' &&
+          'border-t border-gray-200 lg:border-none py-6 lg:py-4 mt-6 lg:mt-0 lg:col-span-1 sticky top-[84px]',
         '',
       )}
     >
       <div className="flex justify-between text-base font-medium text-gray-900">
-        <p>Subtotal</p>
-        <p>
+        <div>Subtotal</div>
+        <div>
           {cart.cost?.subtotalAmount?.amount ? (
             <Money data={cart.cost?.subtotalAmount} />
           ) : (
             '-'
           )}
-        </p>
+        </div>
       </div>
       <p className="mt-0.5 text-sm text-gray-500">
         Shipping and taxes calculated at checkout.
@@ -48,19 +47,6 @@ export function CartSummary({cart, layout}) {
         </div> */}
 
       <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
-      {/* <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
-          <p>
-            or{' '}
-            <button
-              type="button"
-              onClick={close}
-              className="font-medium cursor-pointer text-main-purple lg:hover:text-main-purple-dark transition duration-300"
-            >
-              Continue Shopping
-              <span aria-hidden="true"> &rarr;</span>
-            </button>
-          </p>
-        </div> */}
     </div>
   );
 }

@@ -10,7 +10,7 @@ import {getVariantUrl} from '~/lib/variants';
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
-import {AnimatePresence, easeInOut, motion} from 'framer-motion';
+// import {AnimatePresence, easeInOut, motion} from 'framer-motion';
 import {RouteTransition} from '~/components/RouteTransition';
 
 /**

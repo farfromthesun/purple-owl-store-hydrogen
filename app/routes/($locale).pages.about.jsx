@@ -62,7 +62,7 @@ function loadDeferredData({context}) {
 
 export default function Page() {
   /** @type {LoaderReturnData} */
-  const {page} = useLoaderData();
+  // const {page} = useLoaderData();
 
   return (
     <RouteTransition>

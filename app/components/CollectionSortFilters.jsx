@@ -1,8 +1,5 @@
 import {Fragment, useState} from 'react';
 import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
@@ -21,7 +18,7 @@ import {
 import {AnimatePresence, motion} from 'framer-motion';
 import {Form, Link, useLocation, useSearchParams} from '@remix-run/react';
 import {useDebounceSubmit} from 'remix-utils/use-debounce-submit';
-import {Aside, useAside} from './Aside';
+import {Aside, useAside} from '~/components/Aside';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
