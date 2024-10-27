@@ -1,6 +1,6 @@
-import {Await, Link} from '@remix-run/react';
-import {Suspense} from 'react';
-import {Aside} from '~/components/Aside';
+import {Await, Link, useFetchers} from '@remix-run/react';
+import {Suspense, useEffect} from 'react';
+import {Aside, useAside} from '~/components/Aside';
 import {Footer} from '~/components/Footer';
 import {Header, HeaderMenu} from '~/components/Header';
 import {CartMain} from '~/components/CartMain';
@@ -11,6 +11,8 @@ import {
 import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
 import {AnimatePresence} from 'framer-motion';
 import {CartSummary} from './CartSummary';
+import {useCartFetchers} from '~/hooks/useCartFetchers';
+import {CartForm} from '@shopify/hydrogen';
 
 /**
  * @param {PageLayoutProps}
@@ -38,9 +40,9 @@ export function PageLayout({
       )}
 
       <main className="grow overflow-clip">
-        <AnimatePresence mode="wait" initial={false} key="PageLayout">
-          {children}
-        </AnimatePresence>
+        {/* <AnimatePresence mode="wait" initial={false} key="PageLayout"> */}
+        {children}
+        {/* </AnimatePresence> */}
       </main>
       <Footer
         footer={footer}
@@ -55,6 +57,28 @@ export function PageLayout({
  * @param {{cart: PageLayoutProps['cart']}}
  */
 function CartAside({cart}) {
+  const {open, type} = useAside();
+
+  const fetchers = useFetchers();
+  const atcFetcher = fetchers.find((fetcher) => {
+    if (fetcher.formData) {
+      const formInputs = CartForm.getFormInput(fetcher.formData);
+      if (
+        formInputs.action === CartForm.ACTIONS.LinesAdd &&
+        fetcher.state === 'loading' &&
+        fetcher.data?.errors?.length === 0
+      ) {
+        return fetcher;
+      }
+    }
+    return null;
+  });
+
+  // toggle cart drawer when adding to cart
+  useEffect(() => {
+    if (atcFetcher && type === 'closed') open('cart');
+  }, [atcFetcher, open, type]);
+
   return (
     <Aside type="cart" heading="Your cart">
       <Suspense fallback={<p>Loading cart ...</p>}>

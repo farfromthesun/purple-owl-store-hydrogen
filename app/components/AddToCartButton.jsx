@@ -18,15 +18,10 @@ export function AddToCartButton({
   lines,
   onClick,
 }) {
-  const {open} = useAside();
-
   return (
     <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
       {(fetcher) => {
         const atcDisable = disabled || fetcher.state !== 'idle';
-        // console.log('fetcher', fetcher);
-        if (fetcher.state === 'loading' && fetcher.data?.errors?.length === 0)
-          open('cart');
 
         return (
           <>

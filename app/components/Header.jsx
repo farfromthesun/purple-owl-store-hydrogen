@@ -1,5 +1,5 @@
 import {Suspense} from 'react';
-import {Await, NavLink} from '@remix-run/react';
+import {Await, Link, NavLink} from '@remix-run/react';
 import {useAnalytics} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
 import {
@@ -15,6 +15,7 @@ import {
  */
 export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
   const {shop, menu} = header;
+
   return (
     <>
       {/* <header className="header">
@@ -203,8 +204,8 @@ function CartBadge({count}) {
   const {publish, shop, cart, prevCart} = useAnalytics();
 
   return (
-    <a
-      href="/cart"
+    <Link
+      to="/cart"
       onClick={(e) => {
         e.preventDefault();
         open('cart');
@@ -222,7 +223,7 @@ function CartBadge({count}) {
       <div className="absolute rounded-full bg-main-purple text-white -bottom-1 -right-1 w-4 h-4 text-[10px] flex items-center justify-center">
         {count === null ? <span>&nbsp;</span> : count}
       </div>
-    </a>
+    </Link>
   );
 }
 

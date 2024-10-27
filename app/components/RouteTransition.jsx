@@ -16,8 +16,8 @@ export function RouteTransition({children, key}) {
     //   {children}
     // </motion.div>
     <div>
-      <div className="animate-fade-out fixed left-0 right-0 top-0 z-[5] flex h-svh flex-col items-center justify-center bg-white">
-        <span className="animate-slide-in-out text-main-purple font-logo text-lg lg:text-3xl font-extrabold">
+      <div className="animate-route-transition-bg fixed left-0 right-0 top-0 z-[5] flex h-svh flex-col items-center justify-center bg-white">
+        <span className="animate-route-transition-logo text-main-purple font-logo text-lg lg:text-3xl font-extrabold">
           {header.shop.name}
         </span>
       </div>
