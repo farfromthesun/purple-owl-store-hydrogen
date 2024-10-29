@@ -1,6 +1,6 @@
 import {CartForm, Image} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
-import {Link} from '@remix-run/react';
+import {Link, useFetcher} from '@remix-run/react';
 import {ProductPrice} from './ProductPrice';
 import {useAside} from './Aside';
 import {TrashIcon} from '@heroicons/react/24/outline';
@@ -23,6 +23,39 @@ export function CartLineItem({layout, line}) {
   const {product, title, image, selectedOptions} = merchandise;
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
   const {close} = useAside();
+
+  const cartLineFetchers = [
+    useFetcher({key: 'cartLineUpdateFetcher'}),
+    useFetcher({key: 'cartLineRemoveFetcher'}),
+  ];
+
+  function cartLineFetcherCheck(fetcher) {
+    if (fetcher.state !== 'idle' && fetcher.formData) {
+      const formInputs = CartForm.getFormInput(fetcher.formData);
+      if (formInputs.inputs?.lines?.length) {
+        return formInputs.inputs.lines[0].id === id ? true : false;
+      } else if (formInputs.inputs?.lineIds?.length) {
+        return formInputs.inputs.lineIds[0] === id ? true : false;
+      }
+    }
+    return false;
+  }
+
+  function cartLineFetcherErrorsCheck(fetcher) {
+    return fetcher?.data?.inputLines?.some((line) => line.id === id) &&
+      fetcher?.state === 'idle' &&
+      fetcher?.data?.errors.length > 0
+      ? true
+      : false;
+  }
+
+  const currentCartLineFetcher = cartLineFetchers.filter((fetcher) =>
+    cartLineFetcherCheck(fetcher),
+  );
+  const currentCartLineActionFetcherPending = currentCartLineFetcher.length > 0;
+  const [currentCartLineErrors] = cartLineFetchers
+    .filter((fetcher) => cartLineFetcherErrorsCheck(fetcher))
+    .map((fetcher) => fetcher.data.errors);
 
   return (
     <>
@@ -57,7 +90,7 @@ export function CartLineItem({layout, line}) {
         >
           <div>
             <div className="flex justify-between text-base font-medium text-gray-900">
-              <h3>
+              <h3 className="max-w-48">
                 <Link
                   prefetch="intent"
                   to={lineItemUrl}
@@ -73,7 +106,13 @@ export function CartLineItem({layout, line}) {
                 </Link>
               </h3>
               <div className="ml-4">
-                <ProductPrice price={line?.cost?.totalAmount} />
+                {currentCartLineActionFetcherPending ? (
+                  <span className="text-xs animate-pulse">Processing...</span>
+                ) : (
+                  <div className="animate-fade-in">
+                    <ProductPrice price={line?.cost?.totalAmount} />
+                  </div>
+                )}
               </div>
             </div>
             {!line.merchandise.selectedOptions.find(
@@ -100,7 +139,12 @@ export function CartLineItem({layout, line}) {
               ''
             )}
           </div>
-          <CartLineQuantity line={line} layout={layout} />
+          <CartLineQuantity
+            line={line}
+            layout={layout}
+            disabledByAction={currentCartLineActionFetcherPending}
+            fetcherErrors={currentCartLineErrors}
+          />
         </div>
       </li>
 
@@ -153,7 +197,7 @@ export function CartLineItem({layout, line}) {
  * hasn't yet responded that it was successfully added to the cart.
  * @param {{line: CartLine}}
  */
-function CartLineQuantity({line, layout}) {
+function CartLineQuantity({line, layout, disabledByAction, fetcherErrors}) {
   if (!line || typeof line?.quantity === 'undefined') return null;
   const {id: lineId, quantity, isOptimistic} = line;
   const prevQuantity = Number(Math.max(0, quantity - 1).toFixed(0));
@@ -179,7 +223,7 @@ function CartLineQuantity({line, layout}) {
           line.merchandise.product.tags?.includes('GWP')
             ? 'justify-end'
             : 'justify-between',
-          'flex flex-1 items-end text-sm mt-2',
+          'flex flex-1 items-end text-sm mt-2 flex-wrap',
         )}
       >
         {!line.merchandise.product.tags?.includes('GWP') ? (
@@ -190,13 +234,13 @@ function CartLineQuantity({line, layout}) {
               <input type="hidden" name="updateType" value="decrease" />
               <button
                 className={classNames(
-                  quantity > 1
-                    ? 'cursor-pointer bg-white text-gray-900 shadow-sm'
-                    : 'cursor-not-allowed bg-gray-50 text-gray-200',
+                  quantity <= 1 || disabledByAction
+                    ? 'cursor-not-allowed bg-gray-50 text-gray-200'
+                    : 'cursor-pointer bg-white text-gray-900 shadow-sm',
                   'group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
                 )}
                 aria-label="Decrease quantity"
-                disabled={quantity <= 1 || !!isOptimistic}
+                disabled={quantity <= 1 || !!isOptimistic || disabledByAction}
                 name="decrease-quantity"
                 value={prevQuantity}
               >
@@ -206,14 +250,18 @@ function CartLineQuantity({line, layout}) {
                 <span
                   aria-hidden="true"
                   className={classNames(
-                    quantity > 1 ? 'opacity-100' : 'opacity-0',
+                    quantity <= 1 || disabledByAction
+                      ? 'opacity-0'
+                      : 'opacity-100',
                     'pointer-events-none absolute -inset-px rounded-md border-2 border-transparent transition duration-200 lg:group-hover:border-main-purple',
                   )}
                 />
                 <span
                   aria-hidden="true"
                   className={classNames(
-                    quantity <= 1 ? 'opacity-100' : 'opacity-0',
+                    quantity <= 1 || disabledByAction
+                      ? 'opacity-100'
+                      : 'opacity-0',
                     'pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200 transition duration-200',
                   )}
                 >
@@ -242,19 +290,49 @@ function CartLineQuantity({line, layout}) {
             >
               <input type="hidden" name="updateType" value="increase" />
               <button
-                className="group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200 cursor-pointer bg-white text-gray-900 shadow-sm"
+                className={classNames(
+                  disabledByAction
+                    ? 'cursor-not-allowed bg-gray-50 text-gray-200'
+                    : 'cursor-pointer bg-white text-gray-900 shadow-sm',
+                  'group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
+                )}
                 aria-label="Increase quantity"
                 name="increase-quantity"
                 value={nextQuantity}
-                disabled={!!isOptimistic}
+                disabled={!!isOptimistic || disabledByAction}
               >
                 <span>
                   <PlusIcon aria-hidden="true" className="h-4 w-4" />
                 </span>
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent transition duration-200 lg:group-hover:border-main-purple"
+                  className={classNames(
+                    disabledByAction ? 'opacity-0' : 'opacity-100',
+                    'pointer-events-none absolute -inset-px rounded-md border-2 border-transparent transition duration-200 lg:group-hover:border-main-purple',
+                  )}
                 />
+                <span
+                  aria-hidden="true"
+                  className={classNames(
+                    disabledByAction ? 'opacity-100' : 'opacity-0',
+                    'pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200 transition duration-200',
+                  )}
+                >
+                  <svg
+                    stroke="currentColor"
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                    className="absolute inset-0 h-full w-full stroke-3 text-gray-200 transition duration-200"
+                  >
+                    <line
+                      x1={0}
+                      x2={100}
+                      y1={100}
+                      y2={0}
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  </svg>
+                </span>
               </button>
             </CartLineUpdateButton>
           </div>
@@ -262,7 +340,21 @@ function CartLineQuantity({line, layout}) {
           ''
         )}
 
-        <CartLineRemoveButton lineIds={[lineId]} disabled={!!isOptimistic} />
+        <CartLineRemoveButton
+          lineIds={[lineId]}
+          disabled={!!isOptimistic || disabledByAction}
+        />
+        <div className="basis-full">
+          {fetcherErrors &&
+            fetcherErrors.map((error) => (
+              <span
+                className="block mt-2 text-red-700 text-xs animate-fade-in"
+                key={error.message}
+              >
+                {error.message}
+              </span>
+            ))}
+        </div>
       </div>
     </>
   );
@@ -284,11 +376,12 @@ function CartLineRemoveButton({lineIds, disabled}) {
         route="/cart"
         action={CartForm.ACTIONS.LinesRemove}
         inputs={{lineIds}}
+        fetcherKey="cartLineRemoveFetcher"
       >
         <button
           disabled={disabled}
           type="submit"
-          className="cursor-pointer text-main-purple lg:hover:text-main-purple-dark transition duration-300"
+          className="cursor-pointer text-main-purple lg:hover:text-main-purple-dark transition duration-300 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:cursor-not-allowed"
         >
           <TrashIcon aria-hidden="true" className="h-5 w-5" />
         </button>
@@ -309,6 +402,7 @@ function CartLineUpdateButton({children, lines}) {
       route="/cart"
       action={CartForm.ACTIONS.LinesUpdate}
       inputs={{lines}}
+      fetcherKey="cartLineUpdateFetcher"
     >
       {children}
     </CartForm>

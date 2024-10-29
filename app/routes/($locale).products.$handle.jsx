@@ -1,4 +1,4 @@
-import {Suspense, useEffect, useState} from 'react';
+import {Suspense, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {defer, redirect} from '@shopify/remix-oxygen';
 import {Await, Link, useLoaderData} from '@remix-run/react';
 import {
@@ -146,6 +146,14 @@ export default function Product() {
   ];
   const isProductGWP = product.id.includes('9201094689077');
 
+  // const mainHeaderHeight = useRef(0);
+
+  // useLayoutEffect(() => {
+  //   mainHeaderHeight.current = document
+  //     .querySelector('.main-header')
+  //     .getBoundingClientRect().height;
+  // });
+
   return (
     <RouteTransition>
       <div className="bg-white">
@@ -187,7 +195,7 @@ export default function Product() {
             </div>
 
             {/* Product info */}
-            <div className="mt-6 lg:mt-0 sticky top-[84px] self-start">
+            <div className="mt-6 lg:mt-0 sticky top-main-header-desktop-height self-start">
               <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl mb-3">
                 {title}
               </h1>

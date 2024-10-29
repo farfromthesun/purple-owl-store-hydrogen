@@ -11,7 +11,6 @@ import {
 import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
 import {AnimatePresence} from 'framer-motion';
 import {CartSummary} from './CartSummary';
-import {useCartFetchers} from '~/hooks/useCartFetchers';
 import {CartForm} from '@shopify/hydrogen';
 
 /**
@@ -190,7 +189,7 @@ function MobileMenuAside({header, publicStoreDomain}) {
     header.menu &&
     header.shop.primaryDomain?.url && (
       <Aside type="mobile" heading="Menu">
-        <div className="mt-2 pb-6 flex-1 px-4 sm:px-6 overflow-y-auto">
+        <div className="mt-2 pb-6 flex-1 px-4 sm:px-6 overflow-y-auto flex flex-col justify-center text-center">
           <HeaderMenu
             menu={header.menu}
             viewport="mobile"

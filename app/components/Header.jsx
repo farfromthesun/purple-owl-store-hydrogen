@@ -10,6 +10,10 @@ import {
   ShoppingBagIcon,
 } from '@heroicons/react/24/outline';
 
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ');
+}
+
 /**
  * @param {HeaderProps}
  */
@@ -30,7 +34,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
         />
         <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
       </header> */}
-      <header className="bg-white/80 sticky top-0 z-10 backdrop-blur-lg">
+      <header className="main-header bg-white/80 sticky top-0 z-10 backdrop-blur-lg">
         <div className="flex items-center justify-between p-6 lg:px-8 max-w-2xl lg:max-w-1400 m-auto">
           <div className="flex lg:flex-1 order-3 lg:order-1">
             <NavLink prefetch="intent" to="/" className="-m-1.5 p-1.5" end>
@@ -88,9 +92,11 @@ export function HeaderMenu({
   return (
     // <nav className={className} role="navigation">
     <nav
-      className={`lg:flex lg:gap-x-12 lg:order-2 ${
-        viewport === 'desktop' ? 'hidden ' : 'space-y-2 pb-5'
-      }`}
+      className={classNames(
+        viewport === 'mobile' && 'space-y-10 translate-y-[-76px]',
+        viewport === 'desktop' && 'hidden',
+        'lg:flex lg:gap-x-12 lg:order-2',
+      )}
       role="navigation"
     >
       {/* {viewport === 'mobile' && (
@@ -110,7 +116,7 @@ export function HeaderMenu({
             : item.url;
         return (
           <NavLink
-            className="md:text-sm lg:px-0 lg:py-0 lg:-mx-0 lg:text-base font-semibold lg:leading-6 aria-[current]:!text-main-purple transition group overflow-hidden relative -mx-3 block px-3 py-2 text-base leading-7 text-gray-900"
+            className="md:text-sm lg:px-0 lg:py-0 lg:-mx-0 lg:text-base font-semibold lg:leading-6 aria-[current]:!text-main-purple transition group overflow-hidden relative -mx-3 block px-3 py-2 text-xl leading-7 text-gray-900"
             end
             key={item.id}
             onClick={closeAside}

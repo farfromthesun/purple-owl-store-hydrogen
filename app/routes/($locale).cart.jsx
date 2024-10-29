@@ -27,6 +27,8 @@ export async function action({request, context}) {
 
   const {action, inputs} = CartForm.getFormInput(formData);
 
+  const errors = [];
+
   const initialCart = await cart.get();
   const gwpVariantID = 48342561653045;
   const gwpInCart = initialCart?.lines?.nodes.find((node) =>
@@ -73,54 +75,64 @@ export async function action({request, context}) {
       throw new Error(`${action} cart action is not defined`);
   }
 
-  const newCart = await cart.get();
-  const isEligibleForGwp = newCart.cost.totalAmount.amount > 50;
-  const gwpLineToAdd = [
-    {
-      merchandiseId: 'gid://shopify/ProductVariant/' + gwpVariantID,
-      quantity: 1,
-    },
-  ];
-  const gwpLineToARemove = [gwpInCart?.id];
+  if (result.userErrors.length > 0) errors.push(result.userErrors[0]);
 
-  // if (
-  //   action === 'LinesAdd' ||
-  //   action === 'LinesUpdate' ||
-  //   (action === 'LinesRemove' && !isRemoveOnGwp)
-  // ) {
-  //   if (isEligibleForGwp) {
-  //     if (!gwpInCart && inputs?.updateType === 'increase') {
-  //       result = await cart.addLines(gwpLineToAdd);
-  //     }
-  //   } else {
-  //     if (gwpInCart) {
-  //       result = await cart.removeLines(gwpLineToARemove);
-  //     }
-  //   }
-  // }
+  if (errors.length <= 0) {
+    const newCart = await cart.get();
+    const isEligibleForGwp = newCart.cost.totalAmount.amount > 50;
+    const gwpLineToAdd = [
+      {
+        merchandiseId: 'gid://shopify/ProductVariant/' + gwpVariantID,
+        quantity: 1,
+      },
+    ];
+    const gwpLineToRemove = [gwpInCart?.id];
 
-  switch (action) {
-    case 'LinesAdd':
-      if (isEligibleForGwp && !gwpInCart) {
-        result = await cart.addLines(gwpLineToAdd);
-      }
-      break;
-    case 'LinesUpdate':
-      if (isEligibleForGwp) {
-        if (!gwpInCart && inputs?.updateType === 'increase') {
+    // if (
+    //   action === 'LinesAdd' ||
+    //   action === 'LinesUpdate' ||
+    //   (action === 'LinesRemove' && !isRemoveOnGwp)
+    // ) {
+    //   if (isEligibleForGwp) {
+    //     if (!gwpInCart && inputs?.updateType === 'increase') {
+    //       result = await cart.addLines(gwpLineToAdd);
+    //     }
+    //   } else {
+    //     if (gwpInCart) {
+    //       result = await cart.removeLines(gwpLineToRemove);
+    //     }
+    //   }
+    // }
+
+    switch (action) {
+      case 'LinesAdd':
+        if (isEligibleForGwp && !gwpInCart) {
           result = await cart.addLines(gwpLineToAdd);
         }
-      } else {
-        if (gwpInCart) {
-          result = await cart.removeLines(gwpLineToARemove);
+        break;
+      case 'LinesUpdate':
+        if (isEligibleForGwp) {
+          if (!gwpInCart && inputs?.updateType === 'increase') {
+            result = await cart.addLines(gwpLineToAdd);
+          }
+        } else {
+          if (gwpInCart) {
+            result = await cart.removeLines(gwpLineToRemove);
+          }
         }
-      }
-      break;
-    case 'LinesRemove':
-      if (!isEligibleForGwp && gwpInCart && !isRemoveOnGwp) {
-        result = await cart.removeLines(gwpLineToARemove);
-      }
-      break;
+        break;
+      case 'LinesRemove':
+        if (!isEligibleForGwp && gwpInCart && !isRemoveOnGwp) {
+          result = await cart.removeLines(gwpLineToRemove);
+        }
+        break;
+    }
+
+    if (
+      result.userErrors.length > 0 &&
+      !errors.some((error) => error.message === result.userErrors[0].message)
+    )
+      errors.push(result.userErrors[0]);
   }
 
   const cartId = result?.cart?.id;
@@ -135,6 +147,7 @@ export async function action({request, context}) {
 
   return json(
     {
+      inputLines: inputs.lines,
       cart: cartResult,
       errors: userErrors,
       analytics: {

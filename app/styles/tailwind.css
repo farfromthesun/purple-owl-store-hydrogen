@@ -19,6 +19,7 @@
   --animate-fade-in: fadeInAnimation ease 300ms forwards;
   --animate-route-transition-bg: fadeOutAnimation 0.3s ease 0.6s forwards;
   --animate-route-transition-logo: slideInOutAnimation 0.8s ease forwards;
+  --spacing-main-header-desktop-height: 84px;
 }
 
 @keyframes fadeInAnimation {

@@ -1,4 +1,6 @@
+import {useFetchers} from '@remix-run/react';
 import {CartForm, Money} from '@shopify/hydrogen';
+import {SpinningCircleIcon} from './SpinningCircleIcon';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -11,21 +13,40 @@ export function CartSummary({cart, layout}) {
   // const className =
   //   layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';
 
+  const fetchers = useFetchers();
+  const cartActionFetcher = fetchers.find((fetcher) => {
+    if (fetcher.formData) {
+      const formInputs = CartForm.getFormInput(fetcher.formData);
+      if (
+        (formInputs.action === CartForm.ACTIONS.LinesUpdate ||
+          formInputs.action === CartForm.ACTIONS.LinesRemove) &&
+        fetcher.state !== 'idle'
+      ) {
+        return fetcher;
+      }
+    }
+    return null;
+  });
+
   return (
     <div
       aria-labelledby="cart-summary"
       className={classNames(
         layout === 'aside' && 'border-t border-gray-200 px-4 py-6 sm:px-6',
         layout === 'page' &&
-          'border-t border-gray-200 lg:border-none py-6 lg:py-4 mt-6 lg:mt-0 lg:col-span-1 sticky top-[84px]',
+          'border-t border-gray-200 lg:border-none py-6 lg:py-4 mt-6 lg:mt-0 lg:col-span-1 sticky top-main-header-desktop-height',
         '',
       )}
     >
       <div className="flex justify-between text-base font-medium text-gray-900">
         <div>Subtotal</div>
         <div>
-          {cart.cost?.subtotalAmount?.amount ? (
-            <Money data={cart.cost?.subtotalAmount} />
+          {cartActionFetcher ? (
+            <span className="text-sm animate-pulse">Processing...</span>
+          ) : cart.cost?.subtotalAmount?.amount ? (
+            <div className="animate-fade-in">
+              <Money data={cart.cost?.subtotalAmount} />
+            </div>
           ) : (
             '-'
           )}
