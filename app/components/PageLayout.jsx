@@ -64,8 +64,8 @@ function CartAside({cart}) {
       const formInputs = CartForm.getFormInput(fetcher.formData);
       if (
         formInputs.action === CartForm.ACTIONS.LinesAdd &&
-        fetcher.state === 'loading' &&
-        fetcher.data?.errors?.length === 0
+        fetcher.state === 'loading'
+        // && fetcher.data?.errors?.length === 0
       ) {
         return fetcher;
       }
@@ -74,9 +74,19 @@ function CartAside({cart}) {
   });
 
   // toggle cart drawer when adding to cart
+  // useEffect(() => {
+  //   if (atcFetcher && type === 'closed') open('cart');
+  // }, [atcFetcher, open, type]);
   useEffect(() => {
-    if (atcFetcher && type === 'closed') open('cart');
-  }, [atcFetcher, open, type]);
+    cart.then((currentCart) => {
+      if (
+        atcFetcher &&
+        type === 'closed' &&
+        atcFetcher?.data?.cart?.totalQuantity !== currentCart?.totalQuantity
+      )
+        open('cart');
+    });
+  }, [atcFetcher, open, type, cart]);
 
   return (
     <Aside type="cart" heading="Your cart">
@@ -102,10 +112,9 @@ function SearchAside() {
   return (
     <Aside type="search" heading="Search">
       <div className="mt-2 pb-6 flex-1 px-4 sm:px-6 overflow-y-auto">
-        <br />
         <SearchFormPredictive>
           {({fetchResults, goToSearch, inputRef}) => (
-            <>
+            <div className="flex gap-x-2 pt-1">
               <input
                 name="q"
                 onChange={fetchResults}
@@ -113,10 +122,12 @@ function SearchAside() {
                 placeholder="Search"
                 ref={inputRef}
                 type="search"
+                className="w-full py-2 px-3 rounded-md text-sm border-gray-300 text-gray-500 focus:border-main-purple transition duration-200 outline-none"
               />
-              &nbsp;
-              <button onClick={goToSearch}>Search</button>
-            </>
+              <button className="button py-2 px-3" onClick={goToSearch}>
+                Search
+              </button>
+            </div>
           )}
         </SearchFormPredictive>
 

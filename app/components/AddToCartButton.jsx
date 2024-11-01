@@ -1,6 +1,5 @@
 import {CartForm} from '@shopify/hydrogen';
-import {useAside} from './Aside';
-import {AnimatePresence, easeInOut, motion} from 'framer-motion';
+import {AnimatePresence, motion} from 'framer-motion';
 
 /**
  * @param {{

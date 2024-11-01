@@ -77,7 +77,8 @@ export async function action({request, context}) {
 
   if (result.userErrors.length > 0) errors.push(result.userErrors[0]);
 
-  if (errors.length <= 0) {
+  // if (errors.length <= 0) {
+  if (initialCart?.totalQuantity !== result.cart.totalQuantity) {
     const newCart = await cart.get();
     const isEligibleForGwp = newCart.cost.totalAmount.amount > 50;
     const gwpLineToAdd = [
@@ -149,7 +150,8 @@ export async function action({request, context}) {
     {
       inputLines: inputs.lines,
       cart: cartResult,
-      errors: userErrors,
+      // errors: userErrors,
+      errors,
       analytics: {
         cartId,
       },

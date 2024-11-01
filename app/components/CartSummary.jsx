@@ -1,6 +1,6 @@
 import {useFetchers} from '@remix-run/react';
 import {CartForm, Money} from '@shopify/hydrogen';
-import {SpinningCircleIcon} from './SpinningCircleIcon';
+import {AnimatePresence, motion} from 'framer-motion';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -40,17 +40,32 @@ export function CartSummary({cart, layout}) {
     >
       <div className="flex justify-between text-base font-medium text-gray-900">
         <div>Subtotal</div>
-        <div>
-          {cartActionFetcher ? (
-            <span className="text-sm animate-pulse">Processing...</span>
-          ) : cart.cost?.subtotalAmount?.amount ? (
-            <div className="animate-fade-in">
-              <Money data={cart.cost?.subtotalAmount} />
-            </div>
-          ) : (
-            '-'
-          )}
-        </div>
+        <AnimatePresence
+          mode="wait"
+          initial={false}
+          key="cartSummarySubtotalAmount"
+        >
+          <motion.div
+            key={
+              cartActionFetcher ? 'Processing...' : cart.cost?.subtotalAmount
+            }
+            initial={{x: 20, opacity: 0}}
+            animate={{x: 0, opacity: 1}}
+            exit={{x: -20, opacity: 0}}
+            transition={{duration: 0.2, ease: 'backInOut'}}
+            className="h-6 flex items-center"
+          >
+            {cartActionFetcher ? (
+              <div className="text-sm animate-pulse">Processing...</div>
+            ) : cart.cost?.subtotalAmount?.amount ? (
+              <div className="">
+                <Money data={cart.cost?.subtotalAmount} />
+              </div>
+            ) : (
+              '-'
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
       <p className="mt-0.5 text-sm text-gray-500">
         Shipping and taxes calculated at checkout.

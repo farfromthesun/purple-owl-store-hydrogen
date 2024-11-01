@@ -298,6 +298,7 @@ export default function Collection() {
                         key={product.id}
                         product={product}
                         loading={index < 9 ? 'eager' : undefined}
+                        index={index}
                       />
                     )}
                   </PaginatedResourceSection>
@@ -325,7 +326,7 @@ export default function Collection() {
  *   loading?: 'eager' | 'lazy';
  * }}
  */
-function ProductItem({product, loading}) {
+function ProductItem({product, loading, index}) {
   const variant = product.variants.nodes[0];
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
   return (
@@ -334,6 +335,7 @@ function ProductItem({product, loading}) {
       product={product}
       withFilters={true}
       imgLoading={loading}
+      index={index}
     />
   );
 }

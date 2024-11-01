@@ -5,6 +5,7 @@ import {ProductPrice} from './ProductPrice';
 import {useAside} from './Aside';
 import {TrashIcon} from '@heroicons/react/24/outline';
 import {PlusIcon, MinusIcon} from '@heroicons/react/16/solid';
+import {AnimatePresence, motion} from 'framer-motion';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -90,7 +91,12 @@ export function CartLineItem({layout, line}) {
         >
           <div>
             <div className="flex justify-between text-base font-medium text-gray-900">
-              <h3 className="max-w-48">
+              <h3
+                className={classNames(
+                  layout === 'page' && 'lg:max-w-full',
+                  'max-w-36 lg:max-w-48',
+                )}
+              >
                 <Link
                   prefetch="intent"
                   to={lineItemUrl}
@@ -105,14 +111,31 @@ export function CartLineItem({layout, line}) {
                   </p>
                 </Link>
               </h3>
-              <div className="ml-4">
-                {currentCartLineActionFetcherPending ? (
-                  <span className="text-xs animate-pulse">Processing...</span>
-                ) : (
-                  <div className="animate-fade-in">
-                    <ProductPrice price={line?.cost?.totalAmount} />
-                  </div>
-                )}
+              <div className="">
+                <AnimatePresence
+                  mode="wait"
+                  initial={false}
+                  key="lineItemTotalAmount"
+                >
+                  <motion.div
+                    key={
+                      currentCartLineActionFetcherPending
+                        ? 'Processing...'
+                        : line?.cost?.totalAmount
+                    }
+                    initial={{x: 20, opacity: 0}}
+                    animate={{x: 0, opacity: 1}}
+                    exit={{x: -20, opacity: 0}}
+                    transition={{duration: 0.2, ease: 'backInOut'}}
+                    className="h-6 flex items-center"
+                  >
+                    {currentCartLineActionFetcherPending ? (
+                      <div className="text-xs animate-pulse">Processing...</div>
+                    ) : (
+                      <ProductPrice price={line?.cost?.totalAmount} />
+                    )}
+                  </motion.div>
+                </AnimatePresence>
               </div>
             </div>
             {!line.merchandise.selectedOptions.find(

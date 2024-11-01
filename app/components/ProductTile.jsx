@@ -9,7 +9,7 @@ import {Image, Money} from '@shopify/hydrogen';
  *   imgLoading: 'eager' | 'lazy';
  * }}
  */
-export function ProductTile({product, to, withFilters, imgLoading}) {
+export function ProductTile({product, to, withFilters, imgLoading, index}) {
   const isSoldOut = !product.availableForSale;
   const isOnSale =
     product.compareAtPriceRange.minVariantPrice.amount > 0 &&
@@ -20,7 +20,8 @@ export function ProductTile({product, to, withFilters, imgLoading}) {
       key={product.id}
       to={to || `/products/${product.handle}`}
       prefetch="intent"
-      className="group animate-fade-in"
+      className="group opacity-0 invisible animate-fade-slide-v-in"
+      style={{animationDelay: (index % 9) * 100 + 'ms'}}
     >
       {product.featuredImage && (
         <div className="relative aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
