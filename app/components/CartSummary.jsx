@@ -34,7 +34,7 @@ export function CartSummary({cart, layout}) {
       className={classNames(
         layout === 'aside' && 'border-t border-gray-200 px-4 py-6 sm:px-6',
         layout === 'page' &&
-          'border-t border-gray-200 lg:border-none py-6 lg:py-4 mt-6 lg:mt-0 lg:col-span-1 sticky top-main-header-desktop-height',
+          'px-4 py-6 lg:px-6 lg:py-8 bg-main-purple/05 rounded-lg mt-12 lg:mt-0 lg:col-span-1 sticky top-main-header-desktop-height',
         '',
       )}
     >

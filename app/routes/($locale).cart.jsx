@@ -177,7 +177,7 @@ export default function Cart() {
             {(cart) => {
               const cartHasItems = cart?.totalQuantity > 0;
               return (
-                <div className="lg:grid lg:grid-cols-3 lg:gap-x-20 xl:gap-x-32 items-start">
+                <div className="lg:grid lg:grid-cols-3 lg:gap-x-20 xl:gap-x-24 items-start">
                   <CartMain cart={cart} layout="page" />
                   {cartHasItems && <CartSummary cart={cart} layout="page" />}
                 </div>

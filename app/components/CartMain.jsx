@@ -31,7 +31,8 @@ export function CartMain({layout, cart: originalCart}) {
       <div
         hidden={!linesCount}
         className={classNames(
-          layout === 'aside' && 'mt-2 flex-1 overflow-y-auto px-4 pb-6 sm:px-6',
+          layout === 'aside' &&
+            'mt-2 flex-1 overflow-y-auto overflow-x-hidden px-4 pb-6 sm:px-6',
           layout === 'page' && 'lg:col-span-2',
         )}
       >

@@ -112,7 +112,7 @@ function SearchAside() {
   return (
     <Aside type="search" heading="Search">
       <div className="mt-2 pb-6 flex-1 px-4 sm:px-6 overflow-y-auto">
-        <SearchFormPredictive>
+        <SearchFormPredictive className="sticky top-0 bg-white pb-3">
           {({fetchResults, goToSearch, inputRef}) => (
             <div className="flex gap-x-2 pt-1">
               <input
@@ -124,7 +124,7 @@ function SearchAside() {
                 type="search"
                 className="w-full py-2 px-3 rounded-md text-sm border-gray-300 text-gray-500 focus:border-main-purple transition duration-200 outline-none"
               />
-              <button className="button py-2 px-3" onClick={goToSearch}>
+              <button className="button py-2 px-3 text-sm" onClick={goToSearch}>
                 Search
               </button>
             </div>
@@ -136,7 +136,11 @@ function SearchAside() {
             const {articles, collections, pages, products, queries} = items;
 
             if (state === 'loading' && term.current) {
-              return <div>Loading...</div>;
+              return (
+                <p className="mt-3 text-sm text-gray-500 animate-fade-in">
+                  Loading...
+                </p>
+              );
             }
 
             if (!total) {
@@ -144,11 +148,11 @@ function SearchAside() {
             }
 
             return (
-              <>
-                <SearchResultsPredictive.Queries
+              <div className="mt-3">
+                {/* <SearchResultsPredictive.Queries
                   queries={queries}
                   inputRef={inputRef}
-                />
+                /> */}
                 <SearchResultsPredictive.Products
                   products={products}
                   closeSearch={closeSearch}
@@ -173,6 +177,7 @@ function SearchAside() {
                   <Link
                     onClick={closeSearch}
                     to={`${SEARCH_ENDPOINT}?q=${term.current}`}
+                    className="text-main-purple hover:text-main-purple-dark transition duration-300 animate-fade-in"
                   >
                     <p>
                       View all results for <q>{term.current}</q>
@@ -180,7 +185,7 @@ function SearchAside() {
                     </p>
                   </Link>
                 ) : null}
-              </>
+              </div>
             );
           }}
         </SearchResultsPredictive>

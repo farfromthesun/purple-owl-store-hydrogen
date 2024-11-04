@@ -7,6 +7,10 @@ import {
 } from '~/lib/search';
 import {useAside} from './Aside';
 
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ');
+}
+
 /**
  * Component that renders predictive search results
  * @param {SearchResultsPredictiveProps}
@@ -58,36 +62,28 @@ function SearchResultsPredictiveArticles({term, articles, closeSearch}) {
   if (!articles.length) return null;
 
   return (
-    <div className="predictive-search-result" key="articles">
-      <h5>Articles</h5>
-      <ul>
-        {articles.map((article) => {
-          const articleUrl = urlWithTrackingParams({
-            baseUrl: `/blogs/${article.blog.handle}/${article.handle}`,
-            trackingParams: article.trackingParameters,
-            term: term.current ?? '',
-          });
+    <SearchResultsPredictiveCategoryContainer
+      category="articles"
+      key="articles"
+    >
+      {articles.map((article) => {
+        const articleUrl = urlWithTrackingParams({
+          baseUrl: `/blogs/${article.blog.handle}/${article.handle}`,
+          trackingParams: article.trackingParameters,
+          term: term.current ?? '',
+        });
 
-          return (
-            <li className="predictive-search-result-item" key={article.id}>
-              <Link onClick={closeSearch} to={articleUrl}>
-                {article.image?.url && (
-                  <Image
-                    alt={article.image.altText ?? ''}
-                    src={article.image.url}
-                    width={50}
-                    height={50}
-                  />
-                )}
-                <div>
-                  <span>{article.title}</span>
-                </div>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+        return (
+          <SearchResultsPredictiveItemContainer
+            key={article.id}
+            url={articleUrl}
+            image={article.image}
+            title={article.title}
+            closeSearch={closeSearch}
+          />
+        );
+      })}
+    </SearchResultsPredictiveCategoryContainer>
   );
 }
 
@@ -98,36 +94,28 @@ function SearchResultsPredictiveCollections({term, collections, closeSearch}) {
   if (!collections.length) return null;
 
   return (
-    <div className="predictive-search-result" key="collections">
-      <h5>Collections</h5>
-      <ul>
-        {collections.map((collection) => {
-          const colllectionUrl = urlWithTrackingParams({
-            baseUrl: `/collections/${collection.handle}`,
-            trackingParams: collection.trackingParameters,
-            term: term.current,
-          });
+    <SearchResultsPredictiveCategoryContainer
+      category="collections"
+      key="collections"
+    >
+      {collections.map((collection) => {
+        const colllectionUrl = urlWithTrackingParams({
+          baseUrl: `/collections/${collection.handle}`,
+          trackingParams: collection.trackingParameters,
+          term: term.current,
+        });
 
-          return (
-            <li className="predictive-search-result-item" key={collection.id}>
-              <Link onClick={closeSearch} to={colllectionUrl}>
-                {collection.image?.url && (
-                  <Image
-                    alt={collection.image.altText ?? ''}
-                    src={collection.image.url}
-                    width={50}
-                    height={50}
-                  />
-                )}
-                <div>
-                  <span>{collection.title}</span>
-                </div>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+        return (
+          <SearchResultsPredictiveItemContainer
+            key={collection.id}
+            url={colllectionUrl}
+            image={collection.image}
+            title={collection.title}
+            closeSearch={closeSearch}
+          />
+        );
+      })}
+    </SearchResultsPredictiveCategoryContainer>
   );
 }
 
@@ -138,28 +126,24 @@ function SearchResultsPredictivePages({term, pages, closeSearch}) {
   if (!pages.length) return null;
 
   return (
-    <div className="predictive-search-result" key="pages">
-      <h5>Pages</h5>
-      <ul>
-        {pages.map((page) => {
-          const pageUrl = urlWithTrackingParams({
-            baseUrl: `/pages/${page.handle}`,
-            trackingParams: page.trackingParameters,
-            term: term.current,
-          });
+    <SearchResultsPredictiveCategoryContainer category="pages" key="pages">
+      {pages.map((page) => {
+        const pageUrl = urlWithTrackingParams({
+          baseUrl: `/pages/${page.handle}`,
+          trackingParams: page.trackingParameters,
+          term: term.current,
+        });
 
-          return (
-            <li className="predictive-search-result-item" key={page.id}>
-              <Link onClick={closeSearch} to={pageUrl}>
-                <div>
-                  <span>{page.title}</span>
-                </div>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+        return (
+          <SearchResultsPredictiveItemContainer
+            key={page.id}
+            url={pageUrl}
+            title={page.title}
+            closeSearch={closeSearch}
+          />
+        );
+      })}
+    </SearchResultsPredictiveCategoryContainer>
   );
 }
 
@@ -170,42 +154,36 @@ function SearchResultsPredictiveProducts({term, products, closeSearch}) {
   if (!products.length) return null;
 
   return (
-    <div className="predictive-search-result" key="products">
-      <h5>Products</h5>
-      <ul>
-        {products.map((product) => {
-          const productUrl = urlWithTrackingParams({
-            baseUrl: `/products/${product.handle}`,
-            trackingParams: product.trackingParameters,
-            term: term.current,
-          });
+    <SearchResultsPredictiveCategoryContainer
+      category="products"
+      key="products"
+    >
+      {products.map((product) => {
+        const productUrl = urlWithTrackingParams({
+          baseUrl: `/products/${product.handle}`,
+          trackingParams: product.trackingParameters,
+          term: term.current,
+        });
 
-          const image = product?.variants?.nodes?.[0].image;
-          return (
-            <li className="predictive-search-result-item" key={product.id}>
-              <Link to={productUrl} onClick={closeSearch}>
-                {image && (
-                  <Image
-                    alt={image.altText ?? ''}
-                    src={image.url}
-                    width={50}
-                    height={50}
-                  />
-                )}
-                <div>
-                  <p>{product.title}</p>
-                  <small>
-                    {product?.variants?.nodes?.[0].price && (
-                      <Money data={product.variants.nodes[0].price} />
-                    )}
-                  </small>
-                </div>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+        const image = product?.variants?.nodes?.[0].image;
+        return (
+          <SearchResultsPredictiveItemContainer
+            key={product.id}
+            url={productUrl}
+            image={image}
+            title={product.title}
+            closeSearch={closeSearch}
+            category="products"
+          >
+            <small className="text-gray-500">
+              {product?.variants?.nodes?.[0].price && (
+                <Money data={product.variants.nodes[0].price} />
+              )}
+            </small>
+          </SearchResultsPredictiveItemContainer>
+        );
+      })}
+    </SearchResultsPredictiveCategoryContainer>
   );
 }
 
@@ -243,6 +221,55 @@ function SearchResultsPredictiveQueries({queries, inputRef}) {
   );
 }
 
+function SearchResultsPredictiveCategoryContainer({children, category}) {
+  return (
+    <div className="mb-8 animate-fade-in">
+      <h5 className="capitalize mb-2 font-bold">{category}</h5>
+      <ul>{children}</ul>
+    </div>
+  );
+}
+
+function SearchResultsPredictiveItemContainer({
+  url,
+  image = null,
+  title,
+  closeSearch,
+  children,
+  category = null,
+}) {
+  return (
+    <li
+      className={classNames(category !== 'products' ? 'mb-2' : 'mb-4', 'flex')}
+    >
+      <Link to={url} onClick={closeSearch} className="group flex items-center">
+        {image && (
+          <Image
+            alt={image.altText ?? ''}
+            src={image.url}
+            width={50}
+            height={50}
+            className="h-full mr-3 rounded-md group-hover:opacity-75 transition duration-300"
+          />
+        )}
+        <div>
+          <span
+            className={classNames(
+              category === 'products'
+                ? 'font-semibold group-hover:text-main-purple'
+                : 'text-main-purple group-hover:text-main-purple-dark',
+              'block text-sm transition duration-300',
+            )}
+          >
+            {title}
+          </span>
+          {children}
+        </div>
+      </Link>
+    </li>
+  );
+}
+
 /**
  * @param {{
  *   term: React.MutableRefObject<string>;
@@ -254,8 +281,8 @@ function SearchResultsPredictiveEmpty({term}) {
   }
 
   return (
-    <p>
-      No results found for <q>{term.current}</q>
+    <p className="mt-3 text-sm text-gray-500 animate-fade-in">
+      No results found for <q>{term.current}</q>.
     </p>
   );
 }

@@ -86,7 +86,7 @@ export function CartLineItem({layout, line}) {
         <div
           className={classNames(
             layout === 'page' && 'ml-6',
-            'ml-4 flex flex-1 flex-col',
+            'ml-4 flex flex-1 flex-col justify-between',
           )}
         >
           <div>
@@ -105,10 +105,9 @@ export function CartLineItem({layout, line}) {
                       close();
                     }
                   }}
+                  className="hover:text-main-purple transition duration-300"
                 >
-                  <p>
-                    <strong>{product.title}</strong>
-                  </p>
+                  <strong>{product.title}</strong>
                 </Link>
               </h3>
               <div className="">
@@ -246,7 +245,7 @@ function CartLineQuantity({line, layout, disabledByAction, fetcherErrors}) {
           line.merchandise.product.tags?.includes('GWP')
             ? 'justify-end'
             : 'justify-between',
-          'flex flex-1 items-end text-sm mt-2 flex-wrap',
+          'flex items-end text-sm mt-2 flex-wrap',
         )}
       >
         {!line.merchandise.product.tags?.includes('GWP') ? (
@@ -367,9 +366,9 @@ function CartLineQuantity({line, layout, disabledByAction, fetcherErrors}) {
           lineIds={[lineId]}
           disabled={!!isOptimistic || disabledByAction}
         />
-        <div className="basis-full">
-          {fetcherErrors &&
-            fetcherErrors.map((error) => (
+        {fetcherErrors && (
+          <div className="basis-full">
+            {fetcherErrors.map((error) => (
               <span
                 className="block mt-2 text-red-700 text-xs animate-fade-in"
                 key={error.message}
@@ -377,7 +376,8 @@ function CartLineQuantity({line, layout, disabledByAction, fetcherErrors}) {
                 {error.message}
               </span>
             ))}
-        </div>
+          </div>
+        )}
       </div>
     </>
   );

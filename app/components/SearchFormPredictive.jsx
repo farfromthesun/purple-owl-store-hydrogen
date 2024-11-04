@@ -8,11 +8,7 @@ export const SEARCH_ENDPOINT = '/search';
  *  Search form component that sends search requests to the `/search` route
  * @param {SearchFormPredictiveProps}
  */
-export function SearchFormPredictive({
-  children,
-  className = 'predictive-search-form',
-  ...props
-}) {
+export function SearchFormPredictive({children, className, ...props}) {
   const fetcher = useFetcher({key: 'search'});
   const inputRef = useRef(null);
   const navigate = useNavigate();

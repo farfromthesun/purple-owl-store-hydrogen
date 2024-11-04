@@ -9,7 +9,7 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}) {
     <Suspense>
       <Await resolve={footerPromise}>
         {(footer) => (
-          <footer className="footer text-gray-200 pt-6 lg:pt-10 bg-main-purple-super-dark mt-4">
+          <footer className="footer text-gray-700 pt-6 lg:pt-10 bg-gray-50 mt-4">
             {footer?.menu && header.shop.primaryDomain?.url && (
               <FooterMenu
                 menu={footer.menu}
@@ -65,7 +65,7 @@ function FooterMenu({menu, primaryDomainUrl, publicStoreDomain}) {
                 prefetch="intent"
                 // style={activeLinkStyle}
                 to={url}
-                className="aria-[current]:font-bold transition lg:hover:text-main-purple-light duration-300"
+                className="aria-[current]:text-main-purple lg:hover:text-main-purple-dark transition duration-300"
               >
                 {item.title}
               </NavLink>
@@ -74,8 +74,8 @@ function FooterMenu({menu, primaryDomainUrl, publicStoreDomain}) {
         </nav>
       </div>
       <div className="pt-4 lg:pt-6 border-t-gray-200 border-t text-sm text-center lg:text-left">
-        © 2024 <span className="text-main-purple-light">Purple Owl Store</span>.
-        All rights reverved.
+        © 2024 <span className="text-main-purple">Purple Owl Store</span>. All
+        rights reverved.
       </div>
     </div>
   );

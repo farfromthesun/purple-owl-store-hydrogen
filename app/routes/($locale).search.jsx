@@ -10,7 +10,7 @@ import {RouteTransition} from '~/components/RouteTransition';
  * @type {MetaFunction}
  */
 export const meta = () => {
-  return [{title: `Hydrogen | Search`}];
+  return [{title: `Search | Purple Owl Store`}];
 };
 
 /**
@@ -41,21 +41,24 @@ export default function SearchPage() {
 
   return (
     <RouteTransition>
-      <div className="search">
-        <h1>Search</h1>
-        <SearchForm>
+      <div className="search mx-auto max-w-2xl lg:max-w-1400 px-4 pt-12 pb-16 sm:px-6 lg:px-8 lg:pt-20 lg:pb-28">
+        <h1 className="text-3xl font-semibold sm:text-4xl pb-12">Search</h1>
+        <SearchForm className="flex justify-center">
           {({inputRef}) => (
-            <>
+            <div className="flex gap-x-2 pt-1 max-w-md w-full">
               <input
                 defaultValue={term}
                 name="q"
                 placeholder="Search…"
                 ref={inputRef}
                 type="search"
+                className="w-full py-2 px-3 rounded-md text-sm border-gray-300 text-gray-500 focus:border-main-purple transition duration-200 outline-none"
               />
-              &nbsp;
-              <button type="submit">Search</button>
-            </>
+
+              <button type="submit" className="button py-2 px-3 text-sm">
+                Search
+              </button>
+            </div>
           )}
         </SearchForm>
         {error && <p style={{color: 'red'}}>{error}</p>}
@@ -64,7 +67,7 @@ export default function SearchPage() {
         ) : (
           <SearchResults result={result} term={term}>
             {({articles, pages, products, term}) => (
-              <div>
+              <div className="pt-10 lg:pt-12">
                 <SearchResults.Products products={products} term={term} />
                 <SearchResults.Pages pages={pages} term={term} />
                 <SearchResults.Articles articles={articles} term={term} />
@@ -85,6 +88,10 @@ export default function SearchPage() {
  * (adjust as needed)
  */
 const SEARCH_PRODUCT_FRAGMENT = `#graphql
+  fragment MoneyProductItem on MoneyV2 {
+      amount
+      currencyCode
+  }
   fragment SearchProduct on Product {
     __typename
     handle
@@ -93,6 +100,30 @@ const SEARCH_PRODUCT_FRAGMENT = `#graphql
     title
     trackingParameters
     vendor
+    availableForSale
+    featuredImage {
+      id
+      altText
+      url
+      width
+      height
+    }
+    priceRange {
+      minVariantPrice {
+        ...MoneyProductItem
+      }
+      maxVariantPrice {
+        ...MoneyProductItem
+      }
+    }
+    compareAtPriceRange {
+      minVariantPrice {
+        ...MoneyProductItem
+      }
+      maxVariantPrice {
+        ...MoneyProductItem
+      }
+    }
     variants(first: 1) {
       nodes {
         id
@@ -222,7 +253,8 @@ export const SEARCH_QUERY = `#graphql
 async function regularSearch({request, context}) {
   const {storefront} = context;
   const url = new URL(request.url);
-  const variables = getPaginationVariables(request, {pageBy: 8});
+  const variables = getPaginationVariables(request, {pageBy: 12});
+  console.log('variables', variables);
   const term = String(url.searchParams.get('q') || '');
 
   // Search articles, pages, and products for the `q` term

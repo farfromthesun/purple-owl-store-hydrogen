@@ -9,7 +9,14 @@ import {Image, Money} from '@shopify/hydrogen';
  *   imgLoading: 'eager' | 'lazy';
  * }}
  */
-export function ProductTile({product, to, withFilters, imgLoading, index}) {
+export function ProductTile({
+  product,
+  to,
+  withFilters,
+  imgLoading,
+  index,
+  animationDelayModulo = 9,
+}) {
   const isSoldOut = !product.availableForSale;
   const isOnSale =
     product.compareAtPriceRange.minVariantPrice.amount > 0 &&
@@ -21,7 +28,7 @@ export function ProductTile({product, to, withFilters, imgLoading, index}) {
       to={to || `/products/${product.handle}`}
       prefetch="intent"
       className="group opacity-0 invisible animate-fade-slide-v-in"
-      style={{animationDelay: (index % 9) * 100 + 'ms'}}
+      style={{animationDelay: (index % animationDelayModulo) * 100 + 'ms'}}
     >
       {product.featuredImage && (
         <div className="relative aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
@@ -46,12 +53,16 @@ export function ProductTile({product, to, withFilters, imgLoading, index}) {
         </div>
       )}
       {withFilters === true ? (
-        <h4 className="mt-4 text-sm text-gray-700">{product.title}</h4>
+        <h4 className="mt-4 text-sm text-gray-700 group-hover:text-main-purple transition duration-300">
+          {product.title}
+        </h4>
       ) : (
-        <h3 className="mt-4 text-sm text-gray-700">{product.title}</h3>
+        <h3 className="mt-4 text-sm text-gray-700 group-hover:text-main-purple transition duration-300">
+          {product.title}
+        </h3>
       )}
 
-      <div className="mt-1 text-lg font-medium text-gray-900 flex">
+      <div className="flex mt-1 text-lg font-medium text-gray-900 group-hover:text-main-purple transition duration-300">
         <Money data={product.priceRange.minVariantPrice} />
         {product.priceRange.maxVariantPrice.amount >
         product.priceRange.minVariantPrice.amount ? (

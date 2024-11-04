@@ -1,6 +1,8 @@
 import {Link} from '@remix-run/react';
 import {Image, Money, Pagination} from '@shopify/hydrogen';
 import {urlWithTrackingParams} from '~/lib/search';
+import {PaginatedLoadMoreButton} from './PaginatedLoadMoreButton';
+import {ProductTile} from './ProductTile';
 
 /**
  * @param {Omit<SearchResultsProps, 'error' | 'type'>}
@@ -27,8 +29,7 @@ function SearchResultsArticles({term, articles}) {
   }
 
   return (
-    <div className="search-result">
-      <h2>Articles</h2>
+    <SearchResultsCategoryContainer category="articles">
       <div>
         {articles?.nodes?.map((article) => {
           const articleUrl = urlWithTrackingParams({
@@ -38,8 +39,12 @@ function SearchResultsArticles({term, articles}) {
           });
 
           return (
-            <div className="search-results-item" key={article.id}>
-              <Link prefetch="intent" to={articleUrl}>
+            <div className="mb-2" key={article.id}>
+              <Link
+                className="text-main-purple hover:text-main-purple-dark transition duration-300"
+                prefetch="intent"
+                to={articleUrl}
+              >
                 {article.title}
               </Link>
             </div>
@@ -47,7 +52,7 @@ function SearchResultsArticles({term, articles}) {
         })}
       </div>
       <br />
-    </div>
+    </SearchResultsCategoryContainer>
   );
 }
 
@@ -60,8 +65,7 @@ function SearchResultsPages({term, pages}) {
   }
 
   return (
-    <div className="search-result">
-      <h2>Pages</h2>
+    <SearchResultsCategoryContainer category="pages">
       <div>
         {pages?.nodes?.map((page) => {
           const pageUrl = urlWithTrackingParams({
@@ -71,8 +75,12 @@ function SearchResultsPages({term, pages}) {
           });
 
           return (
-            <div className="search-results-item" key={page.id}>
-              <Link prefetch="intent" to={pageUrl}>
+            <div className="mb-3" key={page.id}>
+              <Link
+                className="text-main-purple hover:text-main-purple-dark transition duration-300"
+                prefetch="intent"
+                to={pageUrl}
+              >
                 {page.title}
               </Link>
             </div>
@@ -80,7 +88,7 @@ function SearchResultsPages({term, pages}) {
         })}
       </div>
       <br />
-    </div>
+    </SearchResultsCategoryContainer>
   );
 }
 
@@ -93,11 +101,10 @@ function SearchResultsProducts({term, products}) {
   }
 
   return (
-    <div className="search-result">
-      <h2>Products</h2>
+    <SearchResultsCategoryContainer category="products">
       <Pagination connection={products}>
         {({nodes, isLoading, NextLink, PreviousLink}) => {
-          const ItemsMarkup = nodes.map((product) => {
+          const ItemsMarkup = nodes.map((product, index) => {
             const productUrl = urlWithTrackingParams({
               baseUrl: `/products/${product.handle}`,
               trackingParams: product.trackingParameters,
@@ -105,23 +112,14 @@ function SearchResultsProducts({term, products}) {
             });
 
             return (
-              <div className="search-results-item" key={product.id}>
-                <Link prefetch="intent" to={productUrl}>
-                  {product.variants.nodes[0].image && (
-                    <Image
-                      data={product.variants.nodes[0].image}
-                      alt={product.title}
-                      width={50}
-                    />
-                  )}
-                  <div>
-                    <p>{product.title}</p>
-                    <small>
-                      <Money data={product.variants.nodes[0].price} />
-                    </small>
-                  </div>
-                </Link>
-              </div>
+              <ProductTile
+                to={productUrl}
+                key={product.id}
+                product={product}
+                withFilters={false}
+                index={index}
+                animationDelayModulo={12}
+              />
             );
           });
 
@@ -129,29 +127,50 @@ function SearchResultsProducts({term, products}) {
             <div>
               <div>
                 <PreviousLink>
-                  {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
+                  <PaginatedLoadMoreButton
+                    isLoading={isLoading}
+                    direction="prev"
+                    text="↑ Load previous"
+                  />
+                  {/* {isLoading ? 'Loading...' : <span>↑ Load previous</span>} */}
                 </PreviousLink>
               </div>
-              <div>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 xl:gap-x-8">
                 {ItemsMarkup}
-                <br />
               </div>
               <div>
                 <NextLink>
-                  {isLoading ? 'Loading...' : <span>Load more ↓</span>}
+                  <PaginatedLoadMoreButton
+                    isLoading={isLoading}
+                    direction="next"
+                    text="Load more ↓"
+                  />
+                  {/* {isLoading ? 'Loading...' : <span>Load more ↓</span>} */}
                 </NextLink>
               </div>
             </div>
           );
         }}
       </Pagination>
-      <br />
+    </SearchResultsCategoryContainer>
+  );
+}
+
+function SearchResultsCategoryContainer({children, category}) {
+  return (
+    <div className="mb-8 lg:mb-12 animate-fade-in last:mb-0">
+      <h2 className="capitalize mb-3 font-bold">{category}</h2>
+      {children}
     </div>
   );
 }
 
 function SearchResultsEmpty() {
-  return <p>No results, try a different search.</p>;
+  return (
+    <p className="mt-10 text-gray-500 animate-fade-in text-center">
+      No results, try a different search.
+    </p>
+  );
 }
 
 /** @typedef {RegularSearchReturn['result']['items']} SearchItems */
