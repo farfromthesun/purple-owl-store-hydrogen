@@ -159,7 +159,7 @@ function SearchResultsProducts({term, products}) {
 function SearchResultsCategoryContainer({children, category}) {
   return (
     <div className="mb-8 lg:mb-12 animate-fade-in last:mb-0">
-      <h2 className="capitalize mb-3 font-bold">{category}</h2>
+      <h2 className="capitalize mb-3 lg:text-xl font-bold">{category}</h2>
       {children}
     </div>
   );

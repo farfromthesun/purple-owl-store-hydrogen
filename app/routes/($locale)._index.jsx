@@ -54,22 +54,39 @@ function loadDeferredData({context}) {
   //     return null;
   //   });
 
-  const featuredProducts = new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(
-        context.storefront
-          .query(FEATURED_PRODUCTS_QUERY, {
-            variables: {
-              query: 'tag:homepageFeatured',
-            },
-          })
-          .catch((error) => {
-            // Log query errors, but don't throw them so the page can still render
-            console.error(error);
-            return null;
-          }),
-      );
-    }, 3000);
+  // const featuredProducts = new Promise((resolve) => {
+  //   setTimeout(() => {
+  //     resolve(
+  //       context.storefront
+  //         .query(FEATURED_PRODUCTS_QUERY, {
+  //           variables: {
+  //             query: 'tag:homepageFeatured',
+  //           },
+  //         })
+  //         .catch((error) => {
+  //           // Log query errors, but don't throw them so the page can still render
+  //           console.error(error);
+  //           return null;
+  //         }),
+  //     );
+  //   }, 3000);
+  // });
+
+  const featuredProducts = Promise.all([
+    context.storefront
+      .query(FEATURED_PRODUCTS_QUERY, {
+        variables: {
+          query: 'tag:homepageFeatured',
+        },
+      })
+      .catch((error) => {
+        // Log query errors, but don't throw them so the page can still render
+        console.error(error);
+        return null;
+      }),
+    new Promise((resolve) => setTimeout(resolve, 3000)),
+  ]).then(([featuredProducts]) => {
+    return featuredProducts;
   });
 
   return {

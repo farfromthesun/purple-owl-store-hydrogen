@@ -25,7 +25,7 @@ function classNames(...classes) {
 }
 
 export const FILTER_URL_PREFIX = 'filter.';
-const FILTER_DEBOUNCE = 500;
+const FILTER_DEBOUNCE = 1000;
 
 export function CollectionSortFilters({filters, appliedFilters, children}) {
   // const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -457,7 +457,7 @@ function SortMenu() {
         transition
         className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-gray-200 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
       >
-        <div className="py-1">
+        <div className="p-1">
           {items.map((item) => (
             <MenuItem key={item.label}>
               {() => (
@@ -470,7 +470,7 @@ function SortMenu() {
                     activeItem?.key === item.key
                       ? 'font-bold text-main-purple-super-dark underline'
                       : 'text-gray-500',
-                    'block px-4 py-2 text-sm data-[focus]:bg-main-purple data-[focus]:text-white transition duration-100',
+                    'block px-4 py-2 text-sm data-[focus]:bg-main-purple data-[focus]:text-white rounded transition duration-100',
                   )}
                 >
                   {item.label}
