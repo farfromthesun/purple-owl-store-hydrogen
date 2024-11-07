@@ -5,13 +5,15 @@ import {HomepageHero} from '~/components/HomepageHero';
 import {ProductTile} from '~/components/ProductTile';
 import {ProductTileSkeleton} from '~/components/ProductTileSkeleton';
 import {RouteTransition} from '~/components/RouteTransition';
+import {seoPayload} from '~/lib/seo.server';
+import {getSeoMeta} from '@shopify/hydrogen';
 
-/**
- * @type {MetaFunction}
- */
-export const meta = () => {
-  return [{title: 'Home | Purple Owl Store'}];
-};
+// /**
+//  * @type {MetaFunction}
+//  */
+// export const meta = ({data}) => {
+//   return [{title: 'Home | Purple Owl Store'}];
+// };
 
 /**
  * @param {LoaderFunctionArgs} args
@@ -22,8 +24,14 @@ export async function loader(args) {
 
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
+  const {shop} = criticalData;
+  const url = args.request.url;
 
-  return defer({...deferredData, ...criticalData});
+  return defer({
+    ...deferredData,
+    ...criticalData,
+    seo: seoPayload.home({shop, url}),
+  });
 }
 
 /**
@@ -32,7 +40,14 @@ export async function loader(args) {
  * @param {LoaderFunctionArgs}
  */
 async function loadCriticalData({context}) {
-  return {};
+  const [{shop}] = await Promise.all([
+    context.storefront.query(SHOP_QUERY),
+    // Add other queries here, so that they are loaded in parallel
+  ]);
+
+  return {
+    shop,
+  };
 }
 
 /**
@@ -93,6 +108,10 @@ function loadDeferredData({context}) {
     featuredProducts,
   };
 }
+
+export const meta = ({matches}) => {
+  return getSeoMeta(...matches.map((match) => match.data?.seo));
+};
 
 export default function Homepage() {
   /** @type {LoaderReturnData} */
@@ -200,6 +219,18 @@ const FEATURED_PRODUCTS_QUERY = `#graphql
       nodes {
         ...FeaturedProductItem
       }
+    }
+  }
+`;
+
+export const SHOP_QUERY = `#graphql
+  query Shop(
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(language: $language, country: $country) {
+    shop {
+      name
+      description
     }
   }
 `;

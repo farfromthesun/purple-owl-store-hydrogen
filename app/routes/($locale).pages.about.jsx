@@ -1,15 +1,24 @@
 import {defer} from '@shopify/remix-oxygen';
 import {useLoaderData} from '@remix-run/react';
 import {PageHero} from '~/components/PageHero';
-import {Image} from '@shopify/hydrogen';
+import {getSeoMeta, Image} from '@shopify/hydrogen';
 import {RouteTransition} from '~/components/RouteTransition';
+import {seoPayload} from '~/lib/seo.server';
 
-/**
- * @type {MetaFunction<typeof loader>}
- */
-export const meta = ({data}) => {
-  return [{title: `${data?.page.title ?? ''} | Purple Owl Store`}];
-};
+// /**
+//  * @type {MetaFunction<typeof loader>}
+//  */
+// export const meta = ({data}) => {
+//   return [
+//     {
+//       title: `${data?.page.title ?? ''} | Purple Owl Store`,
+//     },
+//     {
+//       name: 'description',
+//       content: data?.page.seo.description ?? '',
+//     },
+//   ];
+// };
 
 /**
  * @param {LoaderFunctionArgs} args
@@ -20,8 +29,14 @@ export async function loader(args) {
 
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
+  const {page, shop} = criticalData;
+  const url = args.request.url;
 
-  return defer({...deferredData, ...criticalData});
+  return defer({
+    ...deferredData,
+    ...criticalData,
+    seo: seoPayload.page({shop, page, url}),
+  });
 }
 
 /**
@@ -32,7 +47,7 @@ export async function loader(args) {
 async function loadCriticalData({context, params}) {
   const handle = 'about';
 
-  const [{page}] = await Promise.all([
+  const [{page, shop}] = await Promise.all([
     context.storefront.query(PAGE_QUERY, {
       variables: {
         handle,
@@ -47,6 +62,7 @@ async function loadCriticalData({context, params}) {
 
   return {
     page,
+    shop,
   };
 }
 
@@ -60,15 +76,19 @@ function loadDeferredData({context}) {
   return {};
 }
 
+export const meta = ({matches}) => {
+  return getSeoMeta(...matches.map((match) => match.data?.seo));
+};
+
 export default function Page() {
   /** @type {LoaderReturnData} */
-  // const {page} = useLoaderData();
+  const {page} = useLoaderData();
 
   return (
     <RouteTransition>
       <div className="page">
         <PageHero
-          title="About us"
+          title={page.title}
           subtitle="Step inside and discover who we are."
         />
         <OurStory />
@@ -204,6 +224,10 @@ const PAGE_QUERY = `#graphql
         description
         title
       }
+    },
+    shop {
+      name
+      description
     }
   }
 `;

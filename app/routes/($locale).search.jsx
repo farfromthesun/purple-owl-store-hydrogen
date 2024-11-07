@@ -6,12 +6,12 @@ import {SearchResults} from '~/components/SearchResults';
 import {getEmptyPredictiveSearchResult} from '~/lib/search';
 import {RouteTransition} from '~/components/RouteTransition';
 
-/**
- * @type {MetaFunction}
- */
-export const meta = () => {
-  return [{title: `Search | Purple Owl Store`}];
-};
+// /**
+//  * @type {MetaFunction}
+//  */
+// export const meta = () => {
+//   return [{title: `Search | Purple Owl Store`}];
+// };
 
 /**
  * @param {LoaderFunctionArgs}

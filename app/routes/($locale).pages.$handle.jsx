@@ -88,6 +88,10 @@ const PAGE_QUERY = `#graphql
         description
         title
       }
+    },
+    shop {
+      name
+      description
     }
   }
 `;

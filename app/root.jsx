@@ -1,4 +1,9 @@
-import {useNonce, getShopAnalytics, Analytics} from '@shopify/hydrogen';
+import {
+  useNonce,
+  getShopAnalytics,
+  Analytics,
+  getSeoMeta,
+} from '@shopify/hydrogen';
 import {defer} from '@shopify/remix-oxygen';
 import {
   Links,
@@ -17,6 +22,7 @@ import tailwindCss from './styles/tailwind.css?url';
 import customFonts from './styles/custom-fonts.css?url';
 import {PageLayout} from '~/components/PageLayout';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
+import {seoPayload} from './lib/seo.server';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -65,6 +71,8 @@ export async function loader(args) {
 
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
+  const shop = criticalData.header.shop;
+  const url = args.request.url;
 
   const {storefront, env} = args.context;
 
@@ -80,6 +88,13 @@ export async function loader(args) {
       checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
       storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
     },
+    // seo: {
+    //   title: name,
+    //   titleTemplate: `%s | ${name}`,
+    //   description,
+    //   url: args.request.url,
+    // },
+    seo: seoPayload.root({shop, url}),
   });
 }
 
@@ -134,6 +149,10 @@ function loadDeferredData({context}) {
     footer,
   };
 }
+
+export const meta = ({data}) => {
+  return getSeoMeta(data.seo);
+};
 
 /**
  * @param {{children?: React.ReactNode}}

@@ -1,17 +1,19 @@
 import {Await, useRouteLoaderData} from '@remix-run/react';
 import {Suspense} from 'react';
-import {CartForm} from '@shopify/hydrogen';
+import {CartForm, getSeoMeta} from '@shopify/hydrogen';
 import {json} from '@shopify/remix-oxygen';
 import {CartMain} from '~/components/CartMain';
 import {RouteTransition} from '~/components/RouteTransition';
 import {CartSummary} from '~/components/CartSummary';
+import {seoPayload} from '~/lib/seo.server';
+import {Description} from '@headlessui/react';
 
-/**
- * @type {MetaFunction}
- */
-export const meta = () => {
-  return [{title: `Cart | Purple Owl Store`}];
-};
+// /**
+//  * @type {MetaFunction}
+//  */
+// export const meta = () => {
+//   return [{title: `Cart | Purple Owl Store`}];
+// };
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -160,6 +162,28 @@ export async function action({request, context}) {
   );
 }
 
+export async function loader({request, context}) {
+  const [{shop}] = await Promise.all([
+    context.storefront.query(SHOP_QUERY),
+    // Add other queries here, so that they are loaded in parallel
+  ]);
+  const url = request.url;
+
+  return {
+    seo: seoPayload.page({
+      shop,
+      page: {
+        title: 'Your cart',
+      },
+      url,
+    }),
+  };
+}
+
+export const meta = ({matches}) => {
+  return getSeoMeta(...matches.map((match) => match.data?.seo));
+};
+
 export default function Cart() {
   /** @type {RootLoader} */
   const rootData = useRouteLoaderData('root');
@@ -189,6 +213,18 @@ export default function Cart() {
     </RouteTransition>
   );
 }
+
+export const SHOP_QUERY = `#graphql
+  query Shop(
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(language: $language, country: $country) {
+    shop {
+      name
+      description
+    }
+  }
+`;
 
 /** @template T @typedef {import('@remix-run/react').MetaFunction<T>} MetaFunction */
 /** @typedef {import('@shopify/hydrogen').CartQueryDataReturn} CartQueryDataReturn */

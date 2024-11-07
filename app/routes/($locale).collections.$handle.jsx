@@ -1,6 +1,6 @@
 import {defer, redirect} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, useNavigation} from '@remix-run/react';
-import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
+import {getPaginationVariables, Analytics, getSeoMeta} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {PageHero} from '~/components/PageHero';
@@ -14,19 +14,20 @@ import {PaginatedLoadMoreButton} from '~/components/PaginatedLoadMoreButton';
 import {Suspense} from 'react';
 import {ProductTileSkeleton} from '~/components/ProductTileSkeleton';
 import {RouteTransition} from '~/components/RouteTransition';
+import {seoPayload} from '~/lib/seo.server';
 
-/**
- * @type {MetaFunction<typeof loader>}
- */
-export const meta = ({data}) => {
-  return [
-    {
-      title: `${
-        data?.collectionBasicInfo?.title ?? ''
-      } Collection | Purple Owl Store`,
-    },
-  ];
-};
+// /**
+//  * @type {MetaFunction<typeof loader>}
+//  */
+// export const meta = ({data}) => {
+//   return [
+//     {
+//       title: `${
+//         data?.collectionBasicInfo?.title ?? ''
+//       } Collection | Purple Owl Store`,
+//     },
+//   ];
+// };
 
 /**
  * @param {LoaderFunctionArgs} args
@@ -34,11 +35,23 @@ export const meta = ({data}) => {
 export async function loader(args) {
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
+  const {collectionProducts} = deferredData;
 
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
+  const {shop, collectionBasicInfo} = criticalData;
+  const url = args.request.url;
 
-  return defer({...deferredData, ...criticalData});
+  return defer({
+    ...deferredData,
+    ...criticalData,
+    seo: seoPayload.collection({
+      shop,
+      collection: collectionBasicInfo,
+      collectionProducts,
+      url,
+    }),
+  });
 }
 
 /**
@@ -101,7 +114,7 @@ async function loadCriticalData({context, params, request}) {
     [],
   );
 
-  const [{collectionBasicInfo}] = await Promise.all([
+  const [{collectionBasicInfo, shop}] = await Promise.all([
     storefront.query(COLLECTION_QUERY, {
       variables: {handle, filters, sortKey, reverse, ...paginationVariables},
       // Add other queries here, so that they are loaded in parallel
@@ -171,6 +184,7 @@ async function loadCriticalData({context, params, request}) {
   return {
     collectionBasicInfo,
     appliedFilters,
+    shop,
   };
 }
 
@@ -250,7 +264,7 @@ function loadDeferredData({context, params, request}) {
         console.error(error);
         return null;
       }),
-    new Promise((resolve) => setTimeout(resolve, 3000)),
+    new Promise((resolve) => setTimeout(resolve, 0)),
   ]).then(([{collectionProducts}]) => {
     return collectionProducts;
   });
@@ -259,6 +273,10 @@ function loadDeferredData({context, params, request}) {
     collectionProducts,
   };
 }
+
+export const meta = ({matches}) => {
+  return getSeoMeta(...matches.map((match) => match.data?.seo));
+};
 
 export default function Collection() {
   /** @type {LoaderReturnData} */
@@ -438,6 +456,10 @@ const COLLECTION_QUERY = `#graphql
           }
         }
       }
+    },
+    shop {
+      name
+      description
     }
   }
 `;

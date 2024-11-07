@@ -5,6 +5,7 @@ import {
   getSelectedProductOptions,
   Analytics,
   useOptimisticVariant,
+  getSeoMeta,
 } from '@shopify/hydrogen';
 import {getVariantUrl} from '~/lib/variants';
 import {ProductPrice} from '~/components/ProductPrice';
@@ -12,13 +13,15 @@ import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 // import {AnimatePresence, easeInOut, motion} from 'framer-motion';
 import {RouteTransition} from '~/components/RouteTransition';
+import {seoPayload} from '~/lib/seo.server';
+import {SlashIcon} from '@heroicons/react/24/outline';
 
-/**
- * @type {MetaFunction<typeof loader>}
- */
-export const meta = ({data}) => {
-  return [{title: `${data?.product.title ?? ''} | Purple Owl Store`}];
-};
+// /**
+//  * @type {MetaFunction<typeof loader>}
+//  */
+// export const meta = ({data}) => {
+//   return [{title: `${data?.product.title ?? ''} | Purple Owl Store`}];
+// };
 
 /**
  * @param {LoaderFunctionArgs} args
@@ -29,8 +32,19 @@ export async function loader(args) {
 
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
+  const {shop, product} = criticalData;
+  const url = args.request.url;
 
-  return defer({...deferredData, ...criticalData});
+  return defer({
+    ...deferredData,
+    ...criticalData,
+    seo: seoPayload.product({
+      shop,
+      product,
+      url,
+      selectedVariant: product.selectedVariant,
+    }),
+  });
 }
 
 /**
@@ -129,6 +143,10 @@ function redirectToFirstVariant({product, request}) {
   );
 }
 
+export const meta = ({matches}) => {
+  return getSeoMeta(...matches.map((match) => match.data?.seo));
+};
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
@@ -169,16 +187,10 @@ export default function Product() {
                     >
                       {breadcrumb.name}
                     </Link>
-                    <svg
-                      fill="currentColor"
-                      width={16}
-                      height={20}
-                      viewBox="0 0 16 20"
+                    <SlashIcon
                       aria-hidden="true"
-                      className="h-5 w-4 text-gray-300"
-                    >
-                      <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
-                    </svg>
+                      className="h-4 w-4 text-gray-400"
+                    />
                   </div>
                 </li>
               ))}
@@ -426,6 +438,10 @@ const PRODUCT_QUERY = `#graphql
   ) @inContext(country: $country, language: $language) {
     product(handle: $handle) {
       ...Product
+    },
+    shop {
+      name
+      description
     }
   }
   ${PRODUCT_FRAGMENT}
