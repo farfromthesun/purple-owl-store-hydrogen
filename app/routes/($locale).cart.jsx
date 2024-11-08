@@ -31,6 +31,8 @@ export async function action({request, context}) {
 
   const errors = [];
 
+  const GWPFlag = true;
+
   const initialCart = await cart.get();
   const gwpVariantID = 48342561653045;
   const gwpInCart = initialCart?.lines?.nodes.find((node) =>
@@ -80,7 +82,7 @@ export async function action({request, context}) {
   if (result.userErrors.length > 0) errors.push(result.userErrors[0]);
 
   // if (errors.length <= 0) {
-  if (initialCart?.totalQuantity !== result.cart.totalQuantity) {
+  if (initialCart?.totalQuantity !== result.cart.totalQuantity && GWPFlag) {
     const newCart = await cart.get();
     const isEligibleForGwp = newCart.cost.totalAmount.amount > 50;
     const gwpLineToAdd = [

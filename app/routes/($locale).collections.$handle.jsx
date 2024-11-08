@@ -264,7 +264,7 @@ function loadDeferredData({context, params, request}) {
         console.error(error);
         return null;
       }),
-    new Promise((resolve) => setTimeout(resolve, 0)),
+    new Promise((resolve) => setTimeout(resolve, 3000)),
   ]).then(([{collectionProducts}]) => {
     return collectionProducts;
   });
