@@ -1,3 +1,35 @@
+/* ::view-transition-group(root) {
+  animation-duration: 1s;
+}
+
+@keyframes move-out {
+  from {
+    transform: translateX(0%);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes move-in {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0%);
+  }
+}
+
+::view-transition-old(root) {
+  animation: 1s ease-in both move-out;
+}
+
+::view-transition-new(root) {
+  animation: 1s ease-in both move-in;
+} */
+
 :root {
   --aside-width: 320px;
   --cart-aside-summary-height-with-discount: 300px;

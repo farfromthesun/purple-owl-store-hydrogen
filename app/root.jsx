@@ -49,7 +49,7 @@ export function links() {
     {rel: 'stylesheet', href: 'https://rsms.me/inter/inter.css'},
     {rel: 'stylesheet', href: tailwindCss},
     // {rel: 'stylesheet', href: resetStyles},
-    {rel: 'stylesheet', href: appStyles},
+    // {rel: 'stylesheet', href: appStyles},
     {
       rel: 'preconnect',
       href: 'https://cdn.shopify.com',

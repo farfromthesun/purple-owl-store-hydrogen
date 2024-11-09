@@ -407,11 +407,6 @@ const PRODUCT_FRAGMENT = `#graphql
             defaultVariant: variantBySelectedOptions(selectedOptions: {name: "Title", value: "Default Title"}, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
               ...ProductVariant
             }
-            # variants(first: 1) {
-            #   nodes {
-            #     ...ProductVariant
-            #   }
-            # }
           }
         }
       }

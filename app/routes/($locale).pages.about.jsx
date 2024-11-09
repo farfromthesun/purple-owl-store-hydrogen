@@ -210,16 +210,14 @@ function OurTeam() {
 }
 
 const PAGE_QUERY = `#graphql
-  query Page(
+  query PageAbout(
     $language: LanguageCode,
     $country: CountryCode,
     $handle: String!
   )
   @inContext(language: $language, country: $country) {
     page(handle: $handle) {
-      id
       title
-      body
       seo {
         description
         title
