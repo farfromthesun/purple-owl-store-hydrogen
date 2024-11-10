@@ -39,7 +39,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
           <div className="flex lg:flex-1 order-3 lg:order-1">
             <NavLink prefetch="intent" to="/" className="-m-1.5 p-1.5" end>
               <strong className="text-main-purple font-logo text-lg lg:text-3xl font-extrabold">
-                {shop.name}
+                {shop.name.replace(' Demo', '')}
               </strong>
             </NavLink>
           </div>
