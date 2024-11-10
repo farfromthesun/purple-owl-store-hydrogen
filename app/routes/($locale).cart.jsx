@@ -31,7 +31,7 @@ export async function action({request, context}) {
 
   const errors = [];
 
-  const GWPFlag = true;
+  const GWPFlag = false;
 
   const initialCart = await cart.get();
   const gwpVariantID = 48342561653045;
