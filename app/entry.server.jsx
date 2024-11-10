@@ -23,7 +23,7 @@ export default async function handleRequest(
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
     styleSrc: ['https://rsms.me'],
-    fontSrc: ["'self'", 'https://rsms.me'],
+    fontSrc: ["'self'", 'https://rsms.me', 'https://cdn.shopify.com'],
   });
 
   const body = await renderToReadableStream(
