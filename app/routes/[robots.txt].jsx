@@ -4,12 +4,14 @@ import {parseGid} from '@shopify/hydrogen';
  * @param {LoaderFunctionArgs}
  */
 export async function loader({request, context}) {
-  const url = new URL(request.url);
+  // const url = new URL(request.url);
 
-  const {shop} = await context.storefront.query(ROBOTS_QUERY);
+  // const {shop} = await context.storefront.query(ROBOTS_QUERY);
 
-  const shopId = parseGid(shop.id).id;
-  const body = robotsTxtData({url: url.origin, shopId});
+  // const shopId = parseGid(shop.id).id;
+  // const body = robotsTxtData({url: url.origin, shopId});
+
+  const body = robotsTxtDisallowAllData();
 
   return new Response(body, {
     status: 200,
@@ -19,6 +21,17 @@ export async function loader({request, context}) {
       'Cache-Control': `max-age=${60 * 60 * 24}`,
     },
   });
+}
+
+function robotsTxtDisallowAllData() {
+  return `
+  User-agent: *
+  Disallow: /
+
+  # Google adsbot ignores robots.txt unless specifically named!
+  User-agent: adsbot-google
+  Disallow: /
+  `;
 }
 
 /**

@@ -76,6 +76,7 @@ function CartEmpty({hidden = false, layout, close}) {
       className={classNames(
         layout === 'aside' && 'mt-2 pb-6 flex-1 px-4 sm:px-6 overflow-y-auto',
         layout === 'page' && 'pb-6 lg:col-span-2',
+        'animate-fade-in',
       )}
     >
       <p className="my-6">
