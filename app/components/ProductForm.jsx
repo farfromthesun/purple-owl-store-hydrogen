@@ -308,6 +308,7 @@ function QuantitySelector({
           />
         </button>
       </div>
+      <p>{JSON.stringify(selectedVariant)}</p>
       {selectedVariant.availableForSale &&
         selectedVariant.quantityAvailable > 0 && (
           <p className="text-main-purple text-sm font-medium mt-4 animate-fade-in flex items-center gap-1">
