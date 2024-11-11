@@ -39,9 +39,9 @@ export function PageLayout({
       )}
 
       <main className="grow overflow-clip">
-        {/* <AnimatePresence mode="wait" initial={false} key="PageLayout"> */}
-        {children}
-        {/* </AnimatePresence> */}
+        <AnimatePresence mode="wait" initial={false} key="PageLayout">
+          {children}
+        </AnimatePresence>
       </main>
       <Footer
         footer={footer}
