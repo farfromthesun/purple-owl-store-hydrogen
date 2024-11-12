@@ -15,6 +15,7 @@ import {ProductForm} from '~/components/ProductForm';
 import {RouteTransition} from '~/components/RouteTransition';
 import {seoPayload} from '~/lib/seo.server';
 import {SlashIcon} from '@heroicons/react/24/outline';
+import {ProductImageSkeleton} from '~/components/ProductImageSkeleton';
 
 // /**
 //  * @type {MetaFunction<typeof loader>}
@@ -163,6 +164,13 @@ export default function Product() {
     {id: 1, name: 'Shop', href: '/collections/all-products'},
   ];
   const isProductGWP = product.id.includes('9201094689077');
+  const [imgAspectRatio, setImgAspectRatio] = useState(null);
+
+  useLayoutEffect(() => {
+    setImgAspectRatio(
+      window.matchMedia('(min-width: 1024px)').matches ? undefined : '1/1',
+    );
+  }, []);
 
   // const mainHeaderHeight = useRef(0);
 
@@ -203,7 +211,14 @@ export default function Product() {
           {/* Product main */}
           <div className="mx-auto max-w-2xl px-4 pb-16 pt-6 sm:px-6 lg:grid lg:max-w-1400 lg:grid-cols-3 lg:gap-x-8 lg:px-8 lg:pb-24">
             <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-              <ProductImage image={selectedVariant?.image} />
+              {imgAspectRatio !== null ? (
+                <ProductImage
+                  image={selectedVariant?.image}
+                  aspectRatio={imgAspectRatio}
+                />
+              ) : (
+                <ProductImageSkeleton />
+              )}
             </div>
 
             {/* Product info */}
