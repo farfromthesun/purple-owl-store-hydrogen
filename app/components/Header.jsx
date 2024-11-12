@@ -93,7 +93,7 @@ export function HeaderMenu({
     // <nav className={className} role="navigation">
     <nav
       className={classNames(
-        viewport === 'mobile' && 'space-y-10 translate-y-[-76px]',
+        viewport === 'mobile' && 'space-y-14 translate-y-[-76px]',
         viewport === 'desktop' && 'hidden',
         'lg:flex lg:gap-x-12 lg:order-2',
       )}
@@ -116,19 +116,43 @@ export function HeaderMenu({
             : item.url;
         return (
           <NavLink
-            className="md:text-sm lg:px-0 lg:py-0 lg:-mx-0 lg:text-base font-semibold lg:leading-6 aria-[current]:!text-main-purple transition group overflow-hidden relative -mx-3 block px-3 py-2 text-xl leading-7 text-gray-900"
+            className="block text-xl leading-7 font-semibold text-gray-900 lg:py-2 lg:px-1 lg:text-base lg:leading-4 aria-[current]:text-main-purple transition duration-300 group"
             end
             key={item.id}
             onClick={closeAside}
             prefetch="intent"
             to={url}
           >
-            <span className="block lg:group-hover:-translate-y-full lg:group-hover:opacity-0 transition duration-400">
+            <div className="relative overflow-hidden">
+              <span className="block">
+                {item.title.split('').map((letter, index) => (
+                  <span
+                    key={letter}
+                    className="inline-block lg:group-hover:-translate-y-full lg:group-hover:opacity-0 transition duration-400"
+                    style={{transitionDelay: index * 0.05 + 's'}}
+                  >
+                    {letter}
+                  </span>
+                ))}
+              </span>
+              <span className="block absolute top-full">
+                {item.title.split('').map((letter, index) => (
+                  <span
+                    key={letter}
+                    className="inline-block translate-y-0 opacity-0 lg:group-hover:-translate-y-full lg:group-hover:opacity-100 transition duration-400"
+                    style={{transitionDelay: index * 0.05 + 's'}}
+                  >
+                    {letter}
+                  </span>
+                ))}
+              </span>
+            </div>
+            {/* <span className="block lg:group-hover:-translate-y-full lg:group-hover:opacity-0 transition duration-400">
               {item.title}
             </span>
             <span className="block absolute top-full translate-y-0 opacity-0 lg:group-hover:-translate-y-full lg:group-hover:opacity-100 transition duration-400">
               {item.title}
-            </span>
+            </span> */}
           </NavLink>
         );
       })}
