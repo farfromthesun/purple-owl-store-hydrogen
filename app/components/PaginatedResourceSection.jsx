@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Pagination} from '@shopify/hydrogen';
+import {useNavigation} from '@remix-run/react';
 
 /**
  * <PaginatedResourceSection > is a component that encapsulate how the previous and next behaviors throughout your application.
@@ -12,6 +13,9 @@ export function PaginatedResourceSection({
   resourcesClassName,
   LoadMorebutton,
 }) {
+  const navigation = useNavigation();
+  const isLoadingMoreNodes = navigation.location?.search.includes('direction');
+
   return (
     <Pagination connection={connection}>
       {({nodes, isLoading, PreviousLink, NextLink}) => {
@@ -26,11 +30,11 @@ export function PaginatedResourceSection({
                 <PreviousLink>
                   {LoadMorebutton ? (
                     <LoadMorebutton
-                      isLoading={isLoading}
+                      isLoading={isLoadingMoreNodes}
                       direction="prev"
                       text="↑ Load previous"
                     />
-                  ) : isLoading ? (
+                  ) : isLoadingMoreNodes ? (
                     'Loading...'
                   ) : (
                     <span>↑ Load previous</span>
@@ -44,11 +48,11 @@ export function PaginatedResourceSection({
                 <NextLink>
                   {LoadMorebutton ? (
                     <LoadMorebutton
-                      isLoading={isLoading}
+                      isLoading={isLoadingMoreNodes}
                       direction="next"
                       text="Load more ↓"
                     />
-                  ) : isLoading ? (
+                  ) : isLoadingMoreNodes ? (
                     'Loading...'
                   ) : (
                     <span>Load more ↓</span>

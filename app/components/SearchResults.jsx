@@ -1,4 +1,4 @@
-import {Link} from '@remix-run/react';
+import {Link, useNavigation} from '@remix-run/react';
 import {Image, Money, Pagination} from '@shopify/hydrogen';
 import {urlWithTrackingParams} from '~/lib/search';
 import {PaginatedLoadMoreButton} from './PaginatedLoadMoreButton';
@@ -96,6 +96,8 @@ function SearchResultsPages({term, pages}) {
  * @param {PartialSearchResult<'products'>}
  */
 function SearchResultsProducts({term, products}) {
+  const navigation = useNavigation();
+  const isLoadingMoreNodes = navigation.location?.search.includes('direction');
   if (!products?.nodes.length) {
     return null;
   }
@@ -128,7 +130,7 @@ function SearchResultsProducts({term, products}) {
               <div>
                 <PreviousLink>
                   <PaginatedLoadMoreButton
-                    isLoading={isLoading}
+                    isLoading={isLoadingMoreNodes}
                     direction="prev"
                     text="↑ Load previous"
                   />
@@ -141,7 +143,7 @@ function SearchResultsProducts({term, products}) {
               <div>
                 <NextLink>
                   <PaginatedLoadMoreButton
-                    isLoading={isLoading}
+                    isLoading={isLoadingMoreNodes}
                     direction="next"
                     text="Load more ↓"
                   />

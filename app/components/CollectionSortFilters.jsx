@@ -81,7 +81,7 @@ export function CollectionSortFilters({filters, appliedFilters, children}) {
           }`}
         > */}
         <div
-          className={`grid grid-rows-[auto_auto] gap-y-3 lg:grid-rows-none lg:gap-y-0 items-baseline border-b border-gray-200 pb-6 pt-24 ${
+          className={`grid grid-rows-[auto_auto] gap-y-3 lg:grid-rows-none lg:gap-y-0 items-baseline border-b border-gray-200 pb-6 pt-12 lg:pt-16 ${
             appliedFilters.length > 0
               ? 'grid-cols-[auto_auto] lg:grid-cols-[auto_1fr_auto]'
               : 'grid-cols-1 lg:grid-cols-1'

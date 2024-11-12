@@ -28,7 +28,7 @@ export function PageHero({title, subtitle, pageType = 'page'}) {
             title
           )}
         </h1>
-        <p className="mt-6 text-lg leading-8 text-gray-300">
+        <p className="mt-6 text-lg leading-8 text-gray-300 text-balance">
           {subtitle && <>{subtitle}</>}
         </p>
       </div>
