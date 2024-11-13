@@ -39,7 +39,7 @@ export function PageLayout({
       )}
 
       <main className="grow overflow-clip">
-        <AnimatePresence mode="wait" initial={false} key="PageLayout">
+        <AnimatePresence mode="wait" initial={true} key="PageLayout">
           {children}
         </AnimatePresence>
       </main>
