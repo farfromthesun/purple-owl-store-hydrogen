@@ -29,17 +29,6 @@ export async function action({request, context}) {
 
   const {action, inputs} = CartForm.getFormInput(formData);
 
-  const errors = [];
-
-  const GWPFlag = false;
-
-  // const initialCart = await cart.get();
-  // const gwpVariantID = 48342561653045;
-  // const gwpInCart = initialCart?.lines?.nodes.find((node) =>
-  //   node.merchandise.id.includes(gwpVariantID),
-  // );
-  // const isRemoveOnGwp = inputs?.lineIds?.includes(gwpInCart?.id);
-
   if (!action) {
     throw new Error('No action provided');
   }
@@ -79,67 +68,6 @@ export async function action({request, context}) {
       throw new Error(`${action} cart action is not defined`);
   }
 
-  if (result.userErrors.length > 0) errors.push(result.userErrors[0]);
-
-  // if (errors.length <= 0) {
-  // if (initialCart?.totalQuantity !== result.cart.totalQuantity && GWPFlag) {
-  //   const newCart = await cart.get();
-  //   const isEligibleForGwp = newCart.cost.totalAmount.amount > 50;
-  //   const gwpLineToAdd = [
-  //     {
-  //       merchandiseId: 'gid://shopify/ProductVariant/' + gwpVariantID,
-  //       quantity: 1,
-  //     },
-  //   ];
-  //   const gwpLineToRemove = [gwpInCart?.id];
-
-  //   // if (
-  //   //   action === 'LinesAdd' ||
-  //   //   action === 'LinesUpdate' ||
-  //   //   (action === 'LinesRemove' && !isRemoveOnGwp)
-  //   // ) {
-  //   //   if (isEligibleForGwp) {
-  //   //     if (!gwpInCart && inputs?.updateType === 'increase') {
-  //   //       result = await cart.addLines(gwpLineToAdd);
-  //   //     }
-  //   //   } else {
-  //   //     if (gwpInCart) {
-  //   //       result = await cart.removeLines(gwpLineToRemove);
-  //   //     }
-  //   //   }
-  //   // }
-
-  //   switch (action) {
-  //     case 'LinesAdd':
-  //       if (isEligibleForGwp && !gwpInCart) {
-  //         result = await cart.addLines(gwpLineToAdd);
-  //       }
-  //       break;
-  //     case 'LinesUpdate':
-  //       if (isEligibleForGwp) {
-  //         if (!gwpInCart && inputs?.updateType === 'increase') {
-  //           result = await cart.addLines(gwpLineToAdd);
-  //         }
-  //       } else {
-  //         if (gwpInCart) {
-  //           result = await cart.removeLines(gwpLineToRemove);
-  //         }
-  //       }
-  //       break;
-  //     case 'LinesRemove':
-  //       if (!isEligibleForGwp && gwpInCart && !isRemoveOnGwp) {
-  //         result = await cart.removeLines(gwpLineToRemove);
-  //       }
-  //       break;
-  //   }
-
-  //   if (
-  //     result.userErrors.length > 0 &&
-  //     !errors.some((error) => error.message === result.userErrors[0].message)
-  //   )
-  //     errors.push(result.userErrors[0]);
-  // }
-
   const cartId = result?.cart?.id;
   const headers = cartId ? cart.setCartId(result.cart.id) : new Headers();
   const {cart: cartResult, userErrors} = result;
@@ -152,10 +80,8 @@ export async function action({request, context}) {
 
   return json(
     {
-      inputLines: inputs.lines,
       cart: cartResult,
-      // errors: userErrors,
-      errors,
+      errors: userErrors,
       analytics: {
         cartId,
       },
