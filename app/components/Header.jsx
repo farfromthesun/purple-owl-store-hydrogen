@@ -35,7 +35,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
         />
         <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
       </header> */}
-      <header className="main-header bg-white/80 sticky top-0 z-10 backdrop-blur-lg">
+      <header className="main-header bg-white/70 sticky top-0 z-10 backdrop-blur-lg">
         <div className="flex items-center justify-between p-6 lg:px-8 max-w-2xl lg:max-w-1400 m-auto">
           <div className="flex lg:flex-1 order-3 lg:order-1">
             <NavLink prefetch="intent" to="/" className="-m-1.5 p-1.5" end>
