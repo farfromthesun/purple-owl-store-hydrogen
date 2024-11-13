@@ -23,6 +23,7 @@ import customFonts from './styles/custom-fonts.css?url';
 import {PageLayout} from '~/components/PageLayout';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import {seoPayload} from './lib/seo.server';
+import {useEffect} from 'react';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -161,6 +162,19 @@ export function Layout({children}) {
   const nonce = useNonce();
   /** @type {RootLoader} */
   const data = useRouteLoaderData('root');
+
+  useEffect(() => {
+    async function getCart() {
+      const cart = await data.cart;
+
+      console.log('#####################################');
+      cart?.lines?.nodes?.map((line) => {
+        console.log('title:', line.merchandise.product.title);
+      });
+    }
+
+    getCart();
+  }, [data.cart]);
 
   return (
     <html lang="en">
