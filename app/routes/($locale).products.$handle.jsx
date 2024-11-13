@@ -1,4 +1,4 @@
-import {Suspense, useEffect, useLayoutEffect, useRef, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {defer, redirect} from '@shopify/remix-oxygen';
 import {Await, Link, useLoaderData} from '@remix-run/react';
 import {
@@ -166,7 +166,7 @@ export default function Product() {
   const isProductGWP = product.id.includes('9201094689077');
   const [imgAspectRatio, setImgAspectRatio] = useState(null);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setImgAspectRatio(
       window.matchMedia('(min-width: 1024px)').matches ? undefined : '1/1',
     );

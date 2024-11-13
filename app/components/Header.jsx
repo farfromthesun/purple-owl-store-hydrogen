@@ -9,6 +9,7 @@ import {
   UserCircleIcon,
   ShoppingBagIcon,
 } from '@heroicons/react/24/outline';
+import {nanoid} from 'nanoid';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -138,7 +139,7 @@ export function HeaderMenu({
               <span className="block absolute top-full">
                 {item.title.split('').map((letter, index) => (
                   <span
-                    key={letter}
+                    key={nanoid()}
                     className="inline-block translate-y-0 opacity-0 lg:group-hover:-translate-y-full lg:group-hover:opacity-100 transition duration-400"
                     style={{transitionDelay: index * 0.05 + 's'}}
                   >
