@@ -16,7 +16,13 @@ import {
   isRouteErrorResponse,
   Link,
 } from '@remix-run/react';
-import favicon from '~/assets/favicon.svg';
+// import favicon from '~/assets/favicon.svg';
+
+import faviconAppleTouch from '~/assets/favicon/apple-touch-icon.png';
+import favicon32 from '~/assets/favicon/favicon-32x32.png';
+import favicon16 from '~/assets/favicon/favicon-16x16.png';
+import faviconIco from '~/assets/favicon/favicon.ico';
+
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import customFonts from './styles/custom-fonts.css?url';
@@ -58,7 +64,26 @@ export function links() {
       rel: 'preconnect',
       href: 'https://shop.app',
     },
-    {rel: 'icon', type: 'image/svg+xml', href: favicon},
+    // {rel: 'icon', type: 'image/svg+xml', href: favicon},
+
+    {
+      rel: 'apple-touch-icon',
+      sizes: '180x180',
+      href: faviconAppleTouch,
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      sizes: '32x32',
+      href: favicon32,
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      sizes: '16x16',
+      href: favicon16,
+    },
+    {rel: 'icon', type: 'image/x-icon', href: faviconIco},
   ];
 }
 

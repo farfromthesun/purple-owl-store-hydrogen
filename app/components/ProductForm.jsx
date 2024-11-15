@@ -108,7 +108,7 @@ function ProductOptions({option}) {
                 isAvailable
                   ? 'cursor-pointer bg-white text-gray-900 shadow-sm'
                   : 'cursor-not-allowed bg-gray-50 text-gray-200',
-                'group relative flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
+                'group relative flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
               )}
               key={option.name + value}
               prefetch="intent"
@@ -252,7 +252,7 @@ function QuantitySelector({
             quantity > 1
               ? 'cursor-pointer bg-white text-gray-900 shadow-sm'
               : 'cursor-not-allowed bg-gray-50 text-gray-200',
-            'group relative flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
+            'group relative flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
           )}
           disabled={quantity <= 1}
           onClick={handleDecrement}
@@ -295,7 +295,7 @@ function QuantitySelector({
           {quantity}
         </div>
         <button
-          className="group relative flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200 cursor-pointer bg-white text-gray-900 shadow-sm"
+          className="group relative flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200 cursor-pointer bg-white text-gray-900 shadow-sm"
           onClick={handleIncrement}
           type="button"
         >

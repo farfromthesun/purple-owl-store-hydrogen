@@ -3,7 +3,7 @@ import {useVariantUrl} from '~/lib/variants';
 import {Link, useFetcher} from '@remix-run/react';
 import {ProductPrice} from './ProductPrice';
 import {useAside} from './Aside';
-import {TrashIcon} from '@heroicons/react/20/outline';
+import {TrashIcon} from '@heroicons/react/24/outline';
 import {PlusIcon, MinusIcon} from '@heroicons/react/16/solid';
 import {AnimatePresence, motion} from 'framer-motion';
 
@@ -259,7 +259,7 @@ function CartLineQuantity({line, layout, disabledByAction, fetcherErrors}) {
                   quantity <= 1 || disabledByAction
                     ? 'cursor-not-allowed bg-gray-50 text-gray-200'
                     : 'cursor-pointer bg-white text-gray-900 shadow-sm',
-                  'group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
+                  'group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
                 )}
                 aria-label="Decrease quantity"
                 disabled={quantity <= 1 || !!isOptimistic || disabledByAction}
@@ -316,7 +316,7 @@ function CartLineQuantity({line, layout, disabledByAction, fetcherErrors}) {
                   disabledByAction
                     ? 'cursor-not-allowed bg-gray-50 text-gray-200'
                     : 'cursor-pointer bg-white text-gray-900 shadow-sm',
-                  'group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
+                  'group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
                 )}
                 aria-label="Increase quantity"
                 name="increase-quantity"
