@@ -5,7 +5,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from '@headlessui/react';
-import {PlusIcon, MinusIcon} from '@heroicons/react/16/solid';
+import {PlusIcon, MinusIcon} from '@heroicons/react/20/solid';
 import {Await, Link, useRouteLoaderData} from '@remix-run/react';
 import {Image, VariantSelector} from '@shopify/hydrogen';
 import {Suspense, useState} from 'react';

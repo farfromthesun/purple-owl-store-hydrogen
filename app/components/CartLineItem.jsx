@@ -3,7 +3,7 @@ import {useVariantUrl} from '~/lib/variants';
 import {Link, useFetcher} from '@remix-run/react';
 import {ProductPrice} from './ProductPrice';
 import {useAside} from './Aside';
-import {TrashIcon} from '@heroicons/react/24/outline';
+import {TrashIcon} from '@heroicons/react/20/outline';
 import {PlusIcon, MinusIcon} from '@heroicons/react/16/solid';
 import {AnimatePresence, motion} from 'framer-motion';
 
