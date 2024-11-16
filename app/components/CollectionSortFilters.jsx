@@ -460,7 +460,7 @@ function SortMenu() {
         <div className="p-1">
           {items.map((item) => (
             <MenuItem key={item.label}>
-              {() => (
+              {({focus}) => (
                 <Link
                   to={getSortLink(item.key, params, location)}
                   preventScrollReset
@@ -470,13 +470,50 @@ function SortMenu() {
                     activeItem?.key === item.key
                       ? 'font-bold text-main-purple-super-dark underline'
                       : 'text-gray-500',
-                    'block px-4 py-2 text-sm data-[focus]:bg-main-purple data-[focus]:text-white rounded transition duration-100',
+                    'block relative px-4 py-2 text-sm transition duration-100',
+                    focus && 'text-white',
                   )}
                 >
+                  {focus && (
+                    <motion.div
+                      layoutId="backdrop"
+                      transition={{
+                        type: 'spring',
+                        bounce: 0.3,
+                        duration: 0.3,
+                      }}
+                      className="absolute top-0 left-0 right-0 bottom-0 h-full w-full bg-main-purple rounded"
+                    />
+                  )}
+                  {/* <motion.span
+                  animate={{color: focus ? '#fff' : '#6b7280'}}
+                  transition={{type: 'spring', bounce: 0.3, duration: 0.3}}
+                  className="z-20 relative"
+                >
                   {item.label}
+                </motion.span> */}
+                  <span className="z-20 relative">{item.label}</span>
                 </Link>
               )}
             </MenuItem>
+            // <MenuItem key={item.label}>
+            //   {() => (
+            //     <Link
+            //       to={getSortLink(item.key, params, location)}
+            //       preventScrollReset
+            //       data-active-item-key={activeItem?.key}
+            //       data-item-key={item.key}
+            //       className={classNames(
+            //         activeItem?.key === item.key
+            //           ? 'font-bold text-main-purple-super-dark underline'
+            //           : 'text-gray-500',
+            //         'block px-4 py-2 text-sm data-[focus]:bg-main-purple data-[focus]:text-white rounded transition duration-100',
+            //       )}
+            //     >
+            //       {item.label}
+            //     </Link>
+            //   )}
+            // </MenuItem>
           ))}
         </div>
       </MenuItems>
