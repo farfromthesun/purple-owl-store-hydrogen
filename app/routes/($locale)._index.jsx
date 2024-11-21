@@ -1,6 +1,6 @@
 import {defer} from '@shopify/remix-oxygen';
 import {Await, useLoaderData} from '@remix-run/react';
-import {Suspense} from 'react';
+import {Suspense, useState} from 'react';
 import {HomepageHero} from '~/components/HomepageHero';
 import {ProductTile} from '~/components/ProductTile';
 import {ProductTileSkeleton} from '~/components/ProductTileSkeleton';
@@ -115,15 +115,16 @@ export const meta = ({matches}) => {
 
 export default function Homepage() {
   /** @type {LoaderReturnData} */
-  const data = useLoaderData();
+  // const data = useLoaderData();
+  const [data] = useState(useLoaderData() || {});
 
   return (
-    <RouteTransition>
-      <div className="home">
-        <HomepageHero />
-        <RecommendedProducts products={data.featuredProducts} />
-      </div>
-    </RouteTransition>
+    // <RouteTransition>
+    <div className="home">
+      <HomepageHero />
+      <RecommendedProducts products={data.featuredProducts} />
+    </div>
+    // </RouteTransition>
   );
 }
 

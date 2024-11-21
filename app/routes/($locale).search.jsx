@@ -5,6 +5,7 @@ import {SearchForm} from '~/components/SearchForm';
 import {SearchResults} from '~/components/SearchResults';
 import {getEmptyPredictiveSearchResult} from '~/lib/search';
 import {RouteTransition} from '~/components/RouteTransition';
+import {useState} from 'react';
 
 // /**
 //  * @type {MetaFunction}
@@ -36,50 +37,49 @@ export async function loader({request, context}) {
  */
 export default function SearchPage() {
   /** @type {LoaderReturnData} */
-  const {type, term, result, error} = useLoaderData();
+  // const {type, term, result, error} = useLoaderData();
+  const [{type, term, result, error}] = useState(useLoaderData() || {});
   if (type === 'predictive') return null;
 
   return (
-    <RouteTransition>
-      <div className="search mx-auto max-w-2xl lg:max-w-1400 px-4 pt-12 pb-16 sm:px-6 lg:px-8 lg:pt-20 lg:pb-28">
-        <h1 className="text-3xl font-semibold sm:text-4xl pb-12">Search</h1>
-        <SearchForm className="flex justify-center">
-          {({inputRef}) => (
-            <div className="flex gap-x-2 pt-1 max-w-md w-full">
-              <input
-                defaultValue={term}
-                name="q"
-                placeholder="Search…"
-                ref={inputRef}
-                type="search"
-                className="w-full py-2 px-3 rounded-md text-sm border-gray-300 text-gray-500 focus:border-main-purple transition duration-200 outline-none"
-              />
+    // <RouteTransition>
+    <div className="search mx-auto max-w-2xl lg:max-w-1400 px-4 pt-12 pb-16 sm:px-6 lg:px-8 lg:pt-20 lg:pb-28">
+      <h1 className="text-3xl font-semibold sm:text-4xl pb-12">Search</h1>
+      <SearchForm className="flex justify-center">
+        {({inputRef}) => (
+          <div className="flex gap-x-2 pt-1 max-w-md w-full">
+            <input
+              defaultValue={term}
+              name="q"
+              placeholder="Search…"
+              ref={inputRef}
+              type="search"
+              className="w-full py-2 px-3 rounded-md text-sm border-gray-300 text-gray-500 focus:border-main-purple transition duration-200 outline-none"
+            />
 
-              <button type="submit" className="button py-2 px-3 text-sm">
-                Search
-              </button>
+            <button type="submit" className="button py-2 px-3 text-sm">
+              Search
+            </button>
+          </div>
+        )}
+      </SearchForm>
+      {error && <p style={{color: 'red'}}>{error}</p>}
+      {!term || !result?.total ? (
+        <SearchResults.Empty />
+      ) : (
+        <SearchResults result={result} term={term}>
+          {({articles, pages, products, term}) => (
+            <div className="pt-10 lg:pt-12">
+              <SearchResults.Products products={products} term={term} />
+              <SearchResults.Pages pages={pages} term={term} />
+              <SearchResults.Articles articles={articles} term={term} />
             </div>
           )}
-        </SearchForm>
-        {error && <p style={{color: 'red'}}>{error}</p>}
-        {!term || !result?.total ? (
-          <SearchResults.Empty />
-        ) : (
-          <SearchResults result={result} term={term}>
-            {({articles, pages, products, term}) => (
-              <div className="pt-10 lg:pt-12">
-                <SearchResults.Products products={products} term={term} />
-                <SearchResults.Pages pages={pages} term={term} />
-                <SearchResults.Articles articles={articles} term={term} />
-              </div>
-            )}
-          </SearchResults>
-        )}
-        <Analytics.SearchView
-          data={{searchTerm: term, searchResults: result}}
-        />
-      </div>
-    </RouteTransition>
+        </SearchResults>
+      )}
+      <Analytics.SearchView data={{searchTerm: term, searchResults: result}} />
+    </div>
+    // </RouteTransition>
   );
 }
 

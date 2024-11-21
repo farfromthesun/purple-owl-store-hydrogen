@@ -192,27 +192,27 @@ export default function Cart() {
   if (!rootData) return null;
 
   return (
-    <RouteTransition>
-      <div className="cart mx-auto max-w-2xl lg:max-w-1400 px-4 pt-12 pb-16 sm:px-6 lg:px-8 lg:pt-20 lg:pb-28">
-        <h1 className="text-3xl font-semibold sm:text-4xl pb-12">Your cart</h1>
-        <Suspense fallback={<p>Loading cart ...</p>}>
-          <Await
-            resolve={rootData.cart}
-            errorElement={<div>An error occurred</div>}
-          >
-            {(cart) => {
-              const cartHasItems = cart?.totalQuantity > 0;
-              return (
-                <div className="lg:grid lg:grid-cols-3 lg:gap-x-20 xl:gap-x-24 items-start">
-                  <CartMain cart={cart} layout="page" />
-                  {cartHasItems && <CartSummary cart={cart} layout="page" />}
-                </div>
-              );
-            }}
-          </Await>
-        </Suspense>
-      </div>
-    </RouteTransition>
+    // <RouteTransition>
+    <div className="cart mx-auto max-w-2xl lg:max-w-1400 px-4 pt-12 pb-16 sm:px-6 lg:px-8 lg:pt-20 lg:pb-28">
+      <h1 className="text-3xl font-semibold sm:text-4xl pb-12">Your cart</h1>
+      <Suspense fallback={<p>Loading cart ...</p>}>
+        <Await
+          resolve={rootData.cart}
+          errorElement={<div>An error occurred</div>}
+        >
+          {(cart) => {
+            const cartHasItems = cart?.totalQuantity > 0;
+            return (
+              <div className="lg:grid lg:grid-cols-3 lg:gap-x-20 xl:gap-x-24 items-start">
+                <CartMain cart={cart} layout="page" />
+                {cartHasItems && <CartSummary cart={cart} layout="page" />}
+              </div>
+            );
+          }}
+        </Await>
+      </Suspense>
+    </div>
+    // </RouteTransition>
   );
 }
 

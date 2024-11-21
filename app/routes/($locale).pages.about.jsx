@@ -4,6 +4,7 @@ import {PageHero} from '~/components/PageHero';
 import {getSeoMeta, Image} from '@shopify/hydrogen';
 import {RouteTransition} from '~/components/RouteTransition';
 import {seoPayload} from '~/lib/seo.server';
+import {useState} from 'react';
 
 // /**
 //  * @type {MetaFunction<typeof loader>}
@@ -82,19 +83,20 @@ export const meta = ({matches}) => {
 
 export default function Page() {
   /** @type {LoaderReturnData} */
-  const {page} = useLoaderData();
+  // const {page} = useLoaderData();
+  const [{page}] = useState(useLoaderData() || {});
 
   return (
-    <RouteTransition>
-      <div className="page">
-        <PageHero
-          title={page.title}
-          subtitle="Step inside and discover who we are."
-        />
-        <OurStory />
-        <OurTeam />
-      </div>
-    </RouteTransition>
+    // <RouteTransition>
+    <div className="page">
+      <PageHero
+        title={page.title}
+        subtitle="Step inside and discover who we are."
+      />
+      <OurStory />
+      <OurTeam />
+    </div>
+    // </RouteTransition>
   );
 }
 

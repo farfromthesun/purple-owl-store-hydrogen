@@ -11,7 +11,7 @@ import {
 import {ProductTile} from '~/components/ProductTile';
 import {parseAsCurrency} from '~/lib/utils';
 import {PaginatedLoadMoreButton} from '~/components/PaginatedLoadMoreButton';
-import {Suspense} from 'react';
+import {Suspense, useState} from 'react';
 import {ProductTileSkeleton} from '~/components/ProductTileSkeleton';
 import {RouteTransition} from '~/components/RouteTransition';
 import {seoPayload} from '~/lib/seo.server';
@@ -280,8 +280,11 @@ export const meta = ({matches}) => {
 
 export default function Collection() {
   /** @type {LoaderReturnData} */
-  const {collectionBasicInfo, collectionProducts, appliedFilters} =
-    useLoaderData();
+  // const {collectionBasicInfo, collectionProducts, appliedFilters} =
+  //   useLoaderData();
+  const [{collectionBasicInfo, collectionProducts, appliedFilters}] = useState(
+    useLoaderData() || {},
+  );
   const navigation = useNavigation();
   const areProductsLoading =
     navigation.state === 'loading' &&
@@ -289,52 +292,52 @@ export default function Collection() {
     navigation.location?.state === null;
 
   return (
-    <RouteTransition>
-      <div className="collection">
-        <PageHero
-          title={collectionBasicInfo.title}
-          subtitle="Shop the best products available on the market."
-          pageType="collection"
-        />
-        <CollectionSortFilters
-          filters={collectionBasicInfo.products.filters}
-          appliedFilters={appliedFilters}
-        >
-          {areProductsLoading ? (
-            <ProductTileSkeletonGrid />
-          ) : (
-            <Suspense fallback={<ProductTileSkeletonGrid />}>
-              <Await resolve={collectionProducts}>
-                {(collectionProducts) => (
-                  <PaginatedResourceSection
-                    connection={collectionProducts.products}
-                    resourcesClassName="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3 xl:gap-x-8"
-                    LoadMorebutton={PaginatedLoadMoreButton}
-                  >
-                    {({node: product, index}) => (
-                      <ProductItem
-                        key={product.id}
-                        product={product}
-                        loading={index < 9 ? 'eager' : undefined}
-                        index={index}
-                      />
-                    )}
-                  </PaginatedResourceSection>
-                )}
-              </Await>
-            </Suspense>
-          )}
-        </CollectionSortFilters>
-        <Analytics.CollectionView
-          data={{
-            collection: {
-              id: collectionBasicInfo.id,
-              handle: collectionBasicInfo.handle,
-            },
-          }}
-        />
-      </div>
-    </RouteTransition>
+    // <RouteTransition>
+    <div className="collection">
+      <PageHero
+        title={collectionBasicInfo.title}
+        subtitle="Shop the best products available on the market."
+        pageType="collection"
+      />
+      <CollectionSortFilters
+        filters={collectionBasicInfo.products.filters}
+        appliedFilters={appliedFilters}
+      >
+        {areProductsLoading ? (
+          <ProductTileSkeletonGrid />
+        ) : (
+          <Suspense fallback={<ProductTileSkeletonGrid />}>
+            <Await resolve={collectionProducts}>
+              {(collectionProducts) => (
+                <PaginatedResourceSection
+                  connection={collectionProducts.products}
+                  resourcesClassName="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3 xl:gap-x-8"
+                  LoadMorebutton={PaginatedLoadMoreButton}
+                >
+                  {({node: product, index}) => (
+                    <ProductItem
+                      key={product.id}
+                      product={product}
+                      loading={index < 9 ? 'eager' : undefined}
+                      index={index}
+                    />
+                  )}
+                </PaginatedResourceSection>
+              )}
+            </Await>
+          </Suspense>
+        )}
+      </CollectionSortFilters>
+      <Analytics.CollectionView
+        data={{
+          collection: {
+            id: collectionBasicInfo.id,
+            handle: collectionBasicInfo.handle,
+          },
+        }}
+      />
+    </div>
+    // </RouteTransition>
   );
 }
 

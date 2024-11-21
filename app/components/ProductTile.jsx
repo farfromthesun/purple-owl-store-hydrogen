@@ -29,6 +29,7 @@ export function ProductTile({
       prefetch="intent"
       className="group opacity-0 invisible animate-fade-slide-v-in"
       style={{animationDelay: (index % animationDelayModulo) * 100 + 'ms'}}
+      preventScrollReset
     >
       {product.featuredImage && (
         <div className="relative aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">

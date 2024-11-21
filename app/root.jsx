@@ -15,6 +15,8 @@ import {
   ScrollRestoration,
   isRouteErrorResponse,
   Link,
+  useOutlet,
+  useLocation,
 } from '@remix-run/react';
 // import favicon from '~/assets/favicon.svg';
 
@@ -29,6 +31,7 @@ import customFonts from './styles/custom-fonts.css?url';
 import {PageLayout} from '~/components/PageLayout';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import {seoPayload} from './lib/seo.server';
+import {AnimatePresence, motion} from 'framer-motion';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -214,8 +217,87 @@ export function Layout({children}) {
   );
 }
 
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ');
+}
+
 export default function App() {
-  return <Outlet />;
+  const outlet = useOutlet();
+  const location = useLocation();
+  const {header} = useRouteLoaderData('root');
+
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <div key={location.pathname}>
+        <div className="fixed top-main-header-desktop-height left-0 h-full w-full z-50 grid grid-cols-2 grid-rows-2 pointer-events-none overflow-hidden">
+          <motion.div
+            initial={{opacity: 1}}
+            animate={{opacity: 0}}
+            exit={{opacity: 1}}
+            transition={{duration: 0.9, ease: 'easeInOut'}}
+            className="absolute top-0 left-0 z-10 h-full w-full bg-gray-900/50"
+          />
+          {Array.from({length: 4}, (_, index) => index + 1).map((id, index) => (
+            <motion.div
+              key={location.pathname + id}
+              initial={{
+                opacity: 1,
+                visibility: 'visible',
+                x: 0,
+                y: 0,
+                // scale: 1,
+              }}
+              animate={{
+                opacity: 0,
+                visibility: 'hidden',
+                x: index % 2 === 0 ? [0, -7] : [0, 7],
+                y: index <= 1 ? [0, -7] : [0, 7],
+                // scale: [1, 0.98],
+                // transition: {duration: 0.5, delay: index * 0.2},
+              }}
+              exit={{
+                opacity: 1,
+                visibility: 'visible',
+                x: index % 2 === 0 ? [-7, 0] : [7, 0],
+                y: index <= 1 ? [-7, 0] : [7, 0],
+                // scale: [0.98, 1],
+                // transition: {duration: 0.5, delay: index * 0.2},
+              }}
+              transition={{
+                duration: 0.3,
+                // type: 'spring',
+                // bounce: 0.25,
+                ease: 'easeInOut',
+                delay: index * 0.2,
+              }}
+              className="bg-main-purple-super-dark relative overflow-hidden z-20"
+            >
+              <div
+                className={classNames(
+                  index === 0 &&
+                    'top-full translate-y-[-50%] left-full translate-x-[-50%]',
+                  index === 1 &&
+                    'top-full translate-y-[-50%] right-full translate-x-[50%]',
+                  index === 2 &&
+                    'bottom-full translate-y-[50%] left-full translate-x-[-50%]',
+                  index === 3 &&
+                    'bottom-full translate-y-[50%] right-full translate-x-[50%]',
+                  'absolute whitespace-nowrap',
+                )}
+              >
+                <strong className="text-white font-logo text-xl lg:text-4xl font-extrabold">
+                  {header.shop.name.replace(' Demo', '')}
+                </strong>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+        {outlet}
+      </div>
+    </AnimatePresence>
+  );
+
+  // return <Outlet />;
 }
 
 export function ErrorBoundary() {

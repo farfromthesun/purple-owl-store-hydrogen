@@ -154,7 +154,8 @@ function classNames(...classes) {
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  const {product, variants} = useLoaderData();
+  // const {product, variants} = useLoaderData();
+  const [{product, variants}] = useState(useLoaderData() || {});
   const selectedVariant = useOptimisticVariant(
     product.selectedVariant,
     variants,
@@ -181,129 +182,129 @@ export default function Product() {
   // });
 
   return (
-    <RouteTransition>
-      <div className="bg-white">
-        <div className="pt-6 lg:pt-12">
-          <nav aria-label="Breadcrumb">
-            <ol className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-1400 lg:px-8">
-              {breadcrumbs.map((breadcrumb) => (
-                <li key={breadcrumb.id}>
-                  <div className="flex items-center">
-                    <Link
-                      to={breadcrumb.href}
-                      className="mr-2 text-sm font-medium text-gray-900 hover:text-main-purple transition duration-300"
-                    >
-                      {breadcrumb.name}
-                    </Link>
-                    <SlashIcon
-                      aria-hidden="true"
-                      className="h-4 w-4 text-gray-400"
-                    />
-                  </div>
-                </li>
-              ))}
-              <li className="text-sm">
-                <span className="font-medium text-main-purple">{title}</span>
+    // <RouteTransition>
+    <div className="bg-white">
+      <div className="pt-6 lg:pt-12">
+        <nav aria-label="Breadcrumb">
+          <ol className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-1400 lg:px-8">
+            {breadcrumbs.map((breadcrumb) => (
+              <li key={breadcrumb.id}>
+                <div className="flex items-center">
+                  <Link
+                    to={breadcrumb.href}
+                    className="mr-2 text-sm font-medium text-gray-900 hover:text-main-purple transition duration-300"
+                  >
+                    {breadcrumb.name}
+                  </Link>
+                  <SlashIcon
+                    aria-hidden="true"
+                    className="h-4 w-4 text-gray-400"
+                  />
+                </div>
               </li>
-            </ol>
-          </nav>
+            ))}
+            <li className="text-sm">
+              <span className="font-medium text-main-purple">{title}</span>
+            </li>
+          </ol>
+        </nav>
 
-          {/* Product main */}
-          <div className="mx-auto max-w-2xl px-4 pb-16 pt-6 sm:px-6 lg:grid lg:max-w-1400 lg:grid-cols-3 lg:gap-x-8 lg:px-8 lg:pb-24">
-            <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-              {imgAspectRatio !== null ? (
-                <ProductImage
-                  image={selectedVariant?.image}
-                  aspectRatio={imgAspectRatio}
-                />
-              ) : (
-                <ProductImageSkeleton />
+        {/* Product main */}
+        <div className="mx-auto max-w-2xl px-4 pb-16 pt-6 sm:px-6 lg:grid lg:max-w-1400 lg:grid-cols-3 lg:gap-x-8 lg:px-8 lg:pb-24">
+          <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
+            {imgAspectRatio !== null ? (
+              <ProductImage
+                image={selectedVariant?.image}
+                aspectRatio={imgAspectRatio}
+              />
+            ) : (
+              <ProductImageSkeleton />
+            )}
+          </div>
+
+          {/* Product info */}
+          <div className="mt-6 lg:mt-0 sticky top-main-header-desktop-height self-start">
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl mb-3">
+              {title}
+            </h1>
+            <div className="text-2xl text-gray-900 flex items-center lg:block xl:flex gap-2">
+              {/* <AnimatePresence initial={false}> */}
+              <ProductPrice
+                price={selectedVariant?.price}
+                compareAtPrice={selectedVariant?.compareAtPrice}
+                key="selectedVariantPrice"
+              />
+              {!selectedVariant.availableForSale && (
+                // <motion.span
+                //   key="selectedVariantSoldOutBadge"
+                //   layout
+                //   initial={{opacity: 0}}
+                //   animate={{opacity: 1}}
+                //   exit={{opacity: 0}}
+                //   transition={{duration: 0.1, ease: easeInOut}}
+                //   className="badge bg-main-purple-super-dark uppercase"
+                // >
+                //   Sold out
+                // </motion.span>
+                <span className="badge bg-main-purple-super-dark uppercase animate-fade-in">
+                  Sold out
+                </span>
               )}
+              {/* </AnimatePresence> */}
             </div>
 
-            {/* Product info */}
-            <div className="mt-6 lg:mt-0 sticky top-main-header-desktop-height self-start">
-              <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl mb-3">
-                {title}
-              </h1>
-              <div className="text-2xl text-gray-900 flex items-center lg:block xl:flex gap-2">
-                {/* <AnimatePresence initial={false}> */}
-                <ProductPrice
-                  price={selectedVariant?.price}
-                  compareAtPrice={selectedVariant?.compareAtPrice}
-                  key="selectedVariantPrice"
-                />
-                {!selectedVariant.availableForSale && (
-                  // <motion.span
-                  //   key="selectedVariantSoldOutBadge"
-                  //   layout
-                  //   initial={{opacity: 0}}
-                  //   animate={{opacity: 1}}
-                  //   exit={{opacity: 0}}
-                  //   transition={{duration: 0.1, ease: easeInOut}}
-                  //   className="badge bg-main-purple-super-dark uppercase"
-                  // >
-                  //   Sold out
-                  // </motion.span>
-                  <span className="badge bg-main-purple-super-dark uppercase animate-fade-in">
-                    Sold out
-                  </span>
-                )}
-                {/* </AnimatePresence> */}
-              </div>
-
-              {!isProductGWP && (
-                <Suspense
-                  fallback={
+            {!isProductGWP && (
+              <Suspense
+                fallback={
+                  <ProductForm
+                    product={product}
+                    selectedVariant={selectedVariant}
+                    variants={[]}
+                  />
+                }
+              >
+                <Await
+                  errorElement="There was a problem loading product variants"
+                  resolve={variants}
+                >
+                  {(data) => (
                     <ProductForm
                       product={product}
                       selectedVariant={selectedVariant}
-                      variants={[]}
+                      variants={data?.product?.variants.nodes || []}
                     />
-                  }
-                >
-                  <Await
-                    errorElement="There was a problem loading product variants"
-                    resolve={variants}
-                  >
-                    {(data) => (
-                      <ProductForm
-                        product={product}
-                        selectedVariant={selectedVariant}
-                        variants={data?.product?.variants.nodes || []}
-                      />
-                    )}
-                  </Await>
-                </Suspense>
-              )}
+                  )}
+                </Await>
+              </Suspense>
+            )}
 
-              <div className="space-y-6 mt-10 lg:mt-12">
-                <div
-                  className="text-base text-gray-900"
-                  dangerouslySetInnerHTML={{__html: descriptionHtml}}
-                />
-              </div>
+            <div className="space-y-6 mt-10 lg:mt-12">
+              <div
+                className="text-base text-gray-900"
+                dangerouslySetInnerHTML={{__html: descriptionHtml}}
+              />
             </div>
           </div>
-          <ProductFeatures />
         </div>
-        <Analytics.ProductView
-          data={{
-            products: [
-              {
-                id: product.id,
-                title: product.title,
-                price: selectedVariant?.price.amount || '0',
-                vendor: product.vendor,
-                variantId: selectedVariant?.id || '',
-                variantTitle: selectedVariant?.title || '',
-                quantity: 1,
-              },
-            ],
-          }}
-        />
+        <ProductFeatures />
       </div>
-    </RouteTransition>
+      <Analytics.ProductView
+        data={{
+          products: [
+            {
+              id: product.id,
+              title: product.title,
+              price: selectedVariant?.price.amount || '0',
+              vendor: product.vendor,
+              variantId: selectedVariant?.id || '',
+              variantTitle: selectedVariant?.title || '',
+              quantity: 1,
+            },
+          ],
+        }}
+      />
+    </div>
+    // </RouteTransition>
   );
 }
 
