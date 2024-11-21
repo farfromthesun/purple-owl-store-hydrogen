@@ -1,6 +1,6 @@
 import {Suspense, useEffect, useState} from 'react';
 import {defer, redirect} from '@shopify/remix-oxygen';
-import {Await, Link, useLoaderData} from '@remix-run/react';
+import {Await, Link, useLoaderData, useLocation} from '@remix-run/react';
 import {
   getSelectedProductOptions,
   Analytics,
@@ -154,8 +154,11 @@ function classNames(...classes) {
 
 export default function Product() {
   /** @type {LoaderReturnData} */
-  // const {product, variants} = useLoaderData();
-  const [{product, variants}] = useState(useLoaderData() || {});
+  const loaderData = useLoaderData();
+  const [{product, variants}, setLoaderDataState] = useState(
+    useLoaderData() || {},
+  );
+  const location = useLocation();
   const selectedVariant = useOptimisticVariant(
     product.selectedVariant,
     variants,
@@ -166,6 +169,12 @@ export default function Product() {
   ];
   const isProductGWP = product.id.includes('9201094689077');
   const [imgAspectRatio, setImgAspectRatio] = useState(null);
+
+  useEffect(() => {
+    if (location.pathname.includes(product.handle)) {
+      setLoaderDataState(loaderData);
+    }
+  }, [loaderData, location.pathname, product.handle]);
 
   useEffect(() => {
     setImgAspectRatio(

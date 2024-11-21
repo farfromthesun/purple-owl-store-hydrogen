@@ -32,6 +32,7 @@ import {PageLayout} from '~/components/PageLayout';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import {seoPayload} from './lib/seo.server';
 import {AnimatePresence, motion} from 'framer-motion';
+import {useEffect, useState} from 'react';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -225,11 +226,24 @@ export default function App() {
   const outlet = useOutlet();
   const location = useLocation();
   const {header} = useRouteLoaderData('root');
+  const [viewport, setViewport] = useState('mobile');
+
+  useEffect(() => {
+    setViewport(
+      window.matchMedia('(min-width: 1024px)').matches ? 'desktop' : 'mobile',
+    );
+  }, []);
 
   return (
     <AnimatePresence mode="wait" initial={false}>
       <div key={location.pathname}>
-        <div className="fixed top-main-header-desktop-height left-0 h-full w-full z-50 grid grid-cols-2 grid-rows-2 pointer-events-none overflow-hidden">
+        <div
+          className={classNames(
+            viewport === 'destop' && 'top-main-header-desktop-height',
+            viewport === 'mobile' && 'top-main-header-mobile-height',
+            'fixed left-0 h-svh w-full z-50 grid grid-cols-2 grid-rows-2 pointer-events-none overflow-hidden',
+          )}
+        >
           <motion.div
             initial={{opacity: 1}}
             animate={{opacity: 0}}

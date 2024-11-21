@@ -1,5 +1,10 @@
 import {defer, redirect} from '@shopify/remix-oxygen';
-import {Await, useLoaderData, useNavigation} from '@remix-run/react';
+import {
+  Await,
+  useLoaderData,
+  useLocation,
+  useNavigation,
+} from '@remix-run/react';
 import {getPaginationVariables, Analytics, getSeoMeta} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
@@ -11,7 +16,7 @@ import {
 import {ProductTile} from '~/components/ProductTile';
 import {parseAsCurrency} from '~/lib/utils';
 import {PaginatedLoadMoreButton} from '~/components/PaginatedLoadMoreButton';
-import {Suspense, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {ProductTileSkeleton} from '~/components/ProductTileSkeleton';
 import {RouteTransition} from '~/components/RouteTransition';
 import {seoPayload} from '~/lib/seo.server';
@@ -282,14 +287,23 @@ export default function Collection() {
   /** @type {LoaderReturnData} */
   // const {collectionBasicInfo, collectionProducts, appliedFilters} =
   //   useLoaderData();
-  const [{collectionBasicInfo, collectionProducts, appliedFilters}] = useState(
-    useLoaderData() || {},
-  );
+  const loaderData = useLoaderData();
+  const [
+    {collectionBasicInfo, collectionProducts, appliedFilters},
+    setLoaderDataState,
+  ] = useState(loaderData || {});
   const navigation = useNavigation();
+  const location = useLocation();
   const areProductsLoading =
     navigation.state === 'loading' &&
     navigation.location?.pathname?.includes(collectionBasicInfo.handle) &&
     navigation.location?.state === null;
+
+  useEffect(() => {
+    if (location.pathname.includes(collectionBasicInfo.handle)) {
+      setLoaderDataState(loaderData);
+    }
+  }, [loaderData, location, collectionBasicInfo]);
 
   return (
     // <RouteTransition>
