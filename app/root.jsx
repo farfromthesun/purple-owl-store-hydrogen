@@ -234,7 +234,7 @@ export default function App() {
             initial={{opacity: 1}}
             animate={{opacity: 0}}
             exit={{opacity: 1}}
-            transition={{duration: 0.9, ease: 'easeInOut'}}
+            transition={{duration: 0.6, ease: 'easeInOut'}}
             className="absolute top-0 left-0 z-10 h-full w-full bg-gray-900/50"
           />
           {Array.from({length: 4}, (_, index) => index + 1).map((id, index) => (
@@ -243,23 +243,23 @@ export default function App() {
               initial={{
                 opacity: 1,
                 visibility: 'visible',
-                x: 0,
-                y: 0,
+                // x: 0,
+                // y: 0,
                 // scale: 1,
               }}
               animate={{
                 opacity: 0,
                 visibility: 'hidden',
-                x: index % 2 === 0 ? [0, -7] : [0, 7],
-                y: index <= 1 ? [0, -7] : [0, 7],
+                // x: index % 2 === 0 ? [0, -7] : [0, 7],
+                // y: index <= 1 ? [0, -7] : [0, 7],
                 // scale: [1, 0.98],
                 // transition: {duration: 0.5, delay: index * 0.2},
               }}
               exit={{
                 opacity: 1,
                 visibility: 'visible',
-                x: index % 2 === 0 ? [-7, 0] : [7, 0],
-                y: index <= 1 ? [-7, 0] : [7, 0],
+                // x: index % 2 === 0 ? [-7, 0] : [7, 0],
+                // y: index <= 1 ? [-7, 0] : [7, 0],
                 // scale: [0.98, 1],
                 // transition: {duration: 0.5, delay: index * 0.2},
               }}
@@ -267,8 +267,9 @@ export default function App() {
                 duration: 0.3,
                 // type: 'spring',
                 // bounce: 0.25,
+                // ease: [0.215, 0.61, 0.355, 1],
                 ease: 'easeInOut',
-                delay: index * 0.2,
+                delay: index * 0.1,
               }}
               className="bg-main-purple-super-dark relative overflow-hidden z-20"
             >
