@@ -285,7 +285,7 @@ export default function App() {
                 ease: 'easeInOut',
                 delay: index * 0.1,
               }}
-              className="bg-main-purple-super-dark relative overflow-hidden z-20"
+              className="bg-main-purple-super-dark relative overflow-hidden pointer-events-auto z-20"
             >
               <div
                 className={classNames(
