@@ -287,11 +287,16 @@ export default function Collection() {
   /** @type {LoaderReturnData} */
   // const {collectionBasicInfo, collectionProducts, appliedFilters} =
   //   useLoaderData();
-  const loaderData = useLoaderData();
-  const [
-    {collectionBasicInfo, collectionProducts, appliedFilters},
-    setLoaderDataState,
-  ] = useState(loaderData || {});
+  // const loaderData = useLoaderData();
+  // const [
+  //   {collectionBasicInfo, collectionProducts, appliedFilters},
+  //   setLoaderDataState,
+  // ] = useState(loaderData || {});
+
+  const [loaderDataState, setLoaderDataState] = useState(useLoaderData());
+  const {collectionBasicInfo, collectionProducts, appliedFilters} =
+    useLoaderData() || loaderDataState;
+
   const navigation = useNavigation();
   const location = useLocation();
   const areProductsLoading =
@@ -299,11 +304,26 @@ export default function Collection() {
     navigation.location?.pathname?.includes(collectionBasicInfo.handle) &&
     navigation.location?.state === null;
 
+  // useEffect(() => {
+  //   if (location.pathname.includes(collectionBasicInfo.handle)) {
+  //     setLoaderDataState(loaderData);
+  //   }
+  // }, [loaderData, location, collectionBasicInfo]);
+
   useEffect(() => {
     if (location.pathname.includes(collectionBasicInfo.handle)) {
-      setLoaderDataState(loaderData);
+      setLoaderDataState({
+        collectionBasicInfo,
+        collectionProducts,
+        appliedFilters,
+      });
     }
-  }, [loaderData, location, collectionBasicInfo]);
+  }, [
+    collectionBasicInfo,
+    collectionProducts,
+    appliedFilters,
+    location.pathname,
+  ]);
 
   return (
     // <RouteTransition>
