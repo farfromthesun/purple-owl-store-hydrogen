@@ -5,7 +5,7 @@ import {SearchForm} from '~/components/SearchForm';
 import {SearchResults} from '~/components/SearchResults';
 import {getEmptyPredictiveSearchResult} from '~/lib/search';
 import {RouteTransition} from '~/components/RouteTransition';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 // /**
 //  * @type {MetaFunction}
@@ -38,7 +38,17 @@ export async function loader({request, context}) {
 export default function SearchPage() {
   /** @type {LoaderReturnData} */
   // const {type, term, result, error} = useLoaderData();
-  const [{type, term, result, error}] = useState(useLoaderData() || {});
+  const loaderData = useLoaderData();
+  const [{type, term, result, error}, setLoaderDataState] = useState(
+    loaderData || {},
+  );
+
+  useEffect(() => {
+    if (location.pathname.includes('search')) {
+      setLoaderDataState(loaderData);
+    }
+  }, [loaderData]);
+
   if (type === 'predictive') return null;
 
   return (
