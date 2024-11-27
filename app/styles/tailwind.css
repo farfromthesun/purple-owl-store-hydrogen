@@ -83,6 +83,8 @@
     @apply font-base;
     @apply text-gray-900;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    @apply selection:bg-main-purple;
+    @apply selection:text-white;
   }
 
   [type='checkbox'],
