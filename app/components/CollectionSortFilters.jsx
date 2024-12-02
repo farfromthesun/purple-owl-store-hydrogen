@@ -392,9 +392,11 @@ function PriceRangeFilter({min, max, option, viewport}) {
 
 function getSortLink(sort, params, location) {
   // params.set('sort', sort);
+  let isNewSortSet = false;
   const paramsMapped = [...params].map((param) => {
     if (param.includes('sort')) {
       param[1] = sort;
+      isNewSortSet = true;
       return param;
     } else {
       return param;
@@ -404,6 +406,9 @@ function getSortLink(sort, params, location) {
     const paramsForLink = new URLSearchParams(
       paramsMapped.map((param) => param),
     );
+    if (!isNewSortSet) {
+      paramsForLink.set('sort', sort);
+    }
     return `${location.pathname}?${paramsForLink.toString()}`;
   } else {
     params.set('sort', sort);
