@@ -6,6 +6,7 @@ import {useAside} from './Aside';
 import {TrashIcon} from '@heroicons/react/24/outline';
 import {PlusIcon, MinusIcon} from '@heroicons/react/16/solid';
 import {AnimatePresence, motion} from 'framer-motion';
+import {nanoid} from 'nanoid';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -111,7 +112,7 @@ export function CartLineItem({layout, line}) {
                 </Link>
               </h3>
               <div className="">
-                <AnimatePresence
+                {/* <AnimatePresence
                   mode="wait"
                   initial={false}
                   key="lineItemTotalAmount"
@@ -127,14 +128,24 @@ export function CartLineItem({layout, line}) {
                     exit={{x: -20, opacity: 0}}
                     transition={{duration: 0.2, ease: 'backInOut'}}
                     className="h-6 flex items-center"
-                  >
-                    {currentCartLineActionFetcherPending ? (
-                      <div className="text-xs animate-pulse">Processing...</div>
-                    ) : (
-                      <ProductPrice price={line?.cost?.totalAmount} />
+                  > */}
+                {currentCartLineActionFetcherPending ? (
+                  <div className="relative grid grid-cols-2 grid-rows-2 size-5 gap-[2px]">
+                    {Array.from({length: 4}, (_, index) => index + 1).map(
+                      (id, index) => (
+                        <div
+                          key={nanoid()}
+                          className="bg-main-purple rounded-sm animate-fade-in-out"
+                          style={{animationDelay: index * 0.1 + 's'}}
+                        ></div>
+                      ),
                     )}
-                  </motion.div>
-                </AnimatePresence>
+                  </div>
+                ) : (
+                  <ProductPrice price={line?.cost?.totalAmount} />
+                )}
+                {/* </motion.div>
+                </AnimatePresence> */}
               </div>
             </div>
             {!line.merchandise.selectedOptions.find(
