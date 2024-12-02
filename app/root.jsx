@@ -234,6 +234,12 @@ export default function App() {
     );
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      window.scrollTo({top: 0, behavior: 'instant'});
+    }, 600);
+  }, [location.pathname]);
+
   return (
     <AnimatePresence mode="wait" initial={false}>
       <div key={location.pathname}>
