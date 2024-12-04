@@ -393,15 +393,17 @@ function PriceRangeFilter({min, max, option, viewport}) {
 function getSortLink(sort, params, location) {
   // params.set('sort', sort);
   let isNewSortSet = false;
-  const paramsMapped = [...params].map((param) => {
-    if (param.includes('sort')) {
-      param[1] = sort;
-      isNewSortSet = true;
-      return param;
-    } else {
-      return param;
-    }
-  });
+  const paramsMapped = [...params]
+    .map((param) => {
+      if (param.includes('sort')) {
+        param[1] = sort;
+        isNewSortSet = true;
+        return param;
+      } else {
+        return param;
+      }
+    })
+    .filter((param) => param[0] !== 'direction' && param[0] !== 'cursor');
   if (paramsMapped.length > 0) {
     const paramsForLink = new URLSearchParams(
       paramsMapped.map((param) => param),
