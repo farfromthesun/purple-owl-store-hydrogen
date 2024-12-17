@@ -137,49 +137,46 @@ export default function Homepage() {
 
 function RecommendedProducts({products}) {
   return (
-    <>
-      <div className="bg-white">
-        <div className="mx-auto max-w-2xl lg:max-w-1400 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-          <h2 className="text-2xl font-bold tracking-tight text-gray-900 mb-6">
-            Recommended Products
-          </h2>
+    <div className="bg-white">
+      <section className="mx-auto max-w-2xl lg:max-w-1400 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <h2 className="text-2xl font-bold tracking-tight text-gray-900 mb-6">
+          Recommended Products
+        </h2>
 
-          <Suspense
-            fallback={
-              <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                {Array.from({length: 8}, (_, index) => index + 1).map(
-                  (id, index) => (
-                    <ProductTileSkeleton
-                      key={id}
-                      index={index}
-                      animationDelayModulo={8}
-                    />
-                  ),
-                )}
-              </div>
-            }
-          >
-            <Await resolve={products}>
-              {(response) => (
-                <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                  {response
-                    ? response.products.nodes.map((product, index) => (
-                        <ProductTile
-                          key={product.id}
-                          product={product}
-                          withFilters={false}
-                          index={index}
-                          animationDelayModulo={8}
-                        />
-                      ))
-                    : null}
-                </div>
+        <Suspense
+          fallback={
+            <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+              {Array.from({length: 8}, (_, index) => index + 1).map(
+                (id, index) => (
+                  <ProductTileSkeleton
+                    key={id}
+                    index={index}
+                    animationDelayModulo={8}
+                  />
+                ),
               )}
-            </Await>
-          </Suspense>
-        </div>
-      </div>
-    </>
+            </div>
+          }
+        >
+          <Await resolve={products}>
+            {(response) => (
+              <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+                {response
+                  ? response.products.nodes.map((product, index) => (
+                      <ProductTile
+                        key={product.id}
+                        product={product}
+                        index={index}
+                        animationDelayModulo={8}
+                      />
+                    ))
+                  : null}
+              </div>
+            )}
+          </Await>
+        </Suspense>
+      </section>
+    </div>
   );
 }
 

@@ -103,7 +103,7 @@ export default function Page() {
 function OurStory() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-20 sm:px-6 sm:py-24 lg:py-28 lg:max-w-1400 lg:px-8">
-      <div className="lg:max-w-4xl">
+      <section className="lg:max-w-4xl">
         <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
           Our story
         </h2>
@@ -128,7 +128,7 @@ function OurStory() {
           treats from getting smooshed during all-day adventures, long shifts at
           work, and tough travel schedules.
         </p>
-      </div>
+      </section>
     </div>
   );
 }
@@ -163,7 +163,7 @@ function OurTeam() {
 
   return (
     <div className="bg-white pb-24 sm:pb-36 lg:pt-10">
-      <div className="mx-auto grid max-w-2xl lg:max-w-1400 gap-x-8 gap-y-20 px-4 sm:px-6 lg:px-8 xl:grid-cols-3">
+      <section className="mx-auto grid max-w-2xl lg:max-w-1400 gap-x-8 gap-y-20 px-4 sm:px-6 lg:px-8 xl:grid-cols-3">
         <div className="max-w-2xl">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             Meet our Team
@@ -206,7 +206,7 @@ function OurTeam() {
             </li>
           ))}
         </ul>
-      </div>
+      </section>
     </div>
   );
 }

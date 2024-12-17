@@ -5,14 +5,12 @@ import {Image, Money} from '@shopify/hydrogen';
  * @param {{
  *   product: ProductItemFragment;
  *   to;
- *   withFilters: true | false;
  *   imgLoading: 'eager' | 'lazy';
  * }}
  */
 export function ProductTile({
   product,
   to,
-  withFilters,
   imgLoading,
   index,
   animationDelayModulo = 9,
@@ -53,15 +51,10 @@ export function ProductTile({
           )}
         </div>
       )}
-      {withFilters === true ? (
-        <h4 className="mt-4 text-sm text-gray-700 group-hover:text-main-purple transition duration-300">
-          {product.title}
-        </h4>
-      ) : (
-        <h3 className="mt-4 text-sm text-gray-700 group-hover:text-main-purple transition duration-300">
-          {product.title}
-        </h3>
-      )}
+
+      <h3 className="mt-4 text-sm text-gray-700 group-hover:text-main-purple transition duration-300">
+        {product.title}
+      </h3>
 
       <div className="flex mt-1 text-lg font-medium text-gray-900 group-hover:text-main-purple transition duration-300">
         <Money data={product.priceRange.minVariantPrice} />

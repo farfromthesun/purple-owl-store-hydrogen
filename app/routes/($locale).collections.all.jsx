@@ -93,14 +93,7 @@ function ProductItem({product, loading}) {
   const variant = product.variants.nodes[0];
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
 
-  return (
-    <ProductTile
-      to={variantUrl}
-      product={product}
-      withFilters={true}
-      imgLoading={loading}
-    />
-  );
+  return <ProductTile to={variantUrl} product={product} imgLoading={loading} />;
 }
 
 const PRODUCT_ITEM_FRAGMENT = `#graphql

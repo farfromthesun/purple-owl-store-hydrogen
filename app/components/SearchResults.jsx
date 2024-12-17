@@ -66,7 +66,7 @@ function SearchResultsPages({term, pages}) {
 
   return (
     <SearchResultsCategoryContainer category="pages">
-      <div>
+      <ul>
         {pages?.nodes?.map((page) => {
           const pageUrl = urlWithTrackingParams({
             baseUrl: `/pages/${page.handle}`,
@@ -75,7 +75,7 @@ function SearchResultsPages({term, pages}) {
           });
 
           return (
-            <div className="mb-3" key={page.id}>
+            <li className="mb-3" key={page.id}>
               <Link
                 className="text-main-purple hover:text-main-purple-dark transition duration-300"
                 prefetch="intent"
@@ -83,11 +83,10 @@ function SearchResultsPages({term, pages}) {
               >
                 {page.title}
               </Link>
-            </div>
+            </li>
           );
         })}
-      </div>
-      <br />
+      </ul>
     </SearchResultsCategoryContainer>
   );
 }
@@ -118,7 +117,6 @@ function SearchResultsProducts({term, products}) {
                 to={productUrl}
                 key={product.id}
                 product={product}
-                withFilters={false}
                 index={index}
                 animationDelayModulo={12}
               />
@@ -127,29 +125,25 @@ function SearchResultsProducts({term, products}) {
 
           return (
             <div>
-              <div>
-                <PreviousLink>
-                  <PaginatedLoadMoreButton
-                    isLoading={isLoadingMoreNodes}
-                    direction="prev"
-                    text="↑ Load previous"
-                  />
-                  {/* {isLoading ? 'Loading...' : <span>↑ Load previous</span>} */}
-                </PreviousLink>
-              </div>
+              <PreviousLink>
+                <PaginatedLoadMoreButton
+                  isLoading={isLoadingMoreNodes}
+                  direction="prev"
+                  text="↑ Load previous"
+                />
+                {/* {isLoading ? 'Loading...' : <span>↑ Load previous</span>} */}
+              </PreviousLink>
               <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 xl:gap-x-8">
                 {ItemsMarkup}
               </div>
-              <div>
-                <NextLink>
-                  <PaginatedLoadMoreButton
-                    isLoading={isLoadingMoreNodes}
-                    direction="next"
-                    text="Load more ↓"
-                  />
-                  {/* {isLoading ? 'Loading...' : <span>Load more ↓</span>} */}
-                </NextLink>
-              </div>
+              <NextLink>
+                <PaginatedLoadMoreButton
+                  isLoading={isLoadingMoreNodes}
+                  direction="next"
+                  text="Load more ↓"
+                />
+                {/* {isLoading ? 'Loading...' : <span>Load more ↓</span>} */}
+              </NextLink>
             </div>
           );
         }}
@@ -160,10 +154,10 @@ function SearchResultsProducts({term, products}) {
 
 function SearchResultsCategoryContainer({children, category}) {
   return (
-    <div className="mb-8 lg:mb-12 animate-fade-in last:mb-0">
+    <section className="mb-8 lg:mb-12 animate-fade-in last:mb-0">
       <h2 className="capitalize mb-3 lg:text-xl font-bold">{category}</h2>
       {children}
-    </div>
+    </section>
   );
 }
 

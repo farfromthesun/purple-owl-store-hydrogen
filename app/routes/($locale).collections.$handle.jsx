@@ -388,7 +388,6 @@ function ProductItem({product, loading, index}) {
     <ProductTile
       to={variantUrl}
       product={product}
-      withFilters={true}
       imgLoading={loading}
       index={index}
     />

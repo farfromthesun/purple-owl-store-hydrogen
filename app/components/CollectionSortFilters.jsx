@@ -153,9 +153,9 @@ export function CollectionSortFilters({filters, appliedFilters, children}) {
           </h2>
           <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
             {/* Filters */}
-            <div className="hidden lg:block">
+            <aside className="hidden lg:block" aria-label="Filters">
               <FiltersList filters={filters} viewport="desktop" />
-            </div>
+            </aside>
 
             {/* Product grid */}
             <div className="lg:col-span-3">{children}</div>
