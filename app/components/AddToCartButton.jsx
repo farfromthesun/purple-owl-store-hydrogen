@@ -18,7 +18,12 @@ export function AddToCartButton({
   onClick,
 }) {
   return (
-    <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
+    <CartForm
+      route="/cart"
+      inputs={{lines}}
+      action={CartForm.ACTIONS.LinesAdd}
+      fetcherKey="addToCartFetcher"
+    >
       {(fetcher) => {
         const atcDisable = disabled || fetcher.state !== 'idle';
 

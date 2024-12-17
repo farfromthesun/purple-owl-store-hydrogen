@@ -1,5 +1,5 @@
-import {Await, Link, useFetchers} from '@remix-run/react';
-import {Suspense, useEffect} from 'react';
+import {Await, Link, useFetcher, useFetchers} from '@remix-run/react';
+import {Suspense, useEffect, useState} from 'react';
 import {Aside, useAside} from '~/components/Aside';
 import {Footer} from '~/components/Footer';
 import {Header, HeaderMenu} from '~/components/Header';
@@ -57,36 +57,58 @@ export function PageLayout({
  */
 function CartAside({cart}) {
   const {open, type} = useAside();
+  const [blockCartDrawer, setBlockCartDrawer] = useState(false);
 
-  const fetchers = useFetchers();
-  const atcFetcher = fetchers.find((fetcher) => {
-    if (fetcher.formData) {
-      const formInputs = CartForm.getFormInput(fetcher.formData);
-      if (
-        formInputs.action === CartForm.ACTIONS.LinesAdd &&
-        fetcher.state === 'loading'
-        // && fetcher.data?.errors?.length === 0
-      ) {
-        return fetcher;
-      }
+  const atcFetcher = useFetcher({key: 'addToCartFetcher'});
+
+  useEffect(() => {
+    if (atcFetcher && atcFetcher.state !== 'idle' && blockCartDrawer === true) {
+      setBlockCartDrawer(false);
     }
-    return null;
-  });
+  }, [atcFetcher, blockCartDrawer]);
+
+  useEffect(() => {
+    if (
+      atcFetcher &&
+      atcFetcher.state === 'idle' &&
+      atcFetcher.data?.errors?.length === 0 &&
+      type === 'closed' &&
+      !blockCartDrawer
+    ) {
+      open('cart');
+      setBlockCartDrawer(true);
+    }
+  }, [atcFetcher, open, type, cart, blockCartDrawer]);
+
+  // const fetchers = useFetchers();
+  // const atcFetcher = fetchers.find((fetcher) => {
+  //   if (fetcher.formData) {
+  //     const formInputs = CartForm.getFormInput(fetcher.formData);
+  //     if (
+  //       formInputs.action === CartForm.ACTIONS.LinesAdd &&
+  //       fetcher.state === 'loading'
+  //       // && fetcher.data?.errors?.length === 0
+  //     ) {
+  //       return fetcher;
+  //     }
+  //   }
+  //   return null;
+  // });
 
   // toggle cart drawer when adding to cart
   // useEffect(() => {
   //   if (atcFetcher && type === 'closed') open('cart');
   // }, [atcFetcher, open, type]);
-  useEffect(() => {
-    cart.then((currentCart) => {
-      if (
-        atcFetcher &&
-        type === 'closed' &&
-        atcFetcher?.data?.cart?.totalQuantity !== currentCart?.totalQuantity
-      )
-        open('cart');
-    });
-  }, [atcFetcher, open, type, cart]);
+  // useEffect(() => {
+  //   cart.then((currentCart) => {
+  //     if (
+  //       atcFetcher &&
+  //       type === 'closed' &&
+  //       atcFetcher?.data?.cart?.totalQuantity !== currentCart?.totalQuantity
+  //     )
+  //       open('cart');
+  //   });
+  // }, [atcFetcher, open, type, cart]);
 
   return (
     <Aside type="cart" heading="Your cart">
