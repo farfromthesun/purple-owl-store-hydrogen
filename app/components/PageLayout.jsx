@@ -75,7 +75,9 @@ function CartAside({cart}) {
       type === 'closed' &&
       !blockCartDrawer
     ) {
-      open('cart');
+      setTimeout(() => {
+        open('cart');
+      }, 1000);
       setBlockCartDrawer(true);
     }
   }, [atcFetcher, open, type, cart, blockCartDrawer]);
