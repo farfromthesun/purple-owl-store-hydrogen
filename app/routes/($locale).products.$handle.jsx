@@ -159,10 +159,11 @@ export default function Product() {
     useLoaderData() || {},
   );
   const location = useLocation();
-  const selectedVariant = useOptimisticVariant(
-    product.selectedVariant,
-    variants,
-  );
+  // const selectedVariant = useOptimisticVariant(
+  //   product.selectedVariant,
+  //   variants,
+  // );
+  const selectedVariant = product.selectedVariant;
   const {title, descriptionHtml} = product;
   const breadcrumbs = [
     {id: 1, name: 'Shop', href: '/collections/all-products'},
