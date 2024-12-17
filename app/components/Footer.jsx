@@ -65,7 +65,7 @@ function FooterMenu({menu, primaryDomainUrl, publicStoreDomain}) {
                 prefetch="intent"
                 // style={activeLinkStyle}
                 to={url}
-                className="aria-[current]:text-main-purple lg:hover:text-main-purple-dark transition duration-300"
+                className="aria-[current]:text-main-purple lg:hover:text-main-purple-dark transition ease-[ease] duration-300"
               >
                 {item.title}
               </NavLink>

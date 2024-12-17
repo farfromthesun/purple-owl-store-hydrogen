@@ -184,6 +184,7 @@
     @apply hover:bg-main-purple-dark;
     @apply transition;
     @apply duration-300;
+    @apply ease-[ease];
     @apply focus-visible:outline;
     @apply focus-visible:outline-2;
     @apply focus-visible:outline-offset-2;

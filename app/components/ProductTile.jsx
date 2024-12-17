@@ -37,7 +37,7 @@ export function ProductTile({
             aspectRatio="1/1"
             loading={imgLoading || 'eager'}
             sizes="(min-width: 45em) 400px, 50vw"
-            className="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300"
+            className="h-full w-full object-cover object-center group-hover:opacity-75 transition ease-[ease] duration-300"
           />
           {(isSoldOut || isOnSale) && (
             <div className="absolute bottom-2 flex left-2 gap-2">

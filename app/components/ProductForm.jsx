@@ -108,7 +108,7 @@ function ProductOptions({option}) {
                 isAvailable
                   ? 'cursor-pointer bg-white text-gray-900 shadow-sm'
                   : 'cursor-not-allowed bg-gray-50 text-gray-200',
-                'group relative flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
+                'group relative flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition ease-[ease] duration-200',
               )}
               key={option.name + value}
               prefetch="intent"
@@ -122,7 +122,7 @@ function ProductOptions({option}) {
                 className={classNames(
                   isAvailable ? 'opacity-100' : 'opacity-0',
                   isActive ? 'border-main-purple' : 'border-transparent',
-                  'pointer-events-none absolute -inset-px rounded-md border-2 transition duration-200',
+                  'pointer-events-none absolute -inset-px rounded-md border-2 transition ease-[ease] duration-200',
                 )}
               />
               <span
@@ -130,7 +130,7 @@ function ProductOptions({option}) {
                 className={classNames(
                   isAvailable ? 'opacity-0' : 'opacity-100',
                   isActive ? 'border-main-purple/30' : 'border-gray-200',
-                  'pointer-events-none absolute -inset-px rounded-md border-2 transition duration-200',
+                  'pointer-events-none absolute -inset-px rounded-md border-2 transition ease-[ease] duration-200',
                 )}
               >
                 <svg
@@ -139,7 +139,7 @@ function ProductOptions({option}) {
                   preserveAspectRatio="none"
                   className={classNames(
                     isActive ? 'text-main-purple/30' : 'text-gray-200',
-                    'absolute inset-0 h-full w-full stroke-3 text-gray-200 transition duration-200',
+                    'absolute inset-0 h-full w-full stroke-3 text-gray-200 transition ease-[ease] duration-200',
                   )}
                 >
                   <line
@@ -165,7 +165,7 @@ function SizeGuide() {
   return (
     <>
       <button
-        className="text-sm font-medium text-main-purple hover:text-main-purple-dark cursor-pointer transition duration-300"
+        className="text-sm font-medium text-main-purple hover:text-main-purple-dark cursor-pointer transition ease-[ease] duration-300"
         onClick={() => setIsOpen(true)}
       >
         Size guide
@@ -252,7 +252,7 @@ function QuantitySelector({
             quantity > 1
               ? 'cursor-pointer bg-white text-gray-900 shadow-sm'
               : 'cursor-not-allowed bg-gray-50 text-gray-200',
-            'group relative flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
+            'group relative flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition ease-[ease] duration-200',
           )}
           disabled={quantity <= 1}
           onClick={handleDecrement}
@@ -265,21 +265,21 @@ function QuantitySelector({
             aria-hidden="true"
             className={classNames(
               quantity > 1 ? 'opacity-100' : 'opacity-0',
-              'pointer-events-none absolute -inset-px rounded-md border-2 border-transparent transition duration-200 lg:group-hover:border-main-purple',
+              'pointer-events-none absolute -inset-px rounded-md border-2 border-transparent transition ease-[ease] duration-200 lg:group-hover:border-main-purple',
             )}
           />
           <span
             aria-hidden="true"
             className={classNames(
               quantity <= 1 ? 'opacity-100' : 'opacity-0',
-              'pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200 transition duration-200',
+              'pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200 transition ease-[ease] duration-200',
             )}
           >
             <svg
               stroke="currentColor"
               viewBox="0 0 100 100"
               preserveAspectRatio="none"
-              className="absolute inset-0 h-full w-full stroke-3 text-gray-200 transition duration-200"
+              className="absolute inset-0 h-full w-full stroke-3 text-gray-200 transition ease-[ease] duration-200"
             >
               <line
                 x1={0}
@@ -304,7 +304,7 @@ function QuantitySelector({
           </span>
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent transition duration-200 lg:group-hover:border-main-purple"
+            className="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent transition ease-[ease] duration-200 lg:group-hover:border-main-purple"
           />
         </button>
       </div>
@@ -343,7 +343,7 @@ function AddOns({product, setAddOns}) {
                 name={`add-on-${addOn.id.split('Product/')[1]}`}
                 value={JSON.stringify(addOn.defaultVariant)}
                 type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 lg:group-hover:border-main-purple lg:cursor-pointer outline-main-purple"
+                className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition ease-[ease] duration-200 lg:group-hover:border-main-purple lg:cursor-pointer outline-main-purple"
                 onChange={(event) => {
                   const addOnVariant = JSON.parse(event.target.value);
                   const isChecked = event.target.checked;
@@ -372,7 +372,7 @@ function AddOns({product, setAddOns}) {
               />
               <label
                 htmlFor={`add-on-${addOn.id.split('Product/')[1]}`}
-                className="flex items-center gap-3 ml-3 min-w-0 text-sm lg:group-hover:text-main-purple lg:transition lg:duration-200 lg:cursor-pointer"
+                className="flex items-center gap-3 ml-3 min-w-0 text-sm lg:group-hover:text-main-purple transition ease-[ease] duration-200 lg:cursor-pointer"
               >
                 <Image
                   alt={addOn.title}
@@ -381,7 +381,7 @@ function AddOns({product, setAddOns}) {
                   height={50}
                   loading="lazy"
                   width={50}
-                  className="rounded-md lg:group-hover:opacity-75 lg:transition lg:duration-200"
+                  className="rounded-md lg:group-hover:opacity-75 transition ease-[ease] duration-200"
                 />
                 <div className="">
                   <div className="font-bold">{addOn.title}</div>
@@ -428,7 +428,7 @@ function ExtraOptons({product, extraOptions, setExtraOptions}) {
               name={`extra-option-${extraOption.key}`}
               value={extraOption.value}
               type="checkbox"
-              className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 lg:group-hover:border-main-purple lg:cursor-pointer outline-main-purple"
+              className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition ease-[ease] duration-200 lg:group-hover:border-main-purple lg:cursor-pointer outline-main-purple"
               onChange={(event) => {
                 const isChecked = event.target.checked;
                 setExtraOptions((prevExtraOptions) => {
@@ -455,7 +455,7 @@ function ExtraOptons({product, extraOptions, setExtraOptions}) {
             />
             <label
               htmlFor={`extra-option-${extraOption.key}`}
-              className="flex items-center gap-3 ml-3 min-w-0 text-sm lg:group-hover:text-main-purple lg:transition lg:duration-200 lg:cursor-pointer"
+              className="flex items-center gap-3 ml-3 min-w-0 text-sm lg:group-hover:text-main-purple transition ease-[ease] duration-200 lg:cursor-pointer"
             >
               <div className="flex items-center">{extraOption.slogan}</div>
             </label>

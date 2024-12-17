@@ -70,7 +70,7 @@ export function Aside({children, heading, type}) {
                     <button
                       type="button"
                       onClick={close}
-                      className="relative -m-2 p-2 text-gray-400 hover:text-main-purple cursor-pointer transition duration-300"
+                      className="relative -m-2 p-2 text-gray-400 hover:text-main-purple cursor-pointer transition ease-[ease] duration-300"
                     >
                       <span className="absolute -inset-0.5" />
                       <span className="sr-only">Close panel</span>

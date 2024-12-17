@@ -137,7 +137,7 @@ export function HeaderMenu({
                 {item.title.split('').map((letter, index) => (
                   <span
                     key={letter}
-                    className="inline-block lg:group-hover:-translate-y-full lg:group-hover:opacity-0 transition duration-400"
+                    className="inline-block lg:group-hover:-translate-y-full lg:group-hover:opacity-0 transition ease-[ease] duration-400"
                     style={{transitionDelay: index * 0.05 + 's'}}
                   >
                     {letter}
@@ -148,7 +148,7 @@ export function HeaderMenu({
                 {item.title.split('').map((letter, index) => (
                   <span
                     key={nanoid()}
-                    className="inline-block translate-y-0 opacity-0 lg:group-hover:-translate-y-full lg:group-hover:opacity-100 transition duration-400"
+                    className="inline-block translate-y-0 opacity-0 lg:group-hover:-translate-y-full lg:group-hover:opacity-100 transition ease-[ease] duration-400"
                     style={{transitionDelay: index * 0.05 + 's'}}
                   >
                     {letter}

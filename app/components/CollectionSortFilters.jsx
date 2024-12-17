@@ -89,7 +89,7 @@ export function CollectionSortFilters({filters, appliedFilters, children}) {
         >
           {appliedFilters.length > 0 && (
             <>
-              <div className="">
+              <div className="animate-fade-in">
                 <span className="text-sm tracking-tight text-gray-900 block lg:mr-2">
                   Applied filters:
                 </span>
@@ -123,7 +123,7 @@ export function CollectionSortFilters({filters, appliedFilters, children}) {
                     <Link
                       key={appliedFilter.label}
                       to={'?' + url}
-                      className="badge gap-1 hover:bg-main-purple-dark transition duration-300"
+                      className="badge gap-1 animate-fade-in hover:bg-main-purple-dark transition ease-[ease] duration-300"
                       preventScrollReset
                     >
                       {appliedFilter.label}
@@ -229,7 +229,7 @@ function FiltersList({filters, viewport}) {
               name={filterName}
               value={filterValue}
               type="checkbox"
-              className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition duration-200 lg:group-hover:border-main-purple lg:cursor-pointer outline-main-purple"
+              className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition ease-[ease] duration-200 lg:group-hover:border-main-purple lg:cursor-pointer outline-main-purple"
               onChange={(event) => {
                 const form = event.target.form;
                 submit(form, {
@@ -240,7 +240,7 @@ function FiltersList({filters, viewport}) {
             />
             <label
               htmlFor={`${viewport}-${option.id}`}
-              className="ml-3 min-w-0 text-gray-500 text-sm lg:group-hover:text-main-purple lg:transition lg:duration-200 lg:cursor-pointer"
+              className="ml-3 min-w-0 text-gray-500 text-sm lg:group-hover:text-main-purple transition ease-[ease] duration-200 lg:cursor-pointer"
             >
               {`${option.label} (${option.count})`}
             </label>
@@ -267,17 +267,17 @@ function FiltersList({filters, viewport}) {
             <>
               <h3 className="-mx-2 lg:-mx-0 -my-3 flow-root">
                 <DisclosureButton className="group flex w-full items-center justify-between bg-white px-2 lg:px-0 py-3 text-sm text-gray-400 hover:text-gray-500 lg:cursor-pointer">
-                  <span className="font-medium text-gray-900 lg:group-hover:text-main-purple lg:transition lg:duration-300">
+                  <span className="font-medium text-gray-900 lg:group-hover:text-main-purple transition ease-[ease] duration-300">
                     {filter.label}
                   </span>
                   <span className="ml-6 flex items-center relative justify-end lg:group-hover:text-main-purple">
                     <PlusIcon
                       aria-hidden="true"
-                      className="h-5 w-5 group-data-[open]:opacity-0 absolute transition duration-300"
+                      className="h-5 w-5 group-data-[open]:opacity-0 absolute transition ease-out duration-300"
                     />
                     <MinusIcon
                       aria-hidden="true"
-                      className="h-5 w-5 [.group:not([data-open])_&]:opacity-0 absolute transition duration-300"
+                      className="h-5 w-5 [.group:not([data-open])_&]:opacity-0 absolute transition ease-out duration-300"
                     />
                   </span>
                 </DisclosureButton>
@@ -297,6 +297,7 @@ function FiltersList({filters, viewport}) {
                     variants={filterDropdownVariants}
                     animate={open ? 'open' : 'closed'}
                     className=" origin-top overflow-hidden"
+                    transition={{duration: 0.2, ease: 'easeOut'}}
                   >
                     <div
                       key={filter.id}
@@ -449,7 +450,7 @@ function SortMenu() {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 lg:hover:text-main-purple cursor-pointer transition duration-300 py-1">
+        <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 lg:hover:text-main-purple cursor-pointer transition ease-[ease] duration-300 py-1">
           <span>
             <span className="px-2">Sort by:</span>
             <span>{(activeItem || items[0]).label}</span>

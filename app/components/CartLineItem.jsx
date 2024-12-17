@@ -105,7 +105,7 @@ export function CartLineItem({layout, line}) {
                       close();
                     }
                   }}
-                  className="hover:text-main-purple transition duration-300"
+                  className="hover:text-main-purple transition ease-[ease] duration-300"
                 >
                   <strong>{product.title}</strong>
                 </Link>
@@ -259,7 +259,7 @@ function CartLineQuantity({line, layout, disabledByAction, fetcherErrors}) {
                   quantity <= 1 || disabledByAction
                     ? 'cursor-not-allowed bg-gray-50 text-gray-200'
                     : 'cursor-pointer bg-white text-gray-900 shadow-sm',
-                  'group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
+                  'group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition ease-[ease] duration-200',
                 )}
                 aria-label="Decrease quantity"
                 disabled={quantity <= 1 || !!isOptimistic || disabledByAction}
@@ -275,7 +275,7 @@ function CartLineQuantity({line, layout, disabledByAction, fetcherErrors}) {
                     quantity <= 1 || disabledByAction
                       ? 'opacity-0'
                       : 'opacity-100',
-                    'pointer-events-none absolute -inset-px rounded-md border-2 border-transparent transition duration-200 lg:group-hover:border-main-purple',
+                    'pointer-events-none absolute -inset-px rounded-md border-2 border-transparent transition ease-[ease] duration-200 lg:group-hover:border-main-purple',
                   )}
                 />
                 <span
@@ -284,14 +284,14 @@ function CartLineQuantity({line, layout, disabledByAction, fetcherErrors}) {
                     quantity <= 1 || disabledByAction
                       ? 'opacity-100'
                       : 'opacity-0',
-                    'pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200 transition duration-200',
+                    'pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200 transition ease-[ease] duration-200',
                   )}
                 >
                   <svg
                     stroke="currentColor"
                     viewBox="0 0 100 100"
                     preserveAspectRatio="none"
-                    className="absolute inset-0 h-full w-full stroke-3 text-gray-200 transition duration-200"
+                    className="absolute inset-0 h-full w-full stroke-3 text-gray-200 transition ease-[ease] duration-200"
                   >
                     <line
                       x1={0}
@@ -316,7 +316,7 @@ function CartLineQuantity({line, layout, disabledByAction, fetcherErrors}) {
                   disabledByAction
                     ? 'cursor-not-allowed bg-gray-50 text-gray-200'
                     : 'cursor-pointer bg-white text-gray-900 shadow-sm',
-                  'group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200',
+                  'group relative flex h-full items-center justify-center rounded-md border border-gray-200 px-2 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition ease-[ease] duration-200',
                 )}
                 aria-label="Increase quantity"
                 name="increase-quantity"
@@ -330,21 +330,21 @@ function CartLineQuantity({line, layout, disabledByAction, fetcherErrors}) {
                   aria-hidden="true"
                   className={classNames(
                     disabledByAction ? 'opacity-0' : 'opacity-100',
-                    'pointer-events-none absolute -inset-px rounded-md border-2 border-transparent transition duration-200 lg:group-hover:border-main-purple',
+                    'pointer-events-none absolute -inset-px rounded-md border-2 border-transparent transition ease-[ease] duration-200 lg:group-hover:border-main-purple',
                   )}
                 />
                 <span
                   aria-hidden="true"
                   className={classNames(
                     disabledByAction ? 'opacity-100' : 'opacity-0',
-                    'pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200 transition duration-200',
+                    'pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200 transition ease-[ease] duration-200',
                   )}
                 >
                   <svg
                     stroke="currentColor"
                     viewBox="0 0 100 100"
                     preserveAspectRatio="none"
-                    className="absolute inset-0 h-full w-full stroke-3 text-gray-200 transition duration-200"
+                    className="absolute inset-0 h-full w-full stroke-3 text-gray-200 transition ease-[ease] duration-200"
                   >
                     <line
                       x1={0}
@@ -404,7 +404,7 @@ function CartLineRemoveButton({lineIds, disabled}) {
         <button
           disabled={disabled}
           type="submit"
-          className="cursor-pointer text-main-purple lg:hover:text-main-purple-dark transition duration-300 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:cursor-not-allowed"
+          className="cursor-pointer text-main-purple lg:hover:text-main-purple-dark transition ease-[ease] duration-300 disabled:text-gray-400 disabled:hover:text-gray-400 disabled:cursor-not-allowed"
         >
           <TrashIcon aria-hidden="true" className="h-5 w-5" />
         </button>
