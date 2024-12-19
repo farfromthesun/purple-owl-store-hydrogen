@@ -25,15 +25,26 @@ export function AddToCartButton({
 }) {
   const [atcSuccessState, setAtcSuccessState] = useState(false);
   const atcFetcher = useFetcher({key: 'addToCartFetcher'});
+  const [atcFetcherPrevState, setAtcFetcherPrevState] = useState(null);
 
   useEffect(() => {
-    if (atcFetcher.state === 'idle' && atcFetcher.data?.errors?.length === 0) {
+    if (atcFetcher.state !== 'idle') setAtcFetcherPrevState(atcFetcher.state);
+  }, [atcFetcher.state]);
+
+  useEffect(() => {
+    if (
+      atcFetcher.state === 'idle' &&
+      atcFetcher.data?.errors?.length === 0 &&
+      (atcFetcherPrevState === 'submitting' ||
+        atcFetcherPrevState === 'loading')
+    ) {
       setAtcSuccessState(true);
       setTimeout(() => {
         setAtcSuccessState(false);
       }, 1000);
+      setAtcFetcherPrevState(atcFetcher.state);
     }
-  }, [atcFetcher.state, atcFetcher.data?.errors?.length]);
+  }, [atcFetcher.state, atcFetcher.data?.errors?.length, atcFetcherPrevState]);
 
   return (
     <CartForm
