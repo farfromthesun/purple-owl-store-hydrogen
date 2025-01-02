@@ -223,7 +223,7 @@ function SearchResultsPredictiveQueries({queries, inputRef}) {
 
 function SearchResultsPredictiveCategoryContainer({children, category}) {
   return (
-    <div className="mb-8 animate-fade-in">
+    <div className="mb-8 animate-fade-in-blur-in">
       <h5 className="capitalize mb-2 font-bold">{category}</h5>
       <ul>{children}</ul>
     </div>
@@ -242,7 +242,12 @@ function SearchResultsPredictiveItemContainer({
     <li
       className={classNames(category !== 'products' ? 'mb-2' : 'mb-4', 'flex')}
     >
-      <Link to={url} onClick={closeSearch} className="group flex items-center">
+      <Link
+        to={url}
+        onClick={closeSearch}
+        className="group flex items-center"
+        preventScrollReset
+      >
         {image && (
           <Image
             alt={image.altText ?? ''}
@@ -281,7 +286,7 @@ function SearchResultsPredictiveEmpty({term}) {
   }
 
   return (
-    <p className="mt-3 text-sm text-gray-500 animate-fade-in">
+    <p className="mt-3 text-sm text-gray-500 animate-fade-in-blur-in">
       No results found for <q>{term.current}</q>.
     </p>
   );

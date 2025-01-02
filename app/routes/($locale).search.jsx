@@ -6,6 +6,7 @@ import {SearchResults} from '~/components/SearchResults';
 import {getEmptyPredictiveSearchResult} from '~/lib/search';
 import {RouteTransition} from '~/components/RouteTransition';
 import {useEffect, useState} from 'react';
+import {FadeSlideBlurIn} from '~/components/FadeSlideBlurIn';
 
 // /**
 //  * @type {MetaFunction}
@@ -54,7 +55,9 @@ export default function SearchPage() {
   return (
     // <RouteTransition>
     <div className="search mx-auto max-w-2xl lg:max-w-1400 px-4 pt-12 pb-16 sm:px-6 lg:px-8 lg:pt-20 lg:pb-28">
-      <h1 className="text-3xl font-semibold sm:text-4xl pb-12">Search</h1>
+      <h1 className="text-3xl font-semibold sm:text-4xl pb-12">
+        <FadeSlideBlurIn>Search</FadeSlideBlurIn>
+      </h1>
       <SearchForm className="flex justify-center">
         {({inputRef}) => (
           <div className="flex gap-x-2 pt-1 max-w-md w-full">

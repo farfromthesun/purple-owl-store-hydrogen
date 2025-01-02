@@ -1,4 +1,4 @@
-import {Suspense} from 'react';
+import {Suspense, useEffect, useRef, useState} from 'react';
 import {Await, Link, NavLink} from '@remix-run/react';
 import {useAnalytics} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
@@ -20,6 +20,31 @@ function classNames(...classes) {
  */
 export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
   const {shop, menu} = header;
+  const [isDarkBelow, setIsDarkBelow] = useState(false);
+  const headerRef = useRef(null);
+
+  useEffect(() => {
+    const headerHeight = headerRef.current?.offsetHeight;
+
+    const handleScroll = () => {
+      if (window.scrollY === 0) {
+        setIsDarkBelow(false);
+        return;
+      }
+      const darkSections = document.querySelectorAll('[data-dark="true"]');
+      darkSections.forEach((section) => {
+        const sectionRect = section.getBoundingClientRect();
+        const inPosition =
+          sectionRect.top <= headerHeight / 2 &&
+          sectionRect.top > 0 - (sectionRect.height - headerHeight / 2);
+
+        inPosition ? setIsDarkBelow(true) : setIsDarkBelow(false);
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <>
@@ -35,7 +60,10 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
         />
         <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
       </header> */}
-      <header className="main-header bg-white/70 sticky top-0 z-10 backdrop-blur-lg">
+      <header
+        ref={headerRef}
+        className="main-header bg-white/10 sticky top-0 z-10 backdrop-blur-[20px]"
+      >
         <div className="flex items-center justify-between p-6 lg:px-8 max-w-2xl lg:max-w-1400 m-auto">
           <div className="flex lg:flex-1 order-3 lg:order-1">
             <NavLink
@@ -45,17 +73,22 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
               end
               preventScrollReset
             >
-              <strong className="text-main-purple font-logo text-lg lg:text-3xl font-extrabold">
+              <strong
+                className={classNames(
+                  isDarkBelow ? 'text-main-purple-light' : 'text-main-purple',
+                  ' font-logo text-lg lg:text-3xl font-extrabold transition-colors duration-300',
+                )}
+              >
                 {shop.name.replace(' Demo', '')}
               </strong>
             </NavLink>
           </div>
           <div className="flex gap-4 order-1">
             <div className="flex lg:hidden">
-              <HeaderMenuMobileToggle />
+              <HeaderMenuMobileToggle isDarkBelow={isDarkBelow} />
             </div>
             <div className="lg:hidden">
-              <SearchToggle />
+              <SearchToggle isDarkBelow={isDarkBelow} />
             </div>
           </div>
           <HeaderMenu
@@ -63,8 +96,13 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
             viewport="desktop"
             primaryDomainUrl={header.shop.primaryDomain.url}
             publicStoreDomain={publicStoreDomain}
+            isDarkBelow={isDarkBelow}
           />
-          <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+          <HeaderCtas
+            isLoggedIn={isLoggedIn}
+            cart={cart}
+            isDarkBelow={isDarkBelow}
+          />
         </div>
       </header>
     </>
@@ -84,6 +122,7 @@ export function HeaderMenu({
   primaryDomainUrl,
   viewport,
   publicStoreDomain,
+  isDarkBelow,
 }) {
   // const className = `header-menu-${viewport}`;
   const {close} = useAside();
@@ -100,8 +139,7 @@ export function HeaderMenu({
     // <nav className={className} role="navigation">
     <nav
       className={classNames(
-        viewport === 'mobile' &&
-          'space-y-14 -translate-y-main-header-mobile-height',
+        viewport === 'mobile' && '-translate-y-main-header-mobile-height',
         viewport === 'desktop' && 'hidden',
         'lg:flex lg:gap-x-12 lg:order-2',
       )}
@@ -124,7 +162,13 @@ export function HeaderMenu({
             : item.url;
         return (
           <NavLink
-            className="block text-xl leading-7 font-semibold text-gray-900 lg:py-2 lg:px-1 lg:text-base lg:leading-4 aria-[current]:text-main-purple transition duration-300 group"
+            className={classNames(
+              'block text-xl leading-7 font-semibold lg:py-2 lg:px-1 lg:text-base lg:leading-4 transition-colors duration-400 ease-out group',
+              isDarkBelow
+                ? 'text-gray-100 aria-[current]:text-main-purple-light'
+                : 'text-gray-900 aria-[current]:text-main-purple',
+              viewport === 'mobile' && 'mt-14 first:mt-0',
+            )}
             end
             key={item.id}
             onClick={closeAside}
@@ -137,7 +181,7 @@ export function HeaderMenu({
                 {item.title.split('').map((letter, index) => (
                   <span
                     key={letter}
-                    className="inline-block lg:group-hover:-translate-y-full lg:group-hover:opacity-0 transition ease-[ease] duration-400"
+                    className="inline-block lg:group-hover:-translate-y-full lg:group-hover:opacity-0 transition-[translate,_opacity] ease-[ease] duration-400"
                     style={{transitionDelay: index * 0.05 + 's'}}
                   >
                     {letter}
@@ -148,7 +192,7 @@ export function HeaderMenu({
                 {item.title.split('').map((letter, index) => (
                   <span
                     key={nanoid()}
-                    className="inline-block translate-y-0 opacity-0 lg:group-hover:-translate-y-full lg:group-hover:opacity-100 transition ease-[ease] duration-400"
+                    className="inline-block translate-y-0 opacity-0 lg:group-hover:-translate-y-full lg:group-hover:opacity-100 transition-[translate,_opacity] ease-[ease] duration-400"
                     style={{transitionDelay: index * 0.05 + 's'}}
                   >
                     {letter}
@@ -172,7 +216,7 @@ export function HeaderMenu({
 /**
  * @param {Pick<HeaderProps, 'isLoggedIn' | 'cart'>}
  */
-function HeaderCtas({isLoggedIn, cart}) {
+function HeaderCtas({isLoggedIn, cart, isDarkBelow}) {
   return (
     <nav
       className="flex lg:flex-1 lg:justify-end gap-4 lg:gap-6 order-4 items-center"
@@ -202,18 +246,21 @@ function HeaderCtas({isLoggedIn, cart}) {
         </Suspense>
       </NavLink>
       <div className="hidden lg:block">
-        <SearchToggle />
+        <SearchToggle isDarkBelow={isDarkBelow} />
       </div>
-      <CartToggle cart={cart} />
+      <CartToggle cart={cart} isDarkBelow={isDarkBelow} />
     </nav>
   );
 }
 
-function HeaderMenuMobileToggle() {
+function HeaderMenuMobileToggle({isDarkBelow}) {
   const {open} = useAside();
   return (
     <button
-      className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+      className={classNames(
+        isDarkBelow ? 'text-gray-100' : 'text-gray-900',
+        '-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 transition-color duration-300',
+      )}
       onClick={() => open('mobile')}
     >
       <span className="sr-only">Open main menu</span>
@@ -222,11 +269,16 @@ function HeaderMenuMobileToggle() {
   );
 }
 
-function SearchToggle() {
+function SearchToggle({isDarkBelow}) {
   const {open} = useAside();
   return (
     <button
-      className="text-sm lg:text-base font-semibold leading-6 text-gray-900 cursor-pointer flex items-center lg:hover:text-main-purple transition duration-300"
+      className={classNames(
+        isDarkBelow
+          ? 'text-gray-100 lg:hover:text-main-purple-light'
+          : 'text-gray-900 lg:hover:text-main-purple',
+        'text-sm lg:text-base font-semibold leading-6 cursor-pointer flex items-center transition duration-300',
+      )}
       onClick={() => open('search')}
     >
       <span className="sr-only">Search</span>
@@ -238,7 +290,7 @@ function SearchToggle() {
 /**
  * @param {{count: number | null}}
  */
-function CartBadge({count}) {
+function CartBadge({count, isDarkBelow}) {
   const {open} = useAside();
   const {publish, shop, cart, prevCart} = useAnalytics();
 
@@ -255,7 +307,12 @@ function CartBadge({count}) {
           url: window.location.href || '',
         });
       }}
-      className="text-sm lg:text-base font-semibold leading-6 text-gray-900 relative lg:hover:!text-main-purple transition duration-300"
+      className={classNames(
+        isDarkBelow
+          ? 'text-gray-100 lg:hover:text-main-purple-light'
+          : 'text-gray-900 lg:hover:text-main-purple',
+        'text-sm lg:text-base font-semibold leading-6 relative transition duration-300',
+      )}
     >
       <span className="sr-only">Open cart</span>
       <ShoppingBagIcon aria-hidden="true" className="h-6 w-6" />
@@ -269,12 +326,12 @@ function CartBadge({count}) {
 /**
  * @param {Pick<HeaderProps, 'cart'>}
  */
-function CartToggle({cart}) {
+function CartToggle({cart, isDarkBelow}) {
   return (
     <Suspense fallback={<CartBadge count={null} />}>
       <Await resolve={cart}>
         {(cart) => {
-          if (!cart) return <CartBadge count={0} />;
+          if (!cart) return <CartBadge count={0} isDarkBelow={isDarkBelow} />;
           return <CartBadge count={cart.totalQuantity || 0} />;
         }}
       </Await>

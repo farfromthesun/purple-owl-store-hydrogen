@@ -154,7 +154,7 @@ function SearchResultsProducts({term, products}) {
 
 function SearchResultsCategoryContainer({children, category}) {
   return (
-    <section className="mb-8 lg:mb-12 animate-fade-in last:mb-0">
+    <section className="mb-8 lg:mb-12 animate-fade-in-blur-in last:mb-0">
       <h2 className="capitalize mb-3 lg:text-xl font-bold">{category}</h2>
       {children}
     </section>
@@ -163,7 +163,7 @@ function SearchResultsCategoryContainer({children, category}) {
 
 function SearchResultsEmpty() {
   return (
-    <p className="mt-10 text-gray-500 animate-fade-in text-center">
+    <p className="mt-10 text-gray-500 animate-fade-in-blur-in text-center">
       No results, try a different search.
     </p>
   );

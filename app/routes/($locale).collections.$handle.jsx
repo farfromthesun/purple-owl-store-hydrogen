@@ -384,6 +384,7 @@ export default function Collection() {
 function ProductItem({product, loading, index}) {
   const variant = product.variants.nodes[0];
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
+
   return (
     <ProductTile
       to={variantUrl}

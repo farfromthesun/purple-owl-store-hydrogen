@@ -16,12 +16,23 @@
   --font-family-base: Inter var, ui-sans-serif, system-ui, sans-serif;
   --max-width-1400: 1400px;
   --background-image-check-icon: url('~/assets/CheckIcon.svg');
-  --animate-fade-in: fadeInAnimation ease 0.3s forwards;
-  --animate-fade-slide-v-in: fadeSlideVInAnimation ease 0.5s forwards;
-  --animate-route-transition-bg: fadeOutAnimation 0.3s ease 0.6s forwards;
-  --animate-route-transition-logo: slideInOutAnimation 0.8s ease forwards;
+
+  --animate-fade-in: fadeInAnimation ease-out 0.3s forwards;
+  --animate-fade-in-blur-in: fadeInBlurInAnimation ease-out 0.3s forwards;
+
+  --animate-fade-slide-v-in: fadeSlideVInAnimation ease-out 0.5s forwards;
+
+  --animate-fade-slide-v-blur-in: fadeSlideVBlurInAnimation ease-out 0.3s
+    forwards;
+  --animate-fade-slide-v-blur-in-longer: fadeSlideVBlurInAnimation ease-out 0.5s
+    forwards;
+  --animate-fade-slide-v-blur-in-extra-long: fadeSlideVBlurInAnimation ease-out
+    1s forwards;
+
   --spacing-main-header-mobile-height: 76px;
   --spacing-main-header-desktop-height: 84px;
+
+  --color-dark-x: oklch(0.1872 0.002 286.2);
 }
 
 @keyframes fadeInAnimation {
@@ -35,14 +46,16 @@
   }
 }
 
-@keyframes fadeOutAnimation {
+@keyframes fadeInBlurInAnimation {
   0% {
-    opacity: 1;
-    visibility: visible;
-  }
-  100% {
     opacity: 0;
     visibility: hidden;
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+    filter: blur(0);
   }
 }
 
@@ -59,22 +72,18 @@
   }
 }
 
-@keyframes slideInOutAnimation {
+@keyframes fadeSlideVBlurInAnimation {
   0% {
     opacity: 0;
-    transform: translateX(20px);
-  }
-  25% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  75% {
-    opacity: 1;
-    transform: translateX(0);
+    visibility: hidden;
+    transform: translateY(10px);
+    filter: blur(4px);
   }
   100% {
-    opacity: 0;
-    transform: translateX(-20px);
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    filter: blur(0);
   }
 }
 
@@ -182,7 +191,7 @@
     @apply cursor-pointer;
     @apply text-white;
     @apply hover:bg-main-purple-dark;
-    @apply transition;
+    @apply transition-[background-color];
     @apply duration-300;
     @apply ease-[ease];
     @apply focus-visible:outline;

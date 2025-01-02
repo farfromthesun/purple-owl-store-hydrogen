@@ -161,7 +161,7 @@ function SearchAside() {
 
             if (state === 'loading' && term.current) {
               return (
-                <p className="mt-3 text-sm text-gray-500 animate-fade-in">
+                <p className="mt-3 text-sm text-gray-500 animate-fade-in-blur-in">
                   Loading...
                 </p>
               );
@@ -201,7 +201,8 @@ function SearchAside() {
                   <Link
                     onClick={closeSearch}
                     to={`${SEARCH_ENDPOINT}?q=${term.current}`}
-                    className="text-main-purple hover:text-main-purple-dark transition duration-300 animate-fade-in"
+                    className="text-main-purple hover:text-main-purple-dark transition duration-300 animate-fade-in-blur-in"
+                    preventScrollReset
                   >
                     <p>
                       View all results for <q>{term.current}</q>

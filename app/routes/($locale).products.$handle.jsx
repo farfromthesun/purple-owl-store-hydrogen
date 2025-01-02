@@ -11,11 +11,13 @@ import {getVariantUrl} from '~/lib/variants';
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
-// import {AnimatePresence, easeInOut, motion} from 'framer-motion';
+import {AnimatePresence, LayoutGroup, motion} from 'framer-motion';
 import {RouteTransition} from '~/components/RouteTransition';
 import {seoPayload} from '~/lib/seo.server';
 import {SlashIcon} from '@heroicons/react/24/outline';
 import {ProductImageSkeleton} from '~/components/ProductImageSkeleton';
+import {TextSplit} from '~/components/TextSplit';
+import {FadeSlideBlurIn} from '~/components/FadeSlideBlurIn';
 
 // /**
 //  * @type {MetaFunction<typeof loader>}
@@ -148,9 +150,9 @@ export const meta = ({matches}) => {
   return getSeoMeta(...matches.map((match) => match.data?.seo));
 };
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+// function classNames(...classes) {
+//   return classes.filter(Boolean).join(' ');
+// }
 
 export default function Product() {
   /** @type {LoaderReturnData} */
@@ -195,108 +197,121 @@ export default function Product() {
     // <RouteTransition>
     <div className="bg-white">
       <div className="pt-6 lg:pt-12">
-        <nav aria-label="Breadcrumb">
-          <ol className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-1400 lg:px-8">
-            {breadcrumbs.map((breadcrumb) => (
-              <li key={breadcrumb.id}>
-                <div className="flex items-center">
-                  <Link
-                    to={breadcrumb.href}
-                    className="mr-2 text-sm font-medium text-gray-900 hover:text-main-purple transition duration-300"
-                  >
-                    {breadcrumb.name}
-                  </Link>
-                  <SlashIcon
-                    aria-hidden="true"
-                    className="h-4 w-4 text-gray-400"
-                  />
-                </div>
+        <LayoutGroup>
+          <nav aria-label="Breadcrumb">
+            <ol className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-1400 lg:px-8">
+              {breadcrumbs.map((breadcrumb) => (
+                <li key={breadcrumb.id}>
+                  <div className="flex items-center">
+                    <Link
+                      to={breadcrumb.href}
+                      className="mr-2 text-sm font-medium text-gray-900 hover:text-main-purple transition duration-300"
+                    >
+                      {breadcrumb.name}
+                    </Link>
+                    <SlashIcon
+                      aria-hidden="true"
+                      className="h-4 w-4 text-gray-400"
+                    />
+                  </div>
+                </li>
+              ))}
+              <li className="text-sm">
+                <span className="font-medium text-main-purple">{title}</span>
               </li>
-            ))}
-            <li className="text-sm">
-              <span className="font-medium text-main-purple">{title}</span>
-            </li>
-          </ol>
-        </nav>
+            </ol>
+          </nav>
 
-        {/* Product main */}
-        <div className="mx-auto max-w-2xl px-4 pb-16 pt-6 sm:px-6 lg:grid lg:max-w-1400 lg:grid-cols-3 lg:gap-x-8 lg:px-8 lg:pb-24">
-          <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-            {imgAspectRatio !== null ? (
-              <ProductImage
-                image={selectedVariant?.image}
-                aspectRatio={imgAspectRatio}
-              />
-            ) : (
-              <ProductImageSkeleton />
-            )}
-          </div>
-
-          {/* Product info */}
-          <div className="mt-6 lg:mt-0 sticky top-main-header-desktop-height self-start">
-            <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl mb-3">
-              {title}
-            </h1>
-            <div className="text-2xl text-gray-900 flex items-center lg:block xl:flex gap-2">
-              {/* <AnimatePresence initial={false}> */}
-              <ProductPrice
-                price={selectedVariant?.price}
-                compareAtPrice={selectedVariant?.compareAtPrice}
-                key="selectedVariantPrice"
-              />
-              {!selectedVariant.availableForSale && (
-                // <motion.span
-                //   key="selectedVariantSoldOutBadge"
-                //   layout
-                //   initial={{opacity: 0}}
-                //   animate={{opacity: 1}}
-                //   exit={{opacity: 0}}
-                //   transition={{duration: 0.1, ease: easeInOut}}
-                //   className="badge bg-main-purple-super-dark uppercase"
-                // >
-                //   Sold out
-                // </motion.span>
-                <span className="badge bg-main-purple-super-dark uppercase animate-fade-in">
-                  Sold out
-                </span>
-              )}
-              {/* </AnimatePresence> */}
+          {/* Product main */}
+          <div className="mx-auto max-w-2xl px-4 pb-16 pt-6 sm:px-6 lg:grid lg:max-w-1400 lg:grid-cols-3 lg:gap-x-8 lg:px-8 lg:pb-24">
+            <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
+              <FadeSlideBlurIn>
+                {imgAspectRatio !== null ? (
+                  <ProductImage
+                    image={selectedVariant?.image}
+                    aspectRatio={imgAspectRatio}
+                  />
+                ) : (
+                  <ProductImageSkeleton />
+                )}
+              </FadeSlideBlurIn>
             </div>
 
-            {!isProductGWP && (
-              <Suspense
-                fallback={
-                  <ProductForm
-                    product={product}
-                    selectedVariant={selectedVariant}
-                    variants={[]}
+            {/* Product info */}
+            <div className="mt-6 lg:mt-0 top-main-header-desktop-height self-start">
+              <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl mb-3">
+                <TextSplit delay={400}>{title}</TextSplit>
+              </h1>
+              <FadeSlideBlurIn delay={600}>
+                <div className="text-2xl text-gray-900 flex items-center lg:block xl:flex gap-2">
+                  <ProductPrice
+                    price={selectedVariant?.price}
+                    compareAtPrice={selectedVariant?.compareAtPrice}
+                    key="selectedVariantPrice"
                   />
-                }
-              >
-                <Await
-                  errorElement="There was a problem loading product variants"
-                  resolve={variants}
-                >
-                  {(data) => (
+                  <AnimatePresence initial={false}>
+                    {!selectedVariant.availableForSale && (
+                      <motion.span
+                        key="selectedVariantSoldOutBadge"
+                        layout
+                        initial={{opacity: 0, filter: 'blur(2px)'}}
+                        animate={{opacity: 1, filter: 'blur(0)'}}
+                        exit={{opacity: 0, filter: 'blur(2px)'}}
+                        transition={{duration: 0.2, ease: 'easeOut'}}
+                        className="badge bg-main-purple-super-dark uppercase"
+                      >
+                        Sold out
+                      </motion.span>
+                      // <span className="badge bg-main-purple-super-dark uppercase animate-fade-in-blur-in">
+                      //   Sold out
+                      // </span>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </FadeSlideBlurIn>
+
+              {!isProductGWP && (
+                <Suspense
+                  fallback={
                     <ProductForm
                       product={product}
                       selectedVariant={selectedVariant}
-                      variants={data?.product?.variants.nodes || []}
+                      variants={[]}
                     />
-                  )}
-                </Await>
-              </Suspense>
-            )}
+                  }
+                >
+                  <Await
+                    errorElement="There was a problem loading product variants"
+                    resolve={variants}
+                  >
+                    {(data) => (
+                      <ProductForm
+                        product={product}
+                        selectedVariant={selectedVariant}
+                        variants={data?.product?.variants.nodes || []}
+                      />
+                    )}
+                  </Await>
+                </Suspense>
+              )}
 
-            <div className="space-y-6 mt-10 lg:mt-12">
-              <div
-                className="text-base text-gray-900"
-                dangerouslySetInnerHTML={{__html: descriptionHtml}}
-              />
+              <motion.div
+                layout
+                transition={{duration: 0.2, ease: 'easeInOut'}}
+              >
+                <div className="space-y-6 mt-10 lg:mt-12">
+                  <div
+                    className="text-base text-gray-900"
+                    dangerouslySetInnerHTML={{__html: descriptionHtml}}
+                  />
+                </div>
+              </motion.div>
             </div>
           </div>
-        </div>
-        <ProductFeatures />
+          <motion.div layout transition={{duration: 0.2, ease: 'easeInOut'}}>
+            <ProductFeatures />
+          </motion.div>
+        </LayoutGroup>
       </div>
       <Analytics.ProductView
         data={{

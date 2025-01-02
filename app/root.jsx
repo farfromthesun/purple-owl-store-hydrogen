@@ -226,13 +226,13 @@ export default function App() {
   const outlet = useOutlet();
   const location = useLocation();
   const {header} = useRouteLoaderData('root');
-  const [viewport, setViewport] = useState('mobile');
+  // const [viewport, setViewport] = useState('mobile');
 
-  useEffect(() => {
-    setViewport(
-      window.matchMedia('(min-width: 1024px)').matches ? 'desktop' : 'mobile',
-    );
-  }, []);
+  // useEffect(() => {
+  //   setViewport(
+  //     window.matchMedia('(min-width: 1024px)').matches ? 'desktop' : 'mobile',
+  //   );
+  // }, []);
 
   useEffect(() => {
     setTimeout(() => {
@@ -241,13 +241,13 @@ export default function App() {
   }, [location.pathname]);
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
+    <AnimatePresence mode="wait" initial={true}>
       <div key={location.pathname}>
         <div
           className={classNames(
-            viewport === 'destop' && 'top-main-header-desktop-height',
-            viewport === 'mobile' && 'top-main-header-mobile-height',
-            'fixed left-0 h-svh w-full z-50 grid grid-cols-2 grid-rows-2 pointer-events-none overflow-hidden',
+            // viewport === 'destop' && 'top-main-header-desktop-height',
+            // viewport === 'mobile' && 'top-main-header-mobile-height',
+            'fixed left-0 top-0 h-svh w-full z-50 grid grid-cols-2 grid-rows-2 pointer-events-none overflow-hidden',
           )}
         >
           <motion.div
@@ -313,7 +313,7 @@ export default function App() {
             </motion.div>
           ))}
         </div>
-        {outlet}
+        <div className="z-[2] relative bg-white">{outlet}</div>
       </div>
     </AnimatePresence>
   );

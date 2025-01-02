@@ -8,10 +8,11 @@ import {
 import {PlusIcon, MinusIcon} from '@heroicons/react/20/solid';
 import {Await, Link, useRouteLoaderData} from '@remix-run/react';
 import {Image, VariantSelector} from '@shopify/hydrogen';
-import {Suspense, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import {ProductPrice} from './ProductPrice';
+import {AnimatePresence, motion} from 'framer-motion';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -54,13 +55,18 @@ export function ProductForm({product, selectedVariant, variants}) {
         selectedVariant={selectedVariant}
       />
       {product.add_ons_metafield && (
-        <AddOns product={product} setAddOns={setAddOns} />
+        <motion.div layout transition={{duration: 0.2, ease: 'easeInOut'}}>
+          <AddOns product={product} setAddOns={setAddOns} />
+        </motion.div>
       )}
-      <ExtraOptons
-        product={product}
-        extraOptions={extraOptions}
-        setExtraOptions={setExtraOptions}
-      />
+      <motion.div layout transition={{duration: 0.2, ease: 'easeInOut'}}>
+        <ExtraOptons
+          product={product}
+          extraOptions={extraOptions}
+          setExtraOptions={setExtraOptions}
+        />
+      </motion.div>
+      {/* <motion.div layout> */}
       <AddToCartButton
         disabled={!selectedVariant || !selectedVariant.availableForSale}
         onClick={() => {
@@ -79,9 +85,11 @@ export function ProductForm({product, selectedVariant, variants}) {
               ]
             : []
         }
+        selectedVariant={selectedVariant}
       >
         {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
       </AddToCartButton>
+      {/* </motion.div> */}
     </div>
   );
 }
@@ -177,12 +185,12 @@ function SizeGuide() {
       >
         <DialogBackdrop
           transition
-          className="fixed inset-0 bg-black/30 duration-300 ease-out data-[closed]:opacity-0"
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm duration-300 ease-out data-[closed]:opacity-0"
         />
         <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
           <DialogPanel
             transition
-            className="max-w-lg space-y-4 rounded-md bg-white p-8 duration-300 ease-out data-[closed]:scale-95 data-[closed]:opacity-0"
+            className="max-w-lg space-y-4 shadow-lg shadow-gray-500 rounded-md bg-white p-8 duration-300 ease-out data-[closed]:scale-95 data-[closed]:opacity-0"
           >
             <DialogTitle className="text-lg font-bold">Size guide</DialogTitle>
             <Description>Pariatur nostrud sint voluptate officia.</Description>
@@ -210,11 +218,41 @@ function QuantitySelector({
   selectedVariant,
 }) {
   const rootData = useRouteLoaderData('root');
+  // const [infoAlerts, setInfoAlerts] = useState([]);
+
+  // useEffect(() => {
+  //   const infoAlerts = [];
+
+  //   if (selectedVariant.availableForSale) {
+  //     if (selectedVariant.quantityAvailable > 0) {
+  //       infoAlerts.push(
+  //         <>
+  //           Only{' '}
+  //           <span className="badge"> {selectedVariant.quantityAvailable}</span>{' '}
+  //           left in stock!
+  //         </>,
+  //       );
+  //     }
+  //     if (selectedVariant.order_limit_metafield) {
+  //       infoAlerts.push(
+  //         <>
+  //           Product limited to only{' '}
+  //           <span className="badge">
+  //             {selectedVariant.order_limit_metafield.value}
+  //           </span>{' '}
+  //           units per order.
+  //         </>,
+  //       );
+  //     }
+  //   }
+  //   setInfoAlerts(infoAlerts);
+  // }, [selectedVariant]);
 
   return (
     <div className="mb-8">
       <h3 className="text-sm font-medium text-gray-900">
         <span>Quantity</span>
+
         <Suspense
           fallback={
             <span className="text-sm text-gray-500 animate-pulse">
@@ -232,16 +270,24 @@ function QuantitySelector({
               const itemIncart = cart.lines.nodes.find(
                 (lineItem) => lineItem.merchandise.id === selectedVariant.id,
               );
-              if (itemIncart) {
-                return (
-                  <span className="animate-fade-in">
-                    {' '}
-                    ({itemIncart.quantity} in cart)
-                  </span>
-                );
-              } else {
-                return null;
-              }
+
+              return (
+                <AnimatePresence>
+                  {itemIncart && (
+                    <motion.span
+                      initial={{opacity: 0, filter: 'blur(2px)'}}
+                      animate={{opacity: 1, filter: 'blur(0)'}}
+                      exit={{opacity: 0, filter: 'blur(2px)'}}
+                      transition={{duration: 0.2, ease: 'easeOut'}}
+                      key="itemIncart"
+                      layout
+                    >
+                      {' '}
+                      ({itemIncart.quantity} in cart)
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              );
             }}
           </Await>
         </Suspense>
@@ -292,7 +338,19 @@ function QuantitySelector({
           </span>
         </button>
         <div className="w-full max-w-16 text-center py-2 px-3 rounded-md text-sm border border-gray-300 text-gray-500 outline-none">
-          {quantity}
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.span
+              initial={{opacity: 0, filter: 'blur(2px)', y: 10}}
+              animate={{opacity: 1, filter: 'blur(0)', y: 0}}
+              exit={{opacity: 0, filter: 'blur(2px)', y: -10}}
+              transition={{duration: 0.2, ease: 'easeOut'}}
+              key={'quantityValue-' + quantity}
+              className="inline-block"
+              // layout
+            >
+              {quantity}
+            </motion.span>
+          </AnimatePresence>
         </div>
         <button
           className="group relative flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200 cursor-pointer bg-white text-gray-900 shadow-sm"
@@ -308,94 +366,168 @@ function QuantitySelector({
           />
         </button>
       </div>
-      {selectedVariant.availableForSale &&
-        selectedVariant.quantityAvailable > 0 && (
-          <p className="text-main-purple text-sm font-medium mt-4 animate-fade-in flex items-center gap-1">
-            Only{' '}
-            <span className="badge">{selectedVariant.quantityAvailable}</span>{' '}
-            left in stock!
-          </p>
-        )}
-      {selectedVariant.availableForSale &&
-        selectedVariant.order_limit_metafield && (
-          <p className="text-main-purple text-sm font-medium mt-4 animate-fade-in flex items-center gap-1">
-            Product limited to only{' '}
-            <span className="badge">
-              {selectedVariant.order_limit_metafield.value}
-            </span>{' '}
-            units per order.
-          </p>
-        )}
+      <div className="mt-4">
+        <AnimatePresence mode="popLayout">
+          {selectedVariant.availableForSale &&
+            selectedVariant.quantityAvailable > 0 && (
+              <motion.p
+                initial={{opacity: 0, filter: 'blur(2px)', x: 10}}
+                animate={{opacity: 1, filter: 'blur(0)', x: 0}}
+                exit={{opacity: 0, filter: 'blur(2px)', x: -10}}
+                transition={{duration: 0.2, ease: 'easeOut'}}
+                key="amountLeftInStock"
+                layout
+                className="text-main-purple text-sm font-medium mb-4 last:mb-0 flex items-center gap-1"
+              >
+                Only{' '}
+                <span className="badge">
+                  <AnimatePresence mode="popLayout" initial={false}>
+                    <motion.span
+                      initial={{opacity: 0, filter: 'blur(2px)', y: 10}}
+                      animate={{opacity: 1, filter: 'blur(0)', y: 0}}
+                      exit={{opacity: 0, filter: 'blur(2px)', y: -10}}
+                      transition={{duration: 0.2, ease: 'easeOut'}}
+                      key={
+                        'amountLeftInStock-' + selectedVariant.quantityAvailable
+                      }
+                    >
+                      {selectedVariant.quantityAvailable}
+                    </motion.span>
+                  </AnimatePresence>
+                </span>{' '}
+                left in stock!
+              </motion.p>
+            )}
+        </AnimatePresence>
+        <AnimatePresence mode="popLayout">
+          {selectedVariant.availableForSale &&
+            selectedVariant.order_limit_metafield && (
+              <motion.p
+                initial={{opacity: 0, filter: 'blur(2px)', x: 10}}
+                animate={{opacity: 1, filter: 'blur(0)', x: 0}}
+                exit={{opacity: 0, filter: 'blur(2px)', x: -10}}
+                transition={{duration: 0.2, ease: 'easeOut'}}
+                key="unitsPerOrder"
+                layout
+                className="text-main-purple text-sm font-medium flex items-center gap-1 bg-white/30 backdrop-blur-md"
+              >
+                Product limited to only{' '}
+                <span className="badge">
+                  <AnimatePresence mode="popLayout" initial={false}>
+                    <motion.span
+                      initial={{opacity: 0, filter: 'blur(2px)', y: 10}}
+                      animate={{opacity: 1, filter: 'blur(0)', y: 0}}
+                      exit={{opacity: 0, filter: 'blur(2px)', y: -10}}
+                      transition={{duration: 0.2, ease: 'easeOut'}}
+                      key={
+                        'unitsPerOrder-' +
+                        selectedVariant.order_limit_metafield.value
+                      }
+                    >
+                      {selectedVariant.order_limit_metafield.value}
+                    </motion.span>
+                  </AnimatePresence>
+                </span>{' '}
+                units per order.
+              </motion.p>
+            )}
+        </AnimatePresence>
+      </div>
+      {/* {infoAlerts.length > 0 && (
+        <AnimatePresence mode="wait">
+          <motion.div
+            initial={{opacity: 0, filter: 'blur(2px)', height: 0}}
+            animate={{opacity: 1, filter: 'blur(0)', height: 'auto'}}
+            exit={{opacity: 0, filter: 'blur(2px)', height: 0}}
+            transition={{duration: 0.2, ease: 'easeOut'}}
+            key={selectedVariant.id}
+          >
+            {infoAlerts.map((infoAlert) => (
+              <motion.p
+                initial={{opacity: 0, filter: 'blur(2px)'}}
+                animate={{opacity: 1, filter: 'blur(0)'}}
+                exit={{opacity: 0, filter: 'blur(2px)'}}
+                key={infoAlert}
+                className="text-main-purple text-sm font-medium mt-4 flex items-center gap-1"
+              >
+                {infoAlert}
+              </motion.p>
+            ))}
+          </motion.div>
+        </AnimatePresence>
+      )} */}
     </div>
   );
 }
 
 function AddOns({product, setAddOns}) {
   return (
-    <div className="mb-8">
-      <h3 className="text-sm font-medium text-gray-900">Add-ons</h3>
-      <div className="mt-4">
-        {product.add_ons_metafield.references.nodes.map((addOn) => (
-          <div className="mb-4 last:mb-0" key={addOn.id.split('Product/')[1]}>
-            <div className="inline-flex items-center group">
-              <input
-                id={`add-on-${addOn.id.split('Product/')[1]}`}
-                name={`add-on-${addOn.id.split('Product/')[1]}`}
-                value={JSON.stringify(addOn.defaultVariant)}
-                type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition ease-[ease] duration-200 lg:group-hover:border-main-purple lg:cursor-pointer outline-main-purple"
-                onChange={(event) => {
-                  const addOnVariant = JSON.parse(event.target.value);
-                  const isChecked = event.target.checked;
-                  setAddOns((prevAddOns) => {
-                    const isAddOnAlreadyInState = prevAddOns.find(
-                      (prevAddOn) =>
-                        prevAddOn.merchandiseId === addOnVariant.id,
-                    );
-                    if (isChecked && !isAddOnAlreadyInState) {
-                      return [
-                        ...prevAddOns,
-                        {
-                          merchandiseId: addOnVariant.id,
-                          quantity: 1,
-                          selectedVariant: addOnVariant,
-                        },
-                      ];
-                    } else if (!isChecked && isAddOnAlreadyInState) {
-                      return prevAddOns.filter(
+    <div className="mb-8 bg-white">
+      <div className="px-5 py-4 bg-main-purple/05 rounded-lg">
+        <h3 className="text-sm font-medium text-gray-900">Add-ons</h3>
+        <div className="mt-4">
+          {product.add_ons_metafield.references.nodes.map((addOn) => (
+            <div className="mb-4 last:mb-0" key={addOn.id.split('Product/')[1]}>
+              <div className="inline-flex items-center group">
+                <input
+                  id={`add-on-${addOn.id.split('Product/')[1]}`}
+                  name={`add-on-${addOn.id.split('Product/')[1]}`}
+                  value={JSON.stringify(addOn.defaultVariant)}
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-gray-300 checked:bg-main-purple checked:border-transparent transition ease-[ease] duration-200 lg:group-hover:border-main-purple lg:cursor-pointer outline-main-purple"
+                  onChange={(event) => {
+                    const addOnVariant = JSON.parse(event.target.value);
+                    const isChecked = event.target.checked;
+                    setAddOns((prevAddOns) => {
+                      const isAddOnAlreadyInState = prevAddOns.find(
                         (prevAddOn) =>
-                          prevAddOn.merchandiseId !== addOnVariant.id,
+                          prevAddOn.merchandiseId === addOnVariant.id,
                       );
-                    }
-                  });
-                }}
-              />
-              <label
-                htmlFor={`add-on-${addOn.id.split('Product/')[1]}`}
-                className="flex items-center gap-3 ml-3 min-w-0 text-sm lg:group-hover:text-main-purple transition ease-[ease] duration-200 lg:cursor-pointer"
-              >
-                <Image
-                  alt={addOn.title}
-                  aspectRatio="1/1"
-                  data={addOn.images.nodes[0]}
-                  height={50}
-                  loading="lazy"
-                  width={50}
-                  className="rounded-md lg:group-hover:opacity-75 transition ease-[ease] duration-200"
+                      if (isChecked && !isAddOnAlreadyInState) {
+                        return [
+                          ...prevAddOns,
+                          {
+                            merchandiseId: addOnVariant.id,
+                            quantity: 1,
+                            selectedVariant: addOnVariant,
+                          },
+                        ];
+                      } else if (!isChecked && isAddOnAlreadyInState) {
+                        return prevAddOns.filter(
+                          (prevAddOn) =>
+                            prevAddOn.merchandiseId !== addOnVariant.id,
+                        );
+                      }
+                    });
+                  }}
                 />
-                <div className="">
-                  <div className="font-bold">{addOn.title}</div>
-                  {/* <span className="mx-2">-</span> */}
-                  <ProductPrice
-                    price={addOn.defaultVariant.price}
-                    compareAtPrice={addOn.defaultVariant.compareAtPrice}
-                    motionLayout={false}
+                <label
+                  htmlFor={`add-on-${addOn.id.split('Product/')[1]}`}
+                  className="flex items-center gap-3 ml-3 min-w-0 text-sm lg:group-hover:text-main-purple transition ease-[ease] duration-200 lg:cursor-pointer"
+                >
+                  <Image
+                    alt={addOn.title}
+                    aspectRatio="1/1"
+                    data={addOn.images.nodes[0]}
+                    height={50}
+                    loading="lazy"
+                    width={50}
+                    className="rounded-md lg:group-hover:opacity-75 transition ease-[ease] duration-200"
                   />
-                </div>
-              </label>
+                  <div className="">
+                    <div className="font-bold">{addOn.title}</div>
+                    {/* <span className="mx-2">-</span> */}
+                    <ProductPrice
+                      price={addOn.defaultVariant.price}
+                      compareAtPrice={addOn.defaultVariant.compareAtPrice}
+                      motionLayout={false}
+                    />
+                  </div>
+                </label>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

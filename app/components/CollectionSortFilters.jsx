@@ -80,61 +80,77 @@ export function CollectionSortFilters({filters, appliedFilters, children}) {
             appliedFilters.length > 0 ? 'justify-between' : 'justify-end'
           }`}
         > */}
-        <div
+        {/* <div
           className={`grid grid-rows-[auto_auto] gap-y-3 lg:grid-rows-none lg:gap-y-0 items-baseline border-b border-gray-200 pb-6 pt-12 lg:pt-16 ${
             appliedFilters.length > 0
               ? 'grid-cols-[auto_auto] lg:grid-cols-[auto_1fr_auto]'
               : 'grid-cols-1 lg:grid-cols-1'
           }`}
-        >
-          {appliedFilters.length > 0 && (
-            <>
-              <div className="animate-fade-in">
+        > */}
+        <div className="grid grid-rows-[auto_auto] gap-y-3 items-baseline lg:grid-rows-none lg:gap-y-0 border-b border-gray-200 pb-6 pt-12 lg:pt-16 grid-cols-[auto_auto] lg:grid-cols-[auto_1fr_auto]">
+          <AnimatePresence>
+            {appliedFilters.length > 0 && (
+              <motion.div
+                initial={{opacity: 0, filter: 'blur(2px)'}}
+                animate={{opacity: 1, filter: 'blur(0)'}}
+                exit={{opacity: 0, filter: 'blur(2px)'}}
+                transition={{duration: 0.2, ease: 'easeOut'}}
+              >
                 <span className="text-sm tracking-tight text-gray-900 block lg:mr-2">
                   Applied filters:
                 </span>
-              </div>
-              <div className="row-start-2 col-start-1 col-span-2 flex flex-wrap gap-2 lg:row-start-1 lg:col-start-2 lg:col-span-1">
-                {appliedFilters.map((appliedFilter) => {
-                  const baseKey = Object.keys(appliedFilter)[0];
-                  const filterKey = Object.keys(appliedFilter[baseKey])[0];
-                  const url = [...params]
-                    .filter((param) => {
-                      if (filterKey === 'price') {
-                        return !param[0].includes('price');
-                      } else {
-                        return (
-                          param[0] + '=' + param[1] !==
-                          baseKey +
-                            '.' +
-                            filterKey +
-                            '=' +
-                            JSON.stringify(appliedFilter[baseKey][filterKey])
-                        );
-                      }
-                    })
-                    .reduce((accumulator, param) => {
-                      const before = accumulator === '' ? '' : '&';
-                      return (accumulator +=
-                        before + param[0] + '=' + param[1]);
-                    }, '');
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <div className="row-start-2 col-start-1 col-span-2 flex flex-wrap gap-2 lg:row-start-1 lg:col-start-2 lg:col-span-1">
+            <AnimatePresence>
+              {appliedFilters.map((appliedFilter) => {
+                const baseKey = Object.keys(appliedFilter)[0];
+                const filterKey = Object.keys(appliedFilter[baseKey])[0];
+                const url = [...params]
+                  .filter((param) => {
+                    if (filterKey === 'price') {
+                      return !param[0].includes('price');
+                    } else {
+                      return (
+                        param[0] + '=' + param[1] !==
+                        baseKey +
+                          '.' +
+                          filterKey +
+                          '=' +
+                          JSON.stringify(appliedFilter[baseKey][filterKey])
+                      );
+                    }
+                  })
+                  .reduce((accumulator, param) => {
+                    const before = accumulator === '' ? '' : '&';
+                    return (accumulator += before + param[0] + '=' + param[1]);
+                  }, '');
 
-                  return (
+                return (
+                  <motion.div
+                    initial={{opacity: 0, filter: 'blur(2px)'}}
+                    animate={{opacity: 1, filter: 'blur(0)'}}
+                    exit={{opacity: 0, filter: 'blur(2px)'}}
+                    transition={{duration: 0.2, ease: 'easeOut'}}
+                    key={appliedFilter.label}
+                    layout
+                  >
                     <Link
-                      key={appliedFilter.label}
                       to={'?' + url}
-                      className="badge gap-1 animate-fade-in hover:bg-main-purple-dark transition ease-[ease] duration-300"
+                      className="badge gap-1 hover:bg-main-purple-dark transition ease-[ease] duration-300"
                       preventScrollReset
                     >
                       {appliedFilter.label}
                       <XMarkIcon aria-hidden="true" className="size-4" />
                     </Link>
-                  );
-                })}
-              </div>
-            </>
-          )}
-          <div className="flex items-center justify-end">
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </div>
+
+          <div className="flex items-center justify-end col-start-2 lg:col-start-3">
             <SortMenu />
             <button
               type="button"
@@ -297,22 +313,27 @@ function FiltersList({filters, viewport}) {
                     variants={filterDropdownVariants}
                     animate={open ? 'open' : 'closed'}
                     className=" origin-top overflow-hidden"
-                    transition={{duration: 0.2, ease: 'easeOut'}}
+                    transition={{duration: 0.4, ease: [0, 0.71, 0.2, 1.01]}}
                   >
                     <div
                       key={filter.id}
-                      className="mt-6 space-y-4 max-h-[30svh] overflow-y-auto p-1"
+                      className="mt-6 max-h-[30svh] overflow-y-auto p-1"
                     >
-                      {filter.values?.map((option, optionIdx) => (
-                        <div
-                          key={option.id}
-                          className={`${
-                            filter.type === 'PRICE_RANGE' ? '' : 'flex'
-                          }`}
-                        >
-                          {filterMarkup(filter, option, viewport)}
-                        </div>
-                      ))}
+                      <div className="space-y-4 overflow-hidden">
+                        {filter.values?.map((option, optionIdx) => (
+                          <div
+                            key={option.id}
+                            className={classNames(
+                              filter.type !== 'PRICE_RANGE' && 'flex',
+                              open && 'animate-fade-slide-v-blur-in',
+                              'opacity-0 invisible',
+                            )}
+                            style={{animationDelay: optionIdx * 30 + 'ms'}}
+                          >
+                            {filterMarkup(filter, option, viewport)}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </motion.div>
                 </DisclosurePanel>
@@ -466,7 +487,7 @@ function SortMenu() {
         className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-gray-200 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
       >
         <div className="p-1">
-          {items.map((item) => (
+          {items.map((item, itemIdx) => (
             <MenuItem key={item.label}>
               {({focus}) => (
                 <Link
@@ -478,9 +499,10 @@ function SortMenu() {
                     activeItem?.key === item.key
                       ? 'font-bold text-main-purple-super-dark underline'
                       : 'text-gray-500',
-                    'block relative px-4 py-2 text-sm transition duration-100',
+                    'block relative px-4 py-2 text-sm transition duration-100 opacity-0 invisible animate-fade-slide-v-blur-in',
                     focus && 'text-white',
                   )}
+                  style={{animationDelay: itemIdx * 30 + 'ms'}}
                 >
                   {focus && (
                     <motion.div

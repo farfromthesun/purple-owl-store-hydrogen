@@ -25,7 +25,7 @@ export function ProductTile({
       key={product.id}
       to={to || `/products/${product.handle}`}
       prefetch="intent"
-      className="group opacity-0 invisible animate-fade-slide-v-in"
+      className="group opacity-0 invisible animate-fade-slide-v-blur-in-longer"
       style={{animationDelay: (index % animationDelayModulo) * 100 + 'ms'}}
       preventScrollReset
     >

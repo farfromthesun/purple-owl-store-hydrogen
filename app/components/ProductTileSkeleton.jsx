@@ -1,7 +1,7 @@
 export function ProductTileSkeleton({index, animationDelayModulo = 9}) {
   return (
     <div
-      className="opacity-0 invisible animate-fade-slide-v-in"
+      className="opacity-0 invisible animate-fade-slide-v-blur-in-longer"
       style={{animationDelay: (index % animationDelayModulo) * 100 + 'ms'}}
     >
       <div className="rounded-lg bg-main-purple/15 aspect-square animate-pulse"></div>

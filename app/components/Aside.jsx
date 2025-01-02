@@ -51,7 +51,7 @@ export function Aside({children, heading, type}) {
     <Dialog open={isOpen} onClose={close} className="relative z-10">
       <DialogBackdrop
         transition
-        className="fixed inset-0 bg-black/30 transition-opacity duration-300 ease-in-out data-[closed]:opacity-0"
+        className="fixed inset-0 bg-black/30 backdrop-blur-sm transition-opacity duration-300 ease-in-out data-[closed]:opacity-0"
       />
 
       <div className="fixed inset-0 overflow-hidden">
@@ -61,7 +61,7 @@ export function Aside({children, heading, type}) {
               transition
               className="pointer-events-auto w-screen max-w-md transform transition duration-300 ease-in-out data-[closed]:translate-x-full sm:duration-400"
             >
-              <div className="flex h-full flex-col bg-white shadow-xl">
+              <div className="flex h-full flex-col bg-white shadow-xl shadow-gray-500">
                 <div className="flex items-start justify-between px-4 py-6 sm:px-6">
                   <DialogTitle className="text-lg font-medium text-gray-900">
                     {heading}

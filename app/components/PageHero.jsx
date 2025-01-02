@@ -1,6 +1,18 @@
+import {TextSplit} from './TextSplit';
+
 export function PageHero({title, subtitle, pageType = 'page'}) {
+  const titleToDisplay =
+    pageType === 'collection'
+      ? title
+        ? `'${title}' Collection`
+        : 'Collection'
+      : title;
+
   return (
-    <div className="relative isolate overflow-hidden bg-main-purple-super-dark px-6 sm:px-16 md:px-24 flex justify-center">
+    <div
+      data-dark="true"
+      className="relative isolate overflow-hidden bg-main-purple-super-dark px-6 sm:px-16 md:px-24 flex justify-center"
+    >
       <svg
         viewBox="0 0 1024 1024"
         aria-hidden="true"
@@ -21,16 +33,16 @@ export function PageHero({title, subtitle, pageType = 'page'}) {
         </defs>
       </svg>
       <div className="max-w-md text-center py-24 md:py-28 lg:py-32">
-        <h1 className="text-2xl font-bold tracking-tight text-white sm:text-4xl text-balance">
-          {title && pageType === 'collection' ? (
-            <>&apos;{title}&apos; Collection</>
-          ) : (
-            title
-          )}
-        </h1>
-        <p className="mt-6 text-lg leading-8 text-gray-300 text-balance">
-          {subtitle && <>{subtitle}</>}
-        </p>
+        {titleToDisplay && (
+          <h1 className="text-2xl font-bold tracking-tight text-white sm:text-4xl text-balance">
+            <TextSplit>{titleToDisplay}</TextSplit>
+          </h1>
+        )}
+        {subtitle && (
+          <p className="mt-6 text-lg leading-8 text-gray-300 text-balance">
+            <TextSplit delay={400}>{subtitle}</TextSplit>
+          </p>
+        )}
       </div>
     </div>
   );

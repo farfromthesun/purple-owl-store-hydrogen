@@ -7,6 +7,7 @@ import {RouteTransition} from '~/components/RouteTransition';
 import {CartSummary} from '~/components/CartSummary';
 import {seoPayload} from '~/lib/seo.server';
 import {Description} from '@headlessui/react';
+import {FadeSlideBlurIn} from '~/components/FadeSlideBlurIn';
 
 // /**
 //  * @type {MetaFunction}
@@ -82,7 +83,7 @@ export async function action({request, context}) {
   if (result.userErrors.length > 0) errors.push(result.userErrors[0]);
 
   // if (errors.length <= 0) {
-  if (initialCart?.totalQuantity !== result.cart.totalQuantity && GWPFlag) {
+  if (initialCart?.totalQuantity !== result.cart?.totalQuantity && GWPFlag) {
     const newCart = await cart.get();
     const isEligibleForGwp = newCart.cost.totalAmount.amount > 50;
     const gwpLineToAdd = [
@@ -150,12 +151,20 @@ export async function action({request, context}) {
     headers.set('Location', redirectTo);
   }
 
+  const warning =
+    errors.length > 0 &&
+    result.cart &&
+    initialCart?.totalQuantity !== result.cart?.totalQuantity
+      ? true
+      : false;
+
   return json(
     {
       inputLines: inputs.lines,
       cart: cartResult,
       // errors: userErrors,
       errors,
+      warning,
       analytics: {
         cartId,
       },
@@ -194,7 +203,9 @@ export default function Cart() {
   return (
     // <RouteTransition>
     <div className="cart mx-auto max-w-2xl lg:max-w-1400 px-4 pt-12 pb-16 sm:px-6 lg:px-8 lg:pt-20 lg:pb-28">
-      <h1 className="text-3xl font-semibold sm:text-4xl pb-12">Your cart</h1>
+      <h1 className="text-3xl font-semibold sm:text-4xl pb-12">
+        <FadeSlideBlurIn>Your cart</FadeSlideBlurIn>
+      </h1>
       <Suspense fallback={<p>Loading cart ...</p>}>
         <Await
           resolve={rootData.cart}

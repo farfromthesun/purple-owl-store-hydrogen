@@ -370,7 +370,7 @@ function CartLineQuantity({line, layout, disabledByAction, fetcherErrors}) {
           <div className="basis-full">
             {fetcherErrors.map((error) => (
               <span
-                className="block mt-2 text-red-700 text-xs animate-fade-in"
+                className="block mt-2 text-red-700 text-xs animate-fade-in-blur-in"
                 key={error.message}
               >
                 {error.message}

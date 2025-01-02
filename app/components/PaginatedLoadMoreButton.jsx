@@ -4,7 +4,7 @@ import {AnimatePresence, motion} from 'framer-motion';
 export function PaginatedLoadMoreButton({isLoading, direction, text}) {
   return (
     <div
-      className={`button flex justify-center animate-fade-slide-v-in ${
+      className={`button flex justify-center animate-fade-slide-v-blur-in-longer ${
         direction === 'prev' ? 'mb-6' : direction === 'next' ? 'mt-6' : ''
       }`}
     >

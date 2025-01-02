@@ -1,15 +1,67 @@
-import {Suspense} from 'react';
+import {Suspense, useEffect, useRef, useState} from 'react';
 import {Await, NavLink} from '@remix-run/react';
 
 /**
  * @param {FooterProps}
  */
 export function Footer({footer: footerPromise, header, publicStoreDomain}) {
+  const [animationsState, setAnimationsState] = useState({
+    blur: 0,
+    translateY: 0,
+    opacity: 0,
+  });
+  const footerRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY === 0) {
+        setAnimationsState({
+          blur: 0,
+          translateY: 0,
+          opacity: 0,
+        });
+        return;
+      }
+      const footer = footerRef.current;
+      if (!footer) return;
+      const blurBase = 8;
+      const blurDivider = footer.offsetHeight / blurBase;
+      const opacityBase = footer.offsetHeight;
+
+      const treshhold =
+        window.scrollY + window.innerHeight >=
+        document.body.scrollHeight - footer.offsetHeight;
+
+      if (treshhold) {
+        const scrollActionRange =
+          document.body.scrollHeight - (window.scrollY + window.innerHeight);
+        setAnimationsState({
+          blur: scrollActionRange / blurDivider,
+          translateY: (scrollActionRange / blurDivider) * 10,
+          opacity: scrollActionRange / opacityBase,
+        });
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    //Cleanup
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <Suspense>
       <Await resolve={footerPromise}>
         {(footer) => (
-          <footer className="footer text-gray-700 pt-6 lg:pt-10 bg-gray-50 mt-4">
+          <footer
+            className={`footer text-gray-700 pt-10 lg:pt-14 bg-gray-50 sticky bottom-0 z-[1]`}
+            ref={footerRef}
+            style={{
+              filter: `blur(${animationsState.blur}px)`,
+              transform: `translateY(${animationsState.translateY}px)`,
+              opacity: 1 - animationsState.opacity,
+            }}
+          >
             {footer?.menu && header.shop.primaryDomain?.url && (
               <FooterMenu
                 menu={footer.menu}
@@ -63,6 +115,7 @@ function FooterMenu({menu, primaryDomainUrl, publicStoreDomain}) {
                 end
                 key={item.id}
                 prefetch="intent"
+                preventScrollReset
                 // style={activeLinkStyle}
                 to={url}
                 className="aria-[current]:text-main-purple lg:hover:text-main-purple-dark transition ease-[ease] duration-300"
