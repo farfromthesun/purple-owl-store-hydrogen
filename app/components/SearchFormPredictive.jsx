@@ -26,7 +26,9 @@ export function SearchFormPredictive({children, className, ...props}) {
   /** Navigate to the search page with the current input value */
   function goToSearch() {
     const term = inputRef?.current?.value;
-    navigate(SEARCH_ENDPOINT + (term ? `?q=${term}` : ''));
+    navigate(SEARCH_ENDPOINT + (term ? `?q=${term}` : ''), {
+      preventScrollReset: true,
+    });
     aside.close();
   }
 
@@ -49,12 +51,7 @@ export function SearchFormPredictive({children, className, ...props}) {
   }
 
   return (
-    <fetcher.Form
-      {...props}
-      className={className}
-      onSubmit={resetInput}
-      preventScrollReset
-    >
+    <fetcher.Form {...props} className={className} onSubmit={resetInput}>
       {children({inputRef, fetcher, fetchResults, goToSearch})}
     </fetcher.Form>
   );

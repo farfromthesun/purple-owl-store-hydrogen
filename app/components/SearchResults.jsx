@@ -44,6 +44,7 @@ function SearchResultsArticles({term, articles}) {
                 className="text-main-purple hover:text-main-purple-dark transition duration-300"
                 prefetch="intent"
                 to={articleUrl}
+                preventScrollReset
               >
                 {article.title}
               </Link>
@@ -80,6 +81,7 @@ function SearchResultsPages({term, pages}) {
                 className="text-main-purple hover:text-main-purple-dark transition duration-300"
                 prefetch="intent"
                 to={pageUrl}
+                preventScrollReset
               >
                 {page.title}
               </Link>
