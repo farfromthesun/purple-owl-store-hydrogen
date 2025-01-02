@@ -137,7 +137,7 @@ function SearchAside() {
     <Aside type="search" heading="Search">
       <div className="mt-2 pb-6 flex-1 px-4 sm:px-6 overflow-y-auto">
         <SearchFormPredictive className="sticky top-0 bg-white pb-3">
-          {({fetchResults, goToSearch, inputRef, preventScrollReset}) => (
+          {({fetchResults, goToSearch, inputRef}) => (
             <div className="flex gap-x-2 pt-1">
               <input
                 name="q"
