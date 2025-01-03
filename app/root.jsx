@@ -247,7 +247,7 @@ export default function App() {
           className={classNames(
             // viewport === 'destop' && 'top-main-header-desktop-height',
             // viewport === 'mobile' && 'top-main-header-mobile-height',
-            'fixed left-0 top-0 h-svh w-full z-50 grid grid-cols-2 grid-rows-2 pointer-events-none overflow-hidden',
+            'fixed left-0 top-0 h-dvh w-full z-50 grid grid-cols-2 grid-rows-2 pointer-events-none overflow-hidden',
           )}
         >
           <motion.div
