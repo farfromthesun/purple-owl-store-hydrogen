@@ -176,7 +176,7 @@ export function HeaderMenu({
               viewport === 'mobile' &&
                 'mt-14 first:mt-0 opacity-0 invisible animate-fade-slide-v-blur-in-longer',
             )}
-            style={{animationDelay: itemIdx * 100 + 200 + 'ms'}}
+            style={{animationDelay: itemIdx * 100 + 400 + 'ms'}}
           >
             <div className="relative overflow-hidden">
               <span className="block">

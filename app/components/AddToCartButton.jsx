@@ -166,15 +166,15 @@ export function AddToCartButton({
                 </motion.span>
               </AnimatePresence>
             </motion.button>
-            <AnimatePresence>
+            <AnimatePresence mode="popLayout">
               {fetcher.state === 'idle' &&
                 fetcher.data?.errors?.length > 0 &&
                 showErrors &&
                 fetcher.data.errors.map((error) => (
                   <motion.span
-                    initial={{opacity: 0, filter: 'blur(2px)', height: 0}}
-                    animate={{opacity: 1, filter: 'blur(0)', height: 'auto'}}
-                    exit={{opacity: 0, filter: 'blur(2px)', height: 0}}
+                    initial={{opacity: 0, filter: 'blur(2px)'}}
+                    animate={{opacity: 1, filter: 'blur(0)'}}
+                    exit={{opacity: 0, filter: 'blur(2px)'}}
                     transition={{
                       default: {duration: 0.2, ease: 'easeOut'},
                       layout: {duration: 0.2, ease: 'easeInOut'},
