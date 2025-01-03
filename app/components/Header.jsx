@@ -150,7 +150,7 @@ export function HeaderMenu({
           Home
         </NavLink>
       )} */}
-      {menu.items.map((item) => {
+      {menu.items.map((item, itemIdx) => {
         if (!item.url) return null;
 
         // if the url is internal, we strip the domain
@@ -162,19 +162,21 @@ export function HeaderMenu({
             : item.url;
         return (
           <NavLink
-            className={classNames(
-              'block text-xl leading-7 font-semibold lg:py-2 lg:px-1 lg:text-base lg:leading-4 transition-colors duration-400 ease-out group',
-              isDarkBelow
-                ? 'text-gray-100 aria-[current]:text-main-purple-light'
-                : 'text-gray-900 aria-[current]:text-main-purple',
-              viewport === 'mobile' && 'mt-14 first:mt-0',
-            )}
-            end
             key={item.id}
             onClick={closeAside}
             prefetch="intent"
             to={url}
             preventScrollReset
+            end
+            className={classNames(
+              'block text-xl leading-7 font-semibold lg:py-2 lg:px-1 lg:text-base lg:leading-4 transition-colors duration-400 ease-out group',
+              isDarkBelow
+                ? 'text-gray-100 aria-[current]:text-main-purple-light'
+                : 'text-gray-900 aria-[current]:text-main-purple',
+              viewport === 'mobile' &&
+                'mt-14 first:mt-0 opacity-0 invisible animate-fade-slide-v-blur-in-longer',
+            )}
+            style={{animationDelay: itemIdx * 100 + 200 + 'ms'}}
           >
             <div className="relative overflow-hidden">
               <span className="block">
