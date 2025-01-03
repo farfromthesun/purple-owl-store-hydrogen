@@ -1,6 +1,10 @@
 import {Suspense, useEffect, useRef, useState} from 'react';
 import {Await, NavLink} from '@remix-run/react';
 
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ');
+}
+
 /**
  * @param {FooterProps}
  */
@@ -11,6 +15,13 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}) {
     opacity: 0,
   });
   const footerRef = useRef(null);
+  const [animationMinHeight, setAnimationMinHeight] = useState(false);
+
+  useEffect(() => {
+    setAnimationMinHeight(
+      window.matchMedia('(min-height: 900px)').matches ? true : false,
+    );
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,12 +65,19 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}) {
       <Await resolve={footerPromise}>
         {(footer) => (
           <footer
-            className={`footer text-gray-700 pt-10 lg:pt-14 bg-gray-50 sticky bottom-0 z-[1]`}
+            className={classNames(
+              animationMinHeight && 'sticky',
+              'footer text-gray-700 pt-10 lg:pt-14 bg-gray-50 bottom-0 z-[1]',
+            )}
             ref={footerRef}
             style={{
-              filter: `blur(${animationsState.blur}px)`,
-              transform: `translateY(${animationsState.translateY}px)`,
-              opacity: 1 - animationsState.opacity,
+              filter: animationMinHeight
+                ? `blur(${animationsState.blur}px)`
+                : 'none',
+              transform: animationMinHeight
+                ? `translateY(${animationsState.translateY}px)`
+                : 'none',
+              opacity: animationMinHeight ? 1 - animationsState.opacity : 1,
             }}
           >
             {footer?.menu && header.shop.primaryDomain?.url && (
