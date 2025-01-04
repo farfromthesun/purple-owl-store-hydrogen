@@ -16,9 +16,12 @@ export function SearchFormPredictive({children, className, ...props}) {
 
   /** Reset the input value and blur the input */
   function resetInput(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    if (inputRef?.current?.value) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    if (inputRef?.current) {
+      inputRef.current.value = '';
       inputRef.current.blur();
     }
   }
@@ -39,6 +42,14 @@ export function SearchFormPredictive({children, className, ...props}) {
       {method: 'GET', action: SEARCH_ENDPOINT},
     );
   }
+
+  useEffect(() => {
+    inputRef.current?.focus();
+
+    return () => {
+      resetInput();
+    };
+  }, []);
 
   // ensure the passed input has a type of search, because SearchResults
   // will select the element based on the input

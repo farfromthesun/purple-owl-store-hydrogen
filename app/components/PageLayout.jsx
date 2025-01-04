@@ -1,5 +1,11 @@
-import {Await, Link, useFetcher, useFetchers} from '@remix-run/react';
-import {Suspense, useEffect, useState} from 'react';
+import {
+  Await,
+  Link,
+  useFetcher,
+  useFetchers,
+  useLocation,
+} from '@remix-run/react';
+import {Suspense, useEffect, useRef, useState} from 'react';
 import {Aside, useAside} from '~/components/Aside';
 import {Footer} from '~/components/Footer';
 import {Header, HeaderMenu} from '~/components/Header';
@@ -133,6 +139,25 @@ function CartAside({cart}) {
 }
 
 function SearchAside() {
+  const {open, type} = useAside();
+  const location = useLocation();
+
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (location.pathname === SEARCH_ENDPOINT) return;
+      if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        type === 'closed' && open('search');
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [open, type, location.pathname]);
+
   return (
     <Aside type="search" heading="Search">
       <div className="mt-2 pb-6 flex-1 px-4 sm:px-6 overflow-y-auto">

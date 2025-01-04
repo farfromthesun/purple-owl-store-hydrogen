@@ -15,6 +15,13 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
+function isMacOS() {
+  return (
+    typeof window !== 'undefined' &&
+    window.navigator.platform.toUpperCase().indexOf('MAC') >= 0
+  );
+}
+
 /**
  * @param {HeaderProps}
  */
@@ -273,18 +280,21 @@ function HeaderMenuMobileToggle({isDarkBelow}) {
 
 function SearchToggle({isDarkBelow}) {
   const {open} = useAside();
+  const modifierKey = isMacOS() ? 'Cmd' : 'Ctrl';
+
   return (
     <button
       className={classNames(
         isDarkBelow
           ? 'text-gray-100 lg:hover:text-main-purple-light'
           : 'text-gray-900 lg:hover:text-main-purple',
-        'text-sm lg:text-base font-semibold leading-6 cursor-pointer flex items-center transition duration-300',
+        'text-sm lg:text-base font-semibold leading-6 cursor-pointer flex items-center transition duration-300 lg:py-1 lg:px-2 lg:border-inherit lg:border-2 lg:rounded-md',
       )}
       onClick={() => open('search')}
     >
       <span className="sr-only">Search</span>
-      <MagnifyingGlassIcon aria-hidden="true" className="h-6 w-6" />
+      <span className="hidden lg:block text-xs mr-3">{modifierKey} + K</span>
+      <MagnifyingGlassIcon aria-hidden="true" className="size-6 lg:size-5" />
     </button>
   );
 }

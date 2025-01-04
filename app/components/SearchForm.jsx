@@ -42,10 +42,10 @@ export function SearchForm({children, ...props}) {
  * @param {React.RefObject<HTMLInputElement>} inputRef
  */
 function useFocusOnCmdK(inputRef) {
-  // focus the input when cmd+k is pressed
+  // focus the input when cmd/ctrl+k is pressed
   useEffect(() => {
     function handleKeyDown(event) {
-      if (event.key === 'k' && event.metaKey) {
+      if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
         event.preventDefault();
         inputRef.current?.focus();
       }
