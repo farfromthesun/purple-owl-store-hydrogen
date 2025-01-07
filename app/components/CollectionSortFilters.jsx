@@ -25,7 +25,7 @@ function classNames(...classes) {
 }
 
 export const FILTER_URL_PREFIX = 'filter.';
-const FILTER_DEBOUNCE = 1000;
+const FILTER_DEBOUNCE = 500;
 
 export function CollectionSortFilters({filters, appliedFilters, children}) {
   // const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
