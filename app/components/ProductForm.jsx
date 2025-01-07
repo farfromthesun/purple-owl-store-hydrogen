@@ -547,7 +547,7 @@ function ExtraOptons({product, extraOptions, setExtraOptions}) {
     },
   ];
   return (
-    <div className="mb-8">
+    <div className="mb-8 bg-white">
       <h3 className="text-sm font-medium text-gray-900">Extra options</h3>
       <div className="mt-4">
         {extraOptionsArray.map((extraOption) => (
