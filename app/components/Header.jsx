@@ -1,4 +1,4 @@
-import {Suspense, useEffect, useRef, useState} from 'react';
+import {Suspense, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {Await, Link, NavLink} from '@remix-run/react';
 import {useAnalytics} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
@@ -280,7 +280,11 @@ function HeaderMenuMobileToggle({isDarkBelow}) {
 
 function SearchToggle({isDarkBelow}) {
   const {open} = useAside();
-  const modifierKey = isMacOS() ? 'Cmd' : 'Ctrl';
+  const [keyboardKey, setKeyboardKey] = useState('Ctrl');
+
+  useLayoutEffect(() => {
+    setKeyboardKey(isMacOS() ? 'Cmd' : 'Ctrl');
+  }, []);
 
   return (
     <button
@@ -288,12 +292,12 @@ function SearchToggle({isDarkBelow}) {
         isDarkBelow
           ? 'text-gray-100 lg:hover:text-main-purple-light'
           : 'text-gray-900 lg:hover:text-main-purple',
-        'text-sm lg:text-base font-semibold leading-6 cursor-pointer flex items-center transition duration-300 lg:py-1 lg:px-2 lg:border-inherit lg:border-2 lg:rounded-md',
+        'text-sm lg:text-base font-semibold leading-6 cursor-pointer flex items-center transition duration-300 lg:py-1 lg:px-2 lg:border-inherit lg:border-1 lg:rounded-md',
       )}
       onClick={() => open('search')}
     >
       <span className="sr-only">Search</span>
-      <span className="hidden lg:block text-xs mr-3">{modifierKey} + K</span>
+      <span className="hidden lg:block text-xs mr-3">{keyboardKey} + K</span>
       <MagnifyingGlassIcon aria-hidden="true" className="size-6 lg:size-5" />
     </button>
   );
