@@ -293,9 +293,10 @@ export default function Collection() {
   //   setLoaderDataState,
   // ] = useState(loaderData || {});
 
-  const [loaderDataState, setLoaderDataState] = useState(useLoaderData());
+  const loaderData = useLoaderData();
+  const [loaderDataState, setLoaderDataState] = useState(loaderData || {});
   const {collectionBasicInfo, collectionProducts, appliedFilters} =
-    useLoaderData() || loaderDataState;
+    loaderData || loaderDataState;
 
   const navigation = useNavigation();
   const location = useLocation();
@@ -312,18 +313,9 @@ export default function Collection() {
 
   useEffect(() => {
     if (location.pathname.includes(collectionBasicInfo.handle)) {
-      setLoaderDataState({
-        collectionBasicInfo,
-        collectionProducts,
-        appliedFilters,
-      });
+      setLoaderDataState(loaderData);
     }
-  }, [
-    collectionBasicInfo,
-    collectionProducts,
-    appliedFilters,
-    location.pathname,
-  ]);
+  }, [loaderData, location, collectionBasicInfo]);
 
   return (
     // <RouteTransition>

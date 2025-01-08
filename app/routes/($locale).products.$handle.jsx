@@ -1,4 +1,4 @@
-import {Suspense, useEffect, useState} from 'react';
+import {Suspense, useEffect, useLayoutEffect, useState} from 'react';
 import {defer, redirect} from '@shopify/remix-oxygen';
 import {Await, Link, useLoaderData, useLocation} from '@remix-run/react';
 import {
@@ -157,9 +157,8 @@ export const meta = ({matches}) => {
 export default function Product() {
   /** @type {LoaderReturnData} */
   const loaderData = useLoaderData();
-  const [{product, variants}, setLoaderDataState] = useState(
-    useLoaderData() || {},
-  );
+  const [loaderDataState, setLoaderDataState] = useState(loaderData || {});
+  const {product, variants} = loaderData || loaderDataState;
   const location = useLocation();
   // const selectedVariant = useOptimisticVariant(
   //   product.selectedVariant,
@@ -179,7 +178,7 @@ export default function Product() {
     }
   }, [loaderData, location.pathname, product.handle]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setImgAspectRatio(
       window.matchMedia('(min-width: 1024px)').matches ? undefined : '1/1',
     );
@@ -226,14 +225,10 @@ export default function Product() {
           <div className="mx-auto max-w-2xl px-4 pb-16 pt-6 sm:px-6 lg:grid lg:max-w-1400 lg:grid-cols-3 lg:gap-x-8 lg:px-8 lg:pb-24">
             <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
               <FadeSlideBlurIn>
-                {imgAspectRatio !== null ? (
-                  <ProductImage
-                    image={selectedVariant?.image}
-                    aspectRatio={imgAspectRatio}
-                  />
-                ) : (
-                  <ProductImageSkeleton />
-                )}
+                <ProductImage
+                  image={selectedVariant?.image}
+                  aspectRatio={imgAspectRatio}
+                />
               </FadeSlideBlurIn>
             </div>
 
