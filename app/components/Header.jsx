@@ -69,7 +69,10 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
       </header> */}
       <header
         ref={headerRef}
-        className="main-header bg-white/10 sticky top-0 z-10 backdrop-blur-[20px]"
+        className={classNames(
+          isDarkBelow && 'drop-shadow-[0px_1px_2px_#000]',
+          'main-header bg-white/10 sticky top-0 z-10 backdrop-blur-[20px] transition-all duration-300',
+        )}
       >
         <div className="flex items-center justify-between p-6 lg:px-8 max-w-2xl lg:max-w-1400 m-auto">
           <div className="flex lg:flex-1 order-3 lg:order-1">

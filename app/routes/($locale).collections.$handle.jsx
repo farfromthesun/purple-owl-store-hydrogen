@@ -4,6 +4,7 @@ import {
   useLoaderData,
   useLocation,
   useNavigation,
+  useSearchParams,
 } from '@remix-run/react';
 import {getPaginationVariables, Analytics, getSeoMeta} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
@@ -297,19 +298,57 @@ export default function Collection() {
   const [loaderDataState, setLoaderDataState] = useState(loaderData || {});
   const {collectionBasicInfo, collectionProducts, appliedFilters} =
     loaderData || loaderDataState;
-
+  const [paginatedCollectionProducts, setPaginatedCollectionProducts] =
+    useState({
+      filters: [],
+      nodes: [],
+      pageInfo: {},
+    });
   const navigation = useNavigation();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const direction = searchParams.get('direction');
   const areProductsLoading =
     navigation.state === 'loading' &&
     navigation.location?.pathname?.includes(collectionBasicInfo.handle) &&
     navigation.location?.state === null;
+  let paginatedProducts = [];
 
   // useEffect(() => {
   //   if (location.pathname.includes(collectionBasicInfo.handle)) {
   //     setLoaderDataState(loaderData);
   //   }
   // }, [loaderData, location, collectionBasicInfo]);
+
+  // useEffect(() => {
+  //   async function showInfo() {
+  //     const resp = await collectionProducts;
+  //     const data = await resp;
+  //     console.log('data', data.products);
+  //   }
+  //   showInfo();
+  // }, [collectionProducts]);
+
+  // useEffect(() => {
+  //   if (direction) {
+  //     if (direction === 'previous') {
+  //       paginatedProducts = [
+  //         ...collectionProducts.product.nodes,
+  //         ...paginatedProducts,
+  //       ];
+  //     } else if (direction === 'next') {
+  //       paginatedProducts = [
+  //         ...paginatedProducts,
+  //         ...collectionProducts.product.nodes,
+  //       ];
+  //     }
+  //     setPaginatedCollectionProducts({
+  //       filters: collectionProducts.products.filters,
+  //       nodes: paginatedProducts,
+  //       pageInfo: collectionProducts.products.pageInfo,
+  //     });
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (location.pathname.includes(collectionBasicInfo.handle)) {
