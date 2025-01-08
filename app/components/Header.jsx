@@ -149,7 +149,7 @@ export function HeaderMenu({
     // <nav className={className} role="navigation">
     <nav
       className={classNames(
-        viewport === 'mobile' && '-translate-y-main-header-mobile-height',
+        // viewport === 'mobile' && '-translate-y-main-header-mobile-height',
         viewport === 'desktop' && 'hidden',
         'lg:flex lg:gap-x-12 lg:order-2',
       )}

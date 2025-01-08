@@ -11,9 +11,9 @@ export function PageHero({title, subtitle, pageType = 'page'}) {
   return (
     <div
       data-dark="true"
-      className="relative isolate overflow-hidden bg-main-purple-super-dark px-6 sm:px-16 md:px-24 flex justify-center"
+      className="relative isolate overflow-hidden bg-main-purple-super-dark bg-[radial-gradient(_ellipse_120%_123%_at_center_91%,_#a737a5_-49%,_transparent_45%_)] px-6 sm:px-16 md:px-24 flex justify-center"
     >
-      <svg
+      {/* <svg
         viewBox="0 0 1024 1024"
         aria-hidden="true"
         className="absolute left-1/2 top-1/2 -z-10 h-[64rem] w-[64rem] -translate-y-1/2 [mask-image:radial-gradient(closest-side,white,transparent)] sm:left-full sm:-ml-80 lg:left-1/2 lg:ml-0 lg:-translate-x-1/2 lg:translate-y-0"
@@ -31,7 +31,7 @@ export function PageHero({title, subtitle, pageType = 'page'}) {
             <stop offset={1} stopColor="#E935C1" />
           </radialGradient>
         </defs>
-      </svg>
+      </svg> */}
       <div className="max-w-md text-center py-24 md:py-28 lg:py-32">
         {titleToDisplay && (
           <h1 className="text-2xl font-bold tracking-tight text-white sm:text-4xl text-balance">
