@@ -178,7 +178,7 @@ export default function Product() {
     }
   }, [loaderData, location.pathname, product.handle]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setImgAspectRatio(
       window.matchMedia('(min-width: 1024px)').matches ? undefined : '1/1',
     );
@@ -225,10 +225,14 @@ export default function Product() {
           <div className="mx-auto max-w-2xl px-4 pb-16 pt-6 sm:px-6 lg:grid lg:max-w-1400 lg:grid-cols-3 lg:gap-x-8 lg:px-8 lg:pb-24">
             <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
               <FadeSlideBlurIn>
-                <ProductImage
-                  image={selectedVariant?.image}
-                  aspectRatio={imgAspectRatio}
-                />
+                {imgAspectRatio !== null ? (
+                  <ProductImage
+                    image={selectedVariant?.image}
+                    aspectRatio={imgAspectRatio}
+                  />
+                ) : (
+                  <ProductImageSkeleton />
+                )}
               </FadeSlideBlurIn>
             </div>
 

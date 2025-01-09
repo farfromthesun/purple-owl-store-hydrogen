@@ -30,13 +30,20 @@ export function ProductForm({product, selectedVariant, variants}) {
   const [variantQuantity, setVariantQuantity] = useState(1);
   const [addOns, setAddOns] = useState([]);
   const [extraOptions, setExtraOptions] = useState([]);
+  const [qunantityOperationType, setQunantityOperationType] =
+    useState('increment');
 
-  const variantQuantityDecrement = () => {
-    if (variantQuantity === 1) return;
-    setVariantQuantity(variantQuantity - 1);
-  };
-  const variantQuantityIncrement = () => {
-    setVariantQuantity(variantQuantity + 1);
+  const handleQunaityChange = (operationType) => {
+    setQunantityOperationType(operationType);
+
+    setTimeout(() => {
+      if (operationType === 'increment') {
+        setVariantQuantity(variantQuantity + 1);
+      } else if (operationType === 'decrement') {
+        if (variantQuantity === 1) return;
+        setVariantQuantity(variantQuantity - 1);
+      }
+    }, 0);
   };
 
   return (
@@ -50,8 +57,8 @@ export function ProductForm({product, selectedVariant, variants}) {
       </VariantSelector>
       <QuantitySelector
         quantity={variantQuantity}
-        handleDecrement={variantQuantityDecrement}
-        handleIncrement={variantQuantityIncrement}
+        handleQunaityChange={handleQunaityChange}
+        qunantityOperationType={qunantityOperationType}
         selectedVariant={selectedVariant}
       />
       {product.add_ons_metafield && (
@@ -213,40 +220,11 @@ function SizeGuide() {
 
 function QuantitySelector({
   quantity,
-  handleDecrement,
-  handleIncrement,
   selectedVariant,
+  handleQunaityChange,
+  qunantityOperationType,
 }) {
   const rootData = useRouteLoaderData('root');
-  // const [infoAlerts, setInfoAlerts] = useState([]);
-
-  // useEffect(() => {
-  //   const infoAlerts = [];
-
-  //   if (selectedVariant.availableForSale) {
-  //     if (selectedVariant.quantityAvailable > 0) {
-  //       infoAlerts.push(
-  //         <>
-  //           Only{' '}
-  //           <span className="badge"> {selectedVariant.quantityAvailable}</span>{' '}
-  //           left in stock!
-  //         </>,
-  //       );
-  //     }
-  //     if (selectedVariant.order_limit_metafield) {
-  //       infoAlerts.push(
-  //         <>
-  //           Product limited to only{' '}
-  //           <span className="badge">
-  //             {selectedVariant.order_limit_metafield.value}
-  //           </span>{' '}
-  //           units per order.
-  //         </>,
-  //       );
-  //     }
-  //   }
-  //   setInfoAlerts(infoAlerts);
-  // }, [selectedVariant]);
 
   return (
     <div className="mb-8">
@@ -301,7 +279,7 @@ function QuantitySelector({
             'group relative flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition ease-[ease] duration-200',
           )}
           disabled={quantity <= 1}
-          onClick={handleDecrement}
+          onClick={() => handleQunaityChange('decrement')}
           type="button"
         >
           <span>
@@ -340,9 +318,17 @@ function QuantitySelector({
         <div className="w-full max-w-16 text-center py-2 px-3 rounded-md text-sm border border-gray-300 text-gray-500 outline-none">
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.span
-              initial={{opacity: 0, filter: 'blur(2px)', y: 10}}
+              initial={{
+                opacity: 0,
+                filter: 'blur(2px)',
+                y: qunantityOperationType === 'increment' ? 10 : -10,
+              }}
               animate={{opacity: 1, filter: 'blur(0)', y: 0}}
-              exit={{opacity: 0, filter: 'blur(2px)', y: -10}}
+              exit={{
+                opacity: 0,
+                filter: 'blur(2px)',
+                y: qunantityOperationType === 'increment' ? -10 : 10,
+              }}
               transition={{duration: 0.2, ease: 'easeOut'}}
               key={'quantityValue-' + quantity}
               className="inline-block"
@@ -354,7 +340,7 @@ function QuantitySelector({
         </div>
         <button
           className="group relative flex items-center justify-center rounded-md border border-gray-200 px-3 py-2 text-sm font-medium capitalize hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main-purple transition duration-200 cursor-pointer bg-white text-gray-900 shadow-sm"
-          onClick={handleIncrement}
+          onClick={() => handleQunaityChange('increment')}
           type="button"
         >
           <span>
@@ -433,29 +419,6 @@ function QuantitySelector({
             )}
         </AnimatePresence>
       </div>
-      {/* {infoAlerts.length > 0 && (
-        <AnimatePresence mode="wait">
-          <motion.div
-            initial={{opacity: 0, filter: 'blur(2px)', height: 0}}
-            animate={{opacity: 1, filter: 'blur(0)', height: 'auto'}}
-            exit={{opacity: 0, filter: 'blur(2px)', height: 0}}
-            transition={{duration: 0.2, ease: 'easeOut'}}
-            key={selectedVariant.id}
-          >
-            {infoAlerts.map((infoAlert) => (
-              <motion.p
-                initial={{opacity: 0, filter: 'blur(2px)'}}
-                animate={{opacity: 1, filter: 'blur(0)'}}
-                exit={{opacity: 0, filter: 'blur(2px)'}}
-                key={infoAlert}
-                className="text-main-purple text-sm font-medium mt-4 flex items-center gap-1"
-              >
-                {infoAlert}
-              </motion.p>
-            ))}
-          </motion.div>
-        </AnimatePresence>
-      )} */}
     </div>
   );
 }

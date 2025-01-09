@@ -1,4 +1,4 @@
-import {Suspense, useEffect, useLayoutEffect, useRef, useState} from 'react';
+import {Suspense, useEffect, useRef, useState} from 'react';
 import {Await, Link, NavLink} from '@remix-run/react';
 import {useAnalytics} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
@@ -15,11 +15,11 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-function isMacOS() {
-  return (
-    typeof window !== 'undefined' &&
-    window.navigator.platform.toUpperCase().indexOf('MAC') >= 0
-  );
+function searchKeySetter() {
+  if (typeof window === 'undefined') return null;
+  return window.navigator.platform.toUpperCase().indexOf('MAC') >= 0
+    ? 'Cmd'
+    : 'Ctrl';
 }
 
 /**
@@ -283,10 +283,10 @@ function HeaderMenuMobileToggle({isDarkBelow}) {
 
 function SearchToggle({isDarkBelow}) {
   const {open} = useAside();
-  const [keyboardKey, setKeyboardKey] = useState('Ctrl');
+  const [keyboardKey, setKeyboardKey] = useState(null);
 
-  useLayoutEffect(() => {
-    setKeyboardKey(isMacOS() ? 'Cmd' : 'Ctrl');
+  useEffect(() => {
+    setKeyboardKey(searchKeySetter());
   }, []);
 
   return (
@@ -300,7 +300,9 @@ function SearchToggle({isDarkBelow}) {
       onClick={() => open('search')}
     >
       <span className="sr-only">Search</span>
-      <span className="hidden lg:block text-xs mr-3">{keyboardKey} + K</span>
+      <span className="hidden lg:block text-xs mr-3">
+        {keyboardKey ? keyboardKey : 'Ctrl/Cmd'} + K
+      </span>
       <MagnifyingGlassIcon aria-hidden="true" className="size-6 lg:size-5" />
     </button>
   );
