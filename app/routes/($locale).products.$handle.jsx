@@ -158,7 +158,7 @@ export default function Product() {
   /** @type {LoaderReturnData} */
   const loaderData = useLoaderData();
   const [loaderDataState, setLoaderDataState] = useState(loaderData || {});
-  const {product, variants} = loaderData || loaderDataState;
+  const {product, variants} = loaderDataState || loaderData;
   const location = useLocation();
   const selectedVariant = useOptimisticVariant(
     product.selectedVariant,
