@@ -21,6 +21,7 @@ import {Suspense, useEffect, useState} from 'react';
 import {ProductTileSkeleton} from '~/components/ProductTileSkeleton';
 import {RouteTransition} from '~/components/RouteTransition';
 import {seoPayload} from '~/lib/seo.server';
+import {PaginatedResourceSectionSlider} from '~/components/PaginatedResourceSectionSlider';
 
 // /**
 //  * @type {MetaFunction<typeof loader>}
@@ -298,21 +299,78 @@ export default function Collection() {
   const [loaderDataState, setLoaderDataState] = useState(loaderData || {});
   const {collectionBasicInfo, collectionProducts, appliedFilters} =
     loaderData || loaderDataState;
-  const [paginatedCollectionProducts, setPaginatedCollectionProducts] =
-    useState({
-      filters: [],
-      nodes: [],
-      pageInfo: {},
-    });
+  // const [paginatedCollectionProducts, setPaginatedCollectionProducts] =
+  //   useState({
+  //     filters: [],
+  //     nodes: [],
+  //     pageInfo: {},
+  //   });
   const navigation = useNavigation();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
-  const direction = searchParams.get('direction');
+  // const [searchParams] = useSearchParams();
+  // const direction = searchParams.get('direction');
   const areProductsLoading =
     navigation.state === 'loading' &&
-    navigation.location?.pathname?.includes(collectionBasicInfo.handle) &&
-    navigation.location?.state === null;
-  let paginatedProducts = [];
+    navigation.location?.pathname?.includes(collectionBasicInfo.handle);
+  // && navigation.location?.state === null; //Uncomment this to block the product skeleton grid from showing when products are loading
+  // let paginatedProducts = [];
+  const [paginatedNodes, setPaginatedNodes] = useState(null);
+
+  // useEffect(() => {
+  //   // console.log('paginatedNodes', paginatedNodes);
+  //   const getCollectionProducts = async () => {
+  //     const awaitedCollectionProducts = await collectionProducts;
+
+  //     setLoaderDataState((prevState) => {
+  //       return {
+  //         ...prevState,
+  //         collectionProducts: {
+  //           ...awaitedCollectionProducts,
+  //           products: {
+  //             ...awaitedCollectionProducts.products,
+  //             nodes: paginatedNodes,
+  //           },
+  //         },
+  //       };
+  //     });
+  //   };
+  //   getCollectionProducts();
+  // }, [paginatedNodes, collectionProducts]);
+
+  useEffect(() => {
+    // console.log('paginatedNodes', paginatedNodes);
+    // setLoaderDataState((prevState) => {
+    //   return {
+    //     ...prevState,
+    //     collectionProducts: {
+    //       ...prevState.collectionProducts,
+    //       products: {
+    //         ...prevState.collectionProducts.products,
+    //         nodes: paginatedNodes,
+    //       },
+    //     },
+    //   };
+    // });
+  }, [paginatedNodes]);
+
+  useEffect(() => {
+    // async function showLoaderState() {
+    //   const firstData = await loaderDataState;
+    //   const prodData = await firstData;
+    //   console.log(
+    //     '🚀 ~ showLoaderState ~ prodData:',
+    //     prodData.collectionProducts.products.pageInfo,
+    //   );
+    // }
+    // showLoaderState();
+
+    async function showLoader() {
+      const firstData = await loaderData.collectionProducts;
+      const prodData = await firstData;
+      console.log('🚀 ~ showLoader ~ prodData:', prodData.products.pageInfo);
+    }
+    // showLoader();
+  }, [loaderDataState, loaderData]);
 
   // useEffect(() => {
   //   if (location.pathname.includes(collectionBasicInfo.handle)) {
@@ -374,10 +432,12 @@ export default function Collection() {
           <Suspense fallback={<ProductTileSkeletonGrid />}>
             <Await resolve={collectionProducts}>
               {(collectionProducts) => (
-                <PaginatedResourceSection
+                <PaginatedResourceSectionSlider
                   connection={collectionProducts.products}
                   resourcesClassName="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3 xl:gap-x-8"
-                  LoadMorebutton={PaginatedLoadMoreButton}
+                  LoadMoreButton={PaginatedLoadMoreButton}
+                  setPaginatedNodes={setPaginatedNodes}
+                  collectionBasicInfoHandle={collectionBasicInfo.handle}
                 >
                   {({node: product, index}) => (
                     <ProductItem
@@ -387,7 +447,7 @@ export default function Collection() {
                       index={index}
                     />
                   )}
-                </PaginatedResourceSection>
+                </PaginatedResourceSectionSlider>
               )}
             </Await>
           </Suspense>

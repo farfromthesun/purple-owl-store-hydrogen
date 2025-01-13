@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Pagination} from '@shopify/hydrogen';
-import {useNavigation} from '@remix-run/react';
+import {Link, useLocation, useNavigation} from '@remix-run/react';
+import {useEffect, useRef} from 'react';
 
 /**
  * <PaginatedResourceSection > is a component that encapsulate how the previous and next behaviors throughout your application.
@@ -11,43 +12,78 @@ export function PaginatedResourceSection({
   connection,
   children,
   resourcesClassName,
-  LoadMorebutton,
+  LoadMoreButton,
+  setPaginatedNodes,
+  collectionBasicInfoHandle,
 }) {
   const navigation = useNavigation();
+  const location = useLocation();
   const isLoadingMoreNodes = navigation.location?.search.includes('direction');
+  const nodesRef = useRef([]);
+
+  // useEffect(() => {
+  //   console.log('connection', connection);
+  // }, [connection]);
+
+  useEffect(() => {
+    if (location.pathname.includes(collectionBasicInfoHandle)) {
+      setPaginatedNodes(nodesRef.current);
+    }
+  }, [
+    navigation,
+    setPaginatedNodes,
+    location.pathname,
+    collectionBasicInfoHandle,
+  ]);
 
   return (
     <Pagination connection={connection}>
-      {({nodes, isLoading, PreviousLink, NextLink}) => {
-        const resoucesMarkup = nodes.map((node, index) =>
+      {({
+        nodes,
+        isLoading,
+        PreviousLink,
+        NextLink,
+        hasPreviousPage,
+        previousPageUrl,
+        state,
+      }) => {
+        const resoucesMarkup = connection.nodes.map((node, index) =>
           children({node, index}),
         );
+
+        nodesRef.current = nodes;
 
         return (
           <>
             {nodes.length > 0 ? (
               <div>
-                <PreviousLink>
-                  {LoadMorebutton ? (
-                    <LoadMorebutton
-                      isLoading={isLoadingMoreNodes}
-                      direction="prev"
-                      text="↑ Load previous"
-                    />
-                  ) : isLoadingMoreNodes ? (
-                    'Loading...'
-                  ) : (
-                    <span>↑ Load previous</span>
-                  )}
-                </PreviousLink>
+                {connection.pageInfo.hasPreviousPage && (
+                  <Link
+                    to={`${location.pathname}?direction=previous&cursor=${connection.pageInfo.startCursor}`}
+                    state={state}
+                    preventScrollReset
+                  >
+                    {LoadMoreButton ? (
+                      <LoadMoreButton
+                        isLoading={isLoadingMoreNodes}
+                        direction="prev"
+                        text="↑ Load previous"
+                      />
+                    ) : isLoadingMoreNodes ? (
+                      'Loading...'
+                    ) : (
+                      <span>↑ Load previous</span>
+                    )}
+                  </Link>
+                )}
                 {resourcesClassName ? (
                   <div className={resourcesClassName}>{resoucesMarkup}</div>
                 ) : (
                   resoucesMarkup
                 )}
                 <NextLink>
-                  {LoadMorebutton ? (
-                    <LoadMorebutton
+                  {LoadMoreButton ? (
+                    <LoadMoreButton
                       isLoading={isLoadingMoreNodes}
                       direction="next"
                       text="Load more ↓"

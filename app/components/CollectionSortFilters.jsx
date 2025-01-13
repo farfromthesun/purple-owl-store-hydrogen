@@ -33,7 +33,7 @@ export function CollectionSortFilters({filters, appliedFilters, children}) {
   const {open} = useAside();
 
   return (
-    <div className="bg-white">
+    <div className="bg-white" id="collection-container">
       {/* Mobile filter dialog */}
       {/* <Dialog
         open={mobileFiltersOpen}
@@ -110,21 +110,28 @@ export function CollectionSortFilters({filters, appliedFilters, children}) {
                 const url = [...params]
                   .filter((param) => {
                     if (filterKey === 'price') {
-                      return !param[0].includes('price');
+                      return (
+                        !param[0].includes('price') &&
+                        !param[0].includes('direction') &&
+                        !param[0].includes('cursor')
+                      );
                     } else {
                       return (
                         param[0] + '=' + param[1] !==
-                        baseKey +
-                          '.' +
-                          filterKey +
-                          '=' +
-                          JSON.stringify(appliedFilter[baseKey][filterKey])
+                          baseKey +
+                            '.' +
+                            filterKey +
+                            '=' +
+                            JSON.stringify(appliedFilter[baseKey][filterKey]) &&
+                        !param[0].includes('direction') &&
+                        !param[0].includes('cursor')
                       );
                     }
                   })
                   .reduce((accumulator, param) => {
                     const before = accumulator === '' ? '' : '&';
-                    return (accumulator += before + param[0] + '=' + param[1]);
+                    return (accumulator +=
+                      before + param[0] + '=' + encodeURIComponent(param[1]));
                   }, '');
 
                 return (
