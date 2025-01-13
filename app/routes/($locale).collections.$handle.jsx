@@ -489,7 +489,7 @@ function ProductItem({product, loading, index}) {
 function ProductTileSkeletonGrid() {
   return (
     <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3 xl:gap-x-8">
-      {Array.from({length: 6}, (_, index) => index + 1).map((id, index) => (
+      {Array.from({length: 9}, (_, index) => index + 1).map((id, index) => (
         <ProductTileSkeleton key={id} index={index} />
       ))}
     </div>
