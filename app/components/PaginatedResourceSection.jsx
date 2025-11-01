@@ -21,10 +21,6 @@ export function PaginatedResourceSection({
   const isLoadingMoreNodes = navigation.location?.search.includes('direction');
   const nodesRef = useRef([]);
 
-  // useEffect(() => {
-  //   console.log('connection', connection);
-  // }, [connection]);
-
   useEffect(() => {
     if (location.pathname.includes(collectionBasicInfoHandle)) {
       setPaginatedNodes(nodesRef.current);

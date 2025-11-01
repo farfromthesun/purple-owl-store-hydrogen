@@ -52,6 +52,9 @@ export function PaginatedResourceSectionSlider({
       document.documentElement,
     ).getPropertyValue('--spacing-main-header-desktop-height');
 
+    //selector as a prop (elementToScrollOnLoad)
+    //is the callback even needed?
+
     const element = document.querySelector('#collection-container');
     const headerOffset = isDesktop
       ? parseInt(headerDesktopHeight)
